@@ -4,7 +4,9 @@ import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntit
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.MilkyWayStargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.PegasusStargateMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.StargateMethods;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.TimerInterfaceMethods;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TimerPeripheral;
 
 public class CCTweakedCompatibility
 {
@@ -174,5 +176,20 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
 			peripheral.registerMethod(new StargateMethods.GetCFDStatus());
 		}
+	}
+	public static void registerDestinyTimerMethods(TimerPeripheralWrapper wrapper){
+		TimerPeripheral peripheral = wrapper.getPeripheral();
+
+		peripheral.registerMethod(new TimerInterfaceMethods.getStatus());
+		peripheral.registerMethod(new TimerInterfaceMethods.getTime());
+		peripheral.registerMethod(new TimerInterfaceMethods.getExpirationTime());
+		peripheral.registerMethod(new TimerInterfaceMethods.getResetValue());
+		peripheral.registerMethod(new TimerInterfaceMethods.getTimePassed());
+		peripheral.registerMethod(new TimerInterfaceMethods.setTime());
+		peripheral.registerMethod(new TimerInterfaceMethods.setExpirationTime());
+		peripheral.registerMethod(new TimerInterfaceMethods.setResetValue());
+		peripheral.registerMethod(new TimerInterfaceMethods.setTimePassed());
+		peripheral.registerMethod(new TimerInterfaceMethods.setState());
+		peripheral.registerMethod(new TimerInterfaceMethods.reset());
 	}
 }

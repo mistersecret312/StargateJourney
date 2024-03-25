@@ -20,21 +20,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.blocks.ATAGeneDetectorBlock;
-import net.povstalec.sgjourney.common.blocks.ArcheologyTableBlock;
-import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
-import net.povstalec.sgjourney.common.blocks.ChevronBlock;
-import net.povstalec.sgjourney.common.blocks.ClassicStargateBaseBlock;
-import net.povstalec.sgjourney.common.blocks.ExplosiveBlock;
-import net.povstalec.sgjourney.common.blocks.FirePitBlock;
-import net.povstalec.sgjourney.common.blocks.GoldenIdolBlock;
-import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorMarkIBlock;
-import net.povstalec.sgjourney.common.blocks.NaquadahGeneratorMarkIIBlock;
-import net.povstalec.sgjourney.common.blocks.RingPanelBlock;
-import net.povstalec.sgjourney.common.blocks.SecretSwitchBlock;
-import net.povstalec.sgjourney.common.blocks.SymbolBlock;
-import net.povstalec.sgjourney.common.blocks.TransportRingsBlock;
-import net.povstalec.sgjourney.common.blocks.ZPMHubBlock;
+import net.povstalec.sgjourney.common.blocks.*;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
@@ -72,6 +58,12 @@ public class BlockInit
 	public static final RegistryObject<UniverseStargateRingBlock> UNIVERSE_RING = BLOCKS.register("universe_ring", 
 			() -> new UniverseStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<DestinyTimerBlock> DESTINY_TIMER = BLOCKS.register("destiny_timer",
+			() -> new DestinyTimerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
+					.sound(SoundType.METAL)));
+	public static final RegistryObject<TimerInterfaceBlock> DESTINY_TIMER_INTERFACE = BLOCKS.register("timer_interface",
+			() -> new TimerInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 600.0F)
+					.sound(SoundType.METAL)));
 	
 	public static final RegistryObject<MilkyWayStargateBlock> MILKY_WAY_STARGATE = registerEntityBlock("milky_way_stargate", 
 			() -> new MilkyWayStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)

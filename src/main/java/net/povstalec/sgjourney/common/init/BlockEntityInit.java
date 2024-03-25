@@ -6,13 +6,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorMarkIIEntity;
-import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
-import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.TransportRingsEntity;
-import net.povstalec.sgjourney.common.block_entities.ZPMHubEntity;
+import net.povstalec.sgjourney.common.block_entities.*;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
@@ -34,7 +28,11 @@ public class BlockEntityInit
 	
 	public static final RegistryObject<BlockEntityType<UniverseStargateEntity>> UNIVERSE_STARGATE = BLOCK_ENTITIES.register("universe_stargate",
             () -> BlockEntityType.Builder.of(UniverseStargateEntity::new, BlockInit.UNIVERSE_STARGATE.get()).build(null));
-	
+	public static final RegistryObject<BlockEntityType<DestinyTimerEntity>> DESTINY_TIMER = BLOCK_ENTITIES.register("destiny_timer",
+			() -> BlockEntityType.Builder.of(DestinyTimerEntity::new, BlockInit.DESTINY_TIMER.get()).build(null));
+	public static final RegistryObject<BlockEntityType<TimerInterfaceEntity>> TIMER_INTERFACE = BLOCK_ENTITIES.register("timer_interface",
+			() -> BlockEntityType.Builder.of(TimerInterfaceEntity::new, BlockInit.DESTINY_TIMER_INTERFACE.get()).build(null));
+
 	public static final RegistryObject<BlockEntityType<MilkyWayStargateEntity>> MILKY_WAY_STARGATE = BLOCK_ENTITIES.register("milky_way_stargate",
             () -> BlockEntityType.Builder.of(MilkyWayStargateEntity::new, BlockInit.MILKY_WAY_STARGATE.get()).build(null));
 	public static final RegistryObject<BlockEntityType<MilkyWayDHDEntity>> MILKY_WAY_DHD = BLOCK_ENTITIES.register("milky_way_dhd",
