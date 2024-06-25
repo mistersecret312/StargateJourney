@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -18,12 +20,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -35,7 +40,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -57,7 +61,12 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
 	}
-	
+
+	@Override
+	protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+		return simpleCodec(PegasusDHDBlock::new);
+	}
+
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
@@ -83,46 +92,45 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 	{
 		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
-	
+
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
-	{
-        if(!level.isClientSide()) 
-        {
-        	BlockEntity blockEntity = level.getBlockEntity(pos);
-			
-        	if(blockEntity instanceof AbstractDHDEntity dhd) 
-        	{
-        		dhd.setStargate();
-        		
-        		if(player.isShiftKeyDown())
-        			this.openCrystalMenu(player, blockEntity);
-        		else
-        		{
-        			MenuProvider containerProvider = new MenuProvider() 
-            		{
-            			@Override
-            			public Component getDisplayName() 
-            			{
-            				return Component.translatable("screen.sgjourney.dhd");
-            			}
-            			
-            			@Override
-            			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-            			{
-            				return new PegasusDHDMenu(windowId, playerInventory, blockEntity);
-            			}
-            		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-        		}
-        	}
-        	else
-        	{
-        		throw new IllegalStateException("Our named container provider is missing!");
-        	}
-        }
-        return InteractionResult.SUCCESS;
-    }
+	protected InteractionResult useWithoutItem(BlockState pState, Level level, BlockPos pos, Player player, BlockHitResult pHitResult) {
+		if(!level.isClientSide())
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+
+			if(blockEntity instanceof AbstractDHDEntity dhd)
+			{
+				dhd.setStargate();
+
+				if(player.isShiftKeyDown())
+					this.openCrystalMenu(player, blockEntity);
+				else
+				{
+					MenuProvider containerProvider = new MenuProvider()
+					{
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new PegasusDHDMenu(windowId, playerInventory, blockEntity);
+						}
+					};
+					player.openMenu(containerProvider, blockEntity.getBlockPos());
+				}
+			}
+			else
+			{
+				throw new IllegalStateException("Our named container provider is missing!");
+			}
+		}
+		return InteractionResult.SUCCESS;
+	}
 
 	@Override
 	public Block getDHD()
@@ -150,7 +158,7 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
         inventory.put("Items", setupPegasusInventory());
         
         blockEntityTag.put("Inventory", inventory);
-		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		
 		return stack;
 	}
@@ -159,33 +167,33 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 	{
 		ListTag nbtTagList = new ListTag();
 		
-		nbtTagList.add(InventoryHelper.addItem(0, InventoryUtil.itemName(ItemInit.ADVANCED_CONTROL_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(1, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(6, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryHelper.addItem(7, InventoryUtil.itemName(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(TransferCrystalItem.ADVANCED_MAX_TRANSFER)));
+		nbtTagList.add(InventoryHelper.addItem(0, ItemInit.ADVANCED_CONTROL_CRYSTAL.get().asItem().toString(), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(1, ItemInit.ADVANCED_ENERGY_CRYSTAL.get().asItem().toString(), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(2, ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get().asItem().toString(), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(3, ItemInit.ADVANCED_ENERGY_CRYSTAL.get().asItem().toString(), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(6, ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get().asItem().toString(), 1, null));
+		nbtTagList.add(InventoryHelper.addItem(7, ItemInit.ADVANCED_TRANSFER_CRYSTAL.get().asItem().toString(), 1, null));
 		
 		return nbtTagList;
 	}
-	
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+
+	@Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-		if(stack.hasTag())
+		if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA))
 		{
-			CompoundTag blockEntityTag = BlockItem.getBlockEntityData(stack);
+			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag();
 			ListTag tagList = blockEntityTag.getCompound("Inventory").getList("Items", Tag.TAG_COMPOUND);
 			
 			if(tagList.size() > 0)
 			{
 				CompoundTag list1 = tagList.getCompound(0);
 				
-				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals(InventoryUtil.itemName(ItemInit.ADVANCED_CONTROL_CRYSTAL.get())) && list1.contains("Count", Tag.TAG_BYTE) && list1.getByte("Count") > 0)
+				if(list1.contains("id", Tag.TAG_STRING) && list1.getString("id").equals(ItemInit.ADVANCED_CONTROL_CRYSTAL.get().asItem().toString()) && list1.contains("Count", Tag.TAG_BYTE) && list1.getByte("Count") > 0)
 			        tooltipComponents.add(Component.translatable("tooltip.sgjourney.has_control_crystal").withStyle(ChatFormatting.AQUA));
 			}
 		}
 		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
 }

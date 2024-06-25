@@ -86,7 +86,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	
 	public UniverseStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "universe"), (short) 36);
+		super(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "universe"), (short) 36);
 		
 		this.symbolColor = new Stargate.RGBA(21, 9, 0, 255);
 		this.engagedSymbolColor = new Stargate.RGBA(200, 220, 255, 255);

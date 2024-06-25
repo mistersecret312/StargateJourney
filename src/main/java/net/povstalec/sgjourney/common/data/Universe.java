@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -52,7 +53,7 @@ public class Universe extends SavedData
 	 * 
 	 */
 
-	private static final ResourceLocation MILKY_WAY = new ResourceLocation(StargateJourney.MODID, "milky_way");
+	private static final ResourceLocation MILKY_WAY = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "milky_way");
 	
 	private static final String FILE_NAME = StargateJourney.MODID + "-universe";
 	
@@ -243,7 +244,7 @@ public class Universe extends SavedData
 						if(!useDatapackAddresses(server) && isRandomizable)
 						{
 							long systemValue = generateRandomAddressSeed(server, solarSystemKey.location().toString());
-							address = generateAddress(galaxyKey.location().toString(), galaxy.getSize(), systemValue);
+							address = generateAddress(galaxyKey.location().toString(), systemValue);
 						}
 						else
 							address = new Address(Address.integerListToArray(randomizableAddress.getFirst())).immutable();
@@ -291,7 +292,7 @@ public class Universe extends SavedData
 			// Generates a random address for the Solar System and adds it to Milky Way under that address
 			long systemValue = generateRandomAddressSeed(server, solarSystem.getName());
 			
-			Address.Immutable address = generateAddress(galaxyID, defaultGalaxy.getType().getSize(), systemValue);
+			Address.Immutable address = generateAddress(galaxyID, systemValue);
 			
 			if(galaxy != null)
 			{
@@ -368,14 +369,14 @@ public class Universe extends SavedData
 		return true;
 	}
 	
-	private Address.Immutable generateAddress(String galaxyID, int galaxySize, long seed)
+	private Address.Immutable generateAddress(String galaxyID, long seed)
 	{
 		Address.Immutable address;
 		
 		for(int i = 0; true; i++)
 		{
 			seed += i;
-			address = new Address().randomAddress(6, galaxySize, seed).immutable();
+			address = new Address().randomAddress(6, 39, seed).immutable();
 			
 			if(!this.galaxies.get(galaxyID).containsSolarSystem(address))
 				break;
@@ -721,7 +722,7 @@ public class Universe extends SavedData
 		return data;
 	}
 	
-	public CompoundTag save(CompoundTag tag)
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		//tag = this.universe.copy();
 		tag = serialize();
@@ -743,6 +744,6 @@ public class Universe extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+        return storage.computeIfAbsent(new Factory<Universe>(() -> create(server), (tag, provider) -> load(server, tag)), FILE_NAME);
     }
 }

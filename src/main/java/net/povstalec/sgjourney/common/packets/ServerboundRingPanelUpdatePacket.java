@@ -1,16 +1,18 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ServerboundRingPanelUpdatePacket
+public class ServerboundRingPanelUpdatePacket implements NetworkMessage<ServerNetworkContext>
 {
-	public final BlockPos blockPos;
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundRingPanelUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ServerboundRingPanelUpdatePacket::encode, ServerboundRingPanelUpdatePacket::new);
+
+    public final BlockPos blockPos;
 	public final int number;
 
     public ServerboundRingPanelUpdatePacket(BlockPos blockPos, int number)
@@ -19,27 +21,29 @@ public class ServerboundRingPanelUpdatePacket
 		this.number = number;
     }
 
-    public ServerboundRingPanelUpdatePacket(FriendlyByteBuf buffer)
+    public ServerboundRingPanelUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readInt());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
     	buffer.writeBlockPos(blockPos);
     	buffer.writeInt(number);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-    	ctx.get().enqueueWork(() -> {
-    		final BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(blockPos);
-    		if(blockEntity instanceof RingPanelEntity ringPanel)
-    		{
-    			ringPanel.activateRings(number);
-    		}
-    	});
-        return true;
+    @Override
+    public void handle(ServerNetworkContext context) {
+        final BlockEntity blockEntity = context.getSender().level().getBlockEntity(blockPos);
+        if(blockEntity instanceof RingPanelEntity ringPanel)
+        {
+            ringPanel.activateRings(number);
+        }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.RING_UPDATE;
     }
 }
 

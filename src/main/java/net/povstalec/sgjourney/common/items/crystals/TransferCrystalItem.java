@@ -18,43 +18,14 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	public static final int DEFAULT_MAX_TRANSFER = 2500;
 	public static final int ADVANCED_MAX_TRANSFER = 5000;
 	
-	public static final String TRANSFER_LIMIT = "TransferLimit";
-	
 	public TransferCrystalItem(Properties properties)
 	{
 		super(properties);
 	}
 	
-	public static CompoundTag tagSetup(int maxTransfer)
-	{
-		CompoundTag tag = new CompoundTag();
-		
-		tag.putInt(TRANSFER_LIMIT, maxTransfer);
-		
-		return tag;
-	}
-	
-	public int getMaxTransfer()
-	{
-		return DEFAULT_MAX_TRANSFER;
-	}
-	
 	public static int getMaxTransfer(ItemStack stack)
 	{
-		if(stack.getItem() instanceof TransferCrystalItem crystal)
-		{
-			int maxTransfer;
-			CompoundTag tag = stack.getOrCreateTag();
-			
-			if(!tag.contains(TRANSFER_LIMIT))
-				tag.putInt(TRANSFER_LIMIT, crystal.getMaxTransfer());
-			
-			maxTransfer = tag.getInt(TRANSFER_LIMIT);
-			
-			return maxTransfer;
-		}
-		
-		return 0;
+		return DEFAULT_MAX_TRANSFER;
 	}
 
 	@Override
@@ -64,13 +35,13 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		int maxEnergyTransfer = getMaxTransfer(stack);
+		int maxEnergyTransfer = 2500;
 		
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + maxEnergyTransfer + " FE")).withStyle(ChatFormatting.RED));
         
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
 	
 	public static class Advanced extends TransferCrystalItem
@@ -79,9 +50,8 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		{
 			super(properties);
 		}
-		
-		@Override
-		public int getMaxTransfer()
+
+		public static int getMaxTransfer(ItemStack stack)
 		{
 			return ADVANCED_MAX_TRANSFER;
 		}

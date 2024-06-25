@@ -3,12 +3,16 @@ package net.povstalec.sgjourney.common.packets;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundPegasusStargateUpdatePacket
+public class ClientboundPegasusStargateUpdatePacket implements NetworkMessage<ClientNetworkContext>
 {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundPegasusStargateUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundPegasusStargateUpdatePacket::encode, ClientboundPegasusStargateUpdatePacket::new);
+
     public final BlockPos pos;
     public final int symbolBuffer;
     public final int[] addressBuffer;
@@ -22,12 +26,12 @@ public class ClientboundPegasusStargateUpdatePacket
         this.currentSymbol = currentSymbol;
     }
 
-    public ClientboundPegasusStargateUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundPegasusStargateUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readInt(), buffer.readVarIntArray(), buffer.readInt());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeInt(this.symbolBuffer);
@@ -35,12 +39,14 @@ public class ClientboundPegasusStargateUpdatePacket
         buffer.writeInt(this.currentSymbol);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updatePegasusStargate(this.pos, this.symbolBuffer, this.addressBuffer, this.currentSymbol);
-        });
-        return true;
+    @Override
+    public void handle(ClientNetworkContext context) {
+        ClientAccess.updatePegasusStargate(this.pos, this.symbolBuffer, this.addressBuffer, this.currentSymbol);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.PG;
     }
 }
 

@@ -12,7 +12,7 @@ public class WeaponStatePropertyFunction implements ClampedItemPropertyFunction
 	public float unclampedCall(ItemStack stack, ClientLevel level, LivingEntity entity, int id)
 	{
 		if(entity != null && stack.getItem() instanceof StaffWeaponItem)
-			return StaffWeaponItem.isOpen(stack) ? 1 : 0;
+			return 0;
 		
 		return 0;
 	}

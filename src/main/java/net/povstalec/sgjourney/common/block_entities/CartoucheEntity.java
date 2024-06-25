@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities;
 
 import java.util.Optional;
 
+import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -68,9 +68,9 @@ public abstract class CartoucheEntity extends BlockEntity
 	}
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries)
     {
-    	super.load(tag);
+    	super.loadAdditional(tag, pRegistries);
     	if(tag.contains(ADDRESS_TABLE))
     		addressTable = tag.getString(ADDRESS_TABLE);
     	if(tag.contains(DIMENSION))
@@ -84,7 +84,7 @@ public abstract class CartoucheEntity extends BlockEntity
 	}
 	
 	@Override
-    protected void saveAdditional(@NotNull CompoundTag tag)
+    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		if(addressTable != null)
 			tag.putString(ADDRESS_TABLE, addressTable);
@@ -96,15 +96,8 @@ public abstract class CartoucheEntity extends BlockEntity
 		if(!address.isFromDimension())
 			tag.putIntArray(ADDRESS, address.toArray());
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, pRegistries);
 	}
-	
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return new AABB(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ() - 1,
-        		getBlockPos().getX() + 2, getBlockPos().getY() + 2, getBlockPos().getZ() + 2);
-    }
 	
 	public void setDimensionFromLevel(Level level)
 	{
@@ -172,7 +165,7 @@ public abstract class CartoucheEntity extends BlockEntity
 			return;
 		
 		int[] address = addressTable.equals(EMPTY) ? this.address.toArray() : new int[0];
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundCartoucheUpdatePacket(worldPosition, symbols, address));
+		PacketHandlerInit.sendToAllTracking(new ClientboundCartoucheUpdatePacket(this.worldPosition, symbols, address), level.getChunkAt(this.worldPosition));
 	}
 	
 	public void tick(Level level, BlockPos pos, BlockState state)

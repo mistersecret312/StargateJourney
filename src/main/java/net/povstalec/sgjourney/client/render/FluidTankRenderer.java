@@ -4,16 +4,12 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;
 import org.slf4j.Logger;
 
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.ChatFormatting;
@@ -28,10 +24,9 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 //CREDIT: https://github.com/mezz/JustEnoughItems by mezz
 //Under MIT-License: https://github.com/mezz/JustEnoughItems/blob/1.19/LICENSE.txt
 //Includes major rewrites and methods from:
@@ -178,13 +173,12 @@ public class FluidTankRenderer
      RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
      Tesselator tesselator = Tesselator.getInstance();
-     BufferBuilder bufferBuilder = tesselator.getBuilder();
-     bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-     bufferBuilder.vertex(matrix, xCoord, yCoord + 16, zLevel).uv(uMin, vMax).endVertex();
-     bufferBuilder.vertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).uv(uMax, vMax).endVertex();
-     bufferBuilder.vertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).uv(uMax, vMin).endVertex();
-     bufferBuilder.vertex(matrix, xCoord, yCoord + maskTop, zLevel).uv(uMin, vMin).endVertex();
-     tesselator.end();
+     BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+     bufferBuilder.addVertex(matrix, xCoord, yCoord + 16, zLevel).setUv(uMin, vMax);
+     bufferBuilder.addVertex(matrix, xCoord + 16 - maskRight, yCoord + 16, zLevel).setUv(uMax, vMax);
+     bufferBuilder.addVertex(matrix, xCoord + 16 - maskRight, yCoord + maskTop, zLevel).setUv(uMax, vMin);
+     bufferBuilder.addVertex(matrix, xCoord, yCoord + maskTop, zLevel).setUv(uMin, vMin);
+     BufferUploader.drawWithShader(bufferBuilder.build());
  }
 
  public List<Component> getTooltip(FluidStack fluidStack, TooltipFlag tooltipFlag)
@@ -197,7 +191,7 @@ public class FluidTankRenderer
              return tooltip;
          }
 
-         Component displayName = fluidStack.getDisplayName();
+         Component displayName = fluidStack.getHoverName();
          tooltip.add(displayName);
 
          long amount = fluidStack.getAmount();

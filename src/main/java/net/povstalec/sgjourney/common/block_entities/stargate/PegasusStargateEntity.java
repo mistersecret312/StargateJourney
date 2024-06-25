@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -7,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -58,9 +58,9 @@ public class PegasusStargateEntity extends AbstractStargateEntity
     }
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
-        super.load(tag);
+        super.loadAdditional(tag, pRegistries);
         
         addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
@@ -76,9 +76,9 @@ public class PegasusStargateEntity extends AbstractStargateEntity
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, pRegistries);
 		
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.toArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
@@ -188,7 +188,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		if(addressBuffer.getLength() == getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
+				PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.StargateRotation(worldPosition, false), level.getChunkAt(worldPosition));
 		}
 		addressBuffer.addSymbol(symbol);
 		return setRecentFeedback(Stargate.Feedback.SYMBOL_ENCODED);
@@ -198,7 +198,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 	protected Stargate.Feedback lockPrimaryChevron()
 	{
 		if(!this.level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
+			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.StargateRotation(worldPosition, true), level.getChunkAt(worldPosition));
 		return super.lockPrimaryChevron();
 	}
 	
@@ -209,13 +209,13 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
+			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.StargateRotation(worldPosition, true), level.getChunkAt(worldPosition));
 		Stargate.Feedback feedback = super.encodeChevron(symbol, incoming, encode);
 		
 		if(addressBuffer.getLength() > getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
+				PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.StargateRotation(worldPosition, false), level.getChunkAt(worldPosition));
 		}
 		
 		return setRecentFeedback(feedback);
@@ -279,7 +279,7 @@ public class PegasusStargateEntity extends AbstractStargateEntity
 		
 		if(this.level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.currentSymbol));
+		PacketHandlerInit.sendToAllTracking(new ClientboundPegasusStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray(), this.currentSymbol), level.getChunkAt(this.worldPosition));
 	}
 	
 	private void symbolWork()

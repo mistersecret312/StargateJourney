@@ -1,14 +1,17 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundRingsUpdatePacket
+public class ClientboundRingsUpdatePacket implements NetworkMessage<ClientNetworkContext>
 {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundRingsUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundRingsUpdatePacket::encode, ClientboundRingsUpdatePacket::new);
+
+
     public final BlockPos pos;
     public final int emptySpace;
     public final int transportHeight;
@@ -22,12 +25,12 @@ public class ClientboundRingsUpdatePacket
         this.transportLight = transportLight;
     }
 
-    public ClientboundRingsUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundRingsUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readInt(), buffer.readInt(), buffer.readInt());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(pos);
         buffer.writeInt(emptySpace);
@@ -35,12 +38,14 @@ public class ClientboundRingsUpdatePacket
         buffer.writeInt(transportLight);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateRings(pos, emptySpace, transportHeight, transportLight);
-        });
-        return true;
+    @Override
+    public void handle(ClientNetworkContext context) {
+        ClientAccess.updateRings(pos, emptySpace, transportHeight, transportLight);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.RINGS;
     }
 }
 

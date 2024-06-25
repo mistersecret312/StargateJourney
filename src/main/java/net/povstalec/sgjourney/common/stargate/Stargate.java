@@ -152,17 +152,14 @@ public class Stargate
 		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
 		
 		if(stargateEntity.isPresent())
-			return stargateEntity.get().canExtractEnergy(energy);
+			return false;
 		
 		return false;
 	}
 	
 	public void depleteEnergy(MinecraftServer server, long energy, boolean simulate)
 	{
-		Optional<AbstractStargateEntity> stargateEntity = getStargateEntity(server);
-		
-		if(stargateEntity.isPresent())
-			stargateEntity.get().depleteEnergy(energy, simulate);
+
 	}
 	
 	

@@ -3,11 +3,12 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -20,13 +21,6 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	public MilkyWayDHDEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.MILKY_WAY_DHD.get(), pos, state);
-	}
-	
-	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
-		addTransferCrystals(itemHandler);
 	}
 
 	@Override
@@ -79,25 +73,5 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 					
 				}
 			};
-	}
-
-	// TODO Temporary function for replacing old Energy Crystals with new Transfer Crystals
-	public static void addTransferCrystals(ItemStackHandler itemHandler)
-	{
-		int slots = itemHandler.getSlots();
-		
-		for(int i = 0; i < slots; i++)
-		{
-			ItemStack stack = itemHandler.getStackInSlot(i);
-			
-			if(stack.is(ItemInit.ENERGY_CRYSTAL.get()) && stack.hasTag())
-			{
-				if(stack.getTag().getString(CRYSTAL_MODE).equals(ENERGY_TRANSFER))
-				{
-					itemHandler.setStackInSlot(i, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
-					StargateJourney.LOGGER.info("Replaced Transfer Crystal");
-				}
-			}
-		}
 	}
 }

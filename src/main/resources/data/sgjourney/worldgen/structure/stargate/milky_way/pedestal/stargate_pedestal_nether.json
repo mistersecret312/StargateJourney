@@ -25,6 +25,7 @@
 	},
 
   "use_expansion_hack": false,
+  "liquid_settings": "apply_waterlogging",
 
   "spawn_overrides": {
     "monster": {

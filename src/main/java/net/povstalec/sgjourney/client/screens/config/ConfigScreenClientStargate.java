@@ -36,7 +36,7 @@ public class ConfigScreenClientStargate extends Screen
 		super.init();
 		
 		this.configList = new ConfigList(minecraft, this.width, this.height, 
-				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
+				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET);
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.stargate_variants"), this.width, ClientStargateConfig.stargate_variants));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.unique_symbols"), this.width, ClientStargateConfig.unique_symbols));
 		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.shiny_event_horizons"), this.width, ClientStargateConfig.shiny_event_horizons));
@@ -61,7 +61,7 @@ public class ConfigScreenClientStargate extends Screen
 	@Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTick);
         this.configList.render(graphics, mouseX, mouseY, partialTick);
         graphics.drawString(this.font, this.title, this.width / 2, 8, 16777215);
         super.render(graphics, mouseX, mouseY, partialTick);

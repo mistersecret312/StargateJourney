@@ -18,28 +18,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.init.GalaxyInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class Galaxy
 {
-	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "galaxy"));
+	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "galaxy"));
 	public static final Codec<ResourceKey<Galaxy>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
     public static final Codec<Galaxy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.STRING.fieldOf("name").forGetter(Galaxy::getName),
-    		GalaxyInit.CODEC.fieldOf("type").forGetter(Galaxy::getType),
 			Symbols.RESOURCE_KEY_CODEC.fieldOf("default_symbols").forGetter(Galaxy::getDefaultSymbols)
 			).apply(instance, Galaxy::new));
 
 	private final String name;
-	private final GalaxyType type;
 	private final ResourceKey<Symbols> defaultSymbols;
 	
-	public Galaxy(String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols)
+	public Galaxy(String name, ResourceKey<Symbols> defaultSymbols)
 	{
 		this.name = name;
-		this.type = type;
 		this.defaultSymbols = defaultSymbols;
 	}
 	
@@ -47,11 +43,7 @@ public class Galaxy
 	{
 		return name;
 	}
-	
-	public GalaxyType getType()
-	{
-		return type;
-	}
+
 	
 	public ResourceKey<Symbols> getDefaultSymbols()
 	{
@@ -60,7 +52,7 @@ public class Galaxy
 	
 	public static Galaxy getGalaxy(Level level, String part1, String part2)
 	{
-        return getGalaxy(level, new ResourceLocation(part1, part2));
+        return getGalaxy(level, ResourceLocation.fromNamespaceAndPath(part1, part2));
 	}
 	
 	public static Galaxy getGalaxy(Level level, ResourceLocation galaxy)
@@ -116,11 +108,6 @@ public class Galaxy
 		public ResourceKey<Symbols> getDefaultSymbols()
 		{
 			return galaxy.getDefaultSymbols();
-		}
-		
-		public int getSize()
-		{
-			return galaxy.getType().getSize();
 		}
 		
 		public void printSolarSystems()

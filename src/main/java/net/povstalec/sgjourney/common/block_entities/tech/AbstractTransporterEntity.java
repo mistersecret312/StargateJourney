@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -15,11 +17,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
-public abstract class AbstractTransporterEntity extends EnergyBlockEntity implements Nameable
+public abstract class AbstractTransporterEntity extends BlockEntity implements Nameable
 {
 	protected static final boolean requireEnergy = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -53,9 +54,9 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
-		super.load(tag);
+		super.loadAdditional(tag, pRegistries);
 		
     	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
     	
@@ -70,21 +71,21 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 		}
     	
     	if(tag.contains("CustomName", 8))
-	         this.name = Component.Serializer.fromJson(tag.getString("CustomName"));
+	         this.name = Component.Serializer.fromJson(tag.getString("CustomName"), pRegistries);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
 		
 		if(id != null)
 			tag.putString(ID, id.toString());
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, pRegistries);
 		
 		if(this.name != null)
-	         tag.putString("CustomName", Component.Serializer.toJson(this.name));
+	         tag.putString("CustomName", Component.Serializer.toJson(this.name, pRegistries));
 	}
 	
 	public UUID generateID()
@@ -121,18 +122,7 @@ public abstract class AbstractTransporterEntity extends EnergyBlockEntity implem
 	{
 		TransporterNetwork.get(level).removeTransporter(level, this.id);
 	}
-	
-	@Override
-	public void getStatus(Player player)
-	{
-		super.getStatus(player);
-		
-		if(level.isClientSide())
-			return;
-		
-		player.sendSystemMessage(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));
-	}
+
 	
 	public void setCustomName(Component name)
 	{

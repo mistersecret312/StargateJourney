@@ -1,20 +1,20 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonNaquadahGeneratorConfig
 {
-	public static ForgeConfigSpec.IntValue naquadah_generator_mark_i_reaction_time;
-	public static ForgeConfigSpec.IntValue naquadah_generator_mark_i_energy_per_tick;
-	public static ForgeConfigSpec.IntValue naquadah_generator_mark_i_capacity;
-	public static ForgeConfigSpec.IntValue naquadah_generator_mark_i_max_transfer;
+	public static ModConfigSpec.IntValue naquadah_generator_mark_i_reaction_time;
+	public static ModConfigSpec.IntValue naquadah_generator_mark_i_energy_per_tick;
+	public static ModConfigSpec.IntValue naquadah_generator_mark_i_capacity;
+	public static ModConfigSpec.IntValue naquadah_generator_mark_i_max_transfer;
 	
-	public static ForgeConfigSpec.IntValue naquadah_generator_mark_ii_reaction_time;
-	public static ForgeConfigSpec.IntValue naquadah_generator_mark_ii_energy_per_tick;
-	public static ForgeConfigSpec.IntValue naquadah_generator_mark_ii_capacity;
-	public static ForgeConfigSpec.IntValue naquadah_generator_mark_ii_max_transfer;
+	public static ModConfigSpec.IntValue naquadah_generator_mark_ii_reaction_time;
+	public static ModConfigSpec.IntValue naquadah_generator_mark_ii_energy_per_tick;
+	public static ModConfigSpec.IntValue naquadah_generator_mark_ii_capacity;
+	public static ModConfigSpec.IntValue naquadah_generator_mark_ii_max_transfer;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		naquadah_generator_mark_i_reaction_time = server
 				.comment("The amount of time in ticks for which the Mark I Naquadah Generator will generate energy from one piece of Weapons Grade Naquadah")

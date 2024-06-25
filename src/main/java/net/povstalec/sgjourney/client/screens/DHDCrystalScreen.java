@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 
 public class DHDCrystalScreen extends AbstractContainerScreen<DHDCrystalMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_crystal_gui.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/gui/dhd_crystal_gui.png");
 	
 	public DHDCrystalScreen(DHDCrystalMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{
@@ -35,7 +35,7 @@ public class DHDCrystalScreen extends AbstractContainerScreen<DHDCrystalMenu>
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, delta);
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
     }

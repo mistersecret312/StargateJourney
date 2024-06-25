@@ -8,7 +8,7 @@ public class SGJourneyShovelItem extends ShovelItem
 
 	public SGJourneyShovelItem(Tier tier, float attackDamageIn, float attackSpeedIn, Properties properties) 
 	{
-		super(tier, attackDamageIn, attackSpeedIn, properties);
+		super(tier, properties.attributes(ShovelItem.createAttributes(tier, attackDamageIn, attackSpeedIn)));
 	}
 
 }

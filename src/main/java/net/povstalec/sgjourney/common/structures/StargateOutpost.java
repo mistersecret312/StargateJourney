@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.structures;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Holder;
@@ -11,20 +12,25 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pools.DimensionPadding;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.povstalec.sgjourney.common.init.StructureInit;
 
 public class StargateOutpost extends StargateStructure
 {
-    public static final Codec<StargateOutpost> CODEC = RecordCodecBuilder.<StargateOutpost>mapCodec(instance ->
+    public static final MapCodec<StargateOutpost> CODEC = RecordCodecBuilder.<StargateOutpost>mapCodec(instance ->
             instance.group(StargateOutpost.settingsCodec(instance),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
                     ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
                     Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
-                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter)
-            ).apply(instance, StargateOutpost::new)).codec();
+                    Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+                    DimensionPadding.CODEC.optionalFieldOf("dimension_padding", JigsawStructure.DEFAULT_DIMENSION_PADDING).forGetter(structure -> structure.dimensionPadding),
+                    LiquidSettings.CODEC.optionalFieldOf("liquid_settings", JigsawStructure.DEFAULT_LIQUID_SETTINGS).forGetter(structure -> structure.liquidSettings)
+            ).apply(instance, StargateOutpost::new));
 
     public StargateOutpost(Structure.StructureSettings config,
                          Holder<StructureTemplatePool> startPool,
@@ -32,9 +38,11 @@ public class StargateOutpost extends StargateStructure
                          int size,
                          HeightProvider startHeight,
                          Optional<Heightmap.Types> projectStartToHeightmap,
-                         int maxDistanceFromCenter)
+                         int maxDistanceFromCenter,
+                           DimensionPadding dimensionPadding,
+                           LiquidSettings liquidSettings)
     {
-    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter);
+    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, dimensionPadding, liquidSettings);
     }
 
     @Override

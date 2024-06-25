@@ -28,20 +28,14 @@ public class SecretSwitchBlock extends Block
 	{
 		state.add(POWERED);
 	}
-	
+
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
-	{
-		if(player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
-		{
-			if(level.isClientSide())
-				return InteractionResult.SUCCESS;
-			
-			level.setBlock(pos, state.cycle(POWERED), 3);
-			return InteractionResult.CONSUME;
-		}
-		else
-			return InteractionResult.FAIL;
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+		if(level.isClientSide())
+			return InteractionResult.SUCCESS;
+
+		level.setBlock(pos, state.cycle(POWERED), 3);
+		return InteractionResult.CONSUME;
 	}
 	
 	@Override

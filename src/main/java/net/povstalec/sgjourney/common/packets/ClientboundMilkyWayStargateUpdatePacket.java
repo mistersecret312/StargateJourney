@@ -3,12 +3,16 @@ package net.povstalec.sgjourney.common.packets;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundMilkyWayStargateUpdatePacket
+public class ClientboundMilkyWayStargateUpdatePacket implements NetworkMessage<ClientNetworkContext>
 {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundMilkyWayStargateUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundMilkyWayStargateUpdatePacket::encode, ClientboundMilkyWayStargateUpdatePacket::new);
+
     public final BlockPos pos;
     public final int rotation;
     public final int oldRotation;
@@ -30,12 +34,12 @@ public class ClientboundMilkyWayStargateUpdatePacket
         this.desiredSymbol = desiredSymbol;
     }
 
-    public ClientboundMilkyWayStargateUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundMilkyWayStargateUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readInt(), buffer.readInt(), buffer.readBoolean(), buffer.readInt(), buffer.readBoolean(), buffer.readBoolean(), buffer.readInt());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeInt(this.rotation);
@@ -47,13 +51,14 @@ public class ClientboundMilkyWayStargateUpdatePacket
         buffer.writeInt(this.desiredSymbol);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() ->
-        {
-        	ClientAccess.updateMilkyWayStargate(this.pos, this.rotation, this.oldRotation, this.isChevronRaised, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol);
-        });
-        return true;
+    @Override
+    public void handle(ClientNetworkContext context) {
+        ClientAccess.updateMilkyWayStargate(this.pos, this.rotation, this.oldRotation, this.isChevronRaised, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.MW;
     }
 }
 

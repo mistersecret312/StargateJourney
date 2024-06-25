@@ -3,10 +3,7 @@ package net.povstalec.sgjourney.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fluids.FluidStack;
-import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
-import net.povstalec.sgjourney.common.block_entities.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
@@ -14,20 +11,12 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 import net.povstalec.sgjourney.common.stargate.Address;
 
 public class ClientAccess
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
-    
-    public static void updateDialer(BlockPos pos)
-    {
-    	minecraft.setScreen(new DialerScreen());
-    }
 	
     public static void updateSymbol(BlockPos pos, int symbolNumber, String pointOfOrigin, String symbols)
     {
@@ -49,16 +38,6 @@ public class ClientAccess
         {
     		cartouche.setSymbols(symbols);
     		cartouche.setAddress(new Address(address));
-        }
-    }
-    
-    public static void updateInterface(BlockPos pos, long energy)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractInterfaceEntity interfaceEntity)
-        {
-        	interfaceEntity.setEnergy(energy);
         }
     }
     
@@ -153,40 +132,6 @@ public class ClientAccess
         	stargate.symbolBuffer = symbolBuffer;
         	stargate.addressBuffer.fromArray(addressBuffer);
         	stargate.currentSymbol = currentSymbol;
-        }
-    }
-
-    public static void updateNaquadahGenerator(BlockPos pos, int reactionProgress, long energy)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final NaquadahGeneratorEntity generator)
-        {
-        	generator.setReactionProgress(reactionProgress);
-        	generator.setEnergy(energy);
-        }
-    }
-
-    public static void updateCrystallizer(BlockPos pos, FluidStack fluidStack, int progress)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractCrystallizerEntity crystallizer)
-        {
-        	crystallizer.setFluid(fluidStack);
-        	crystallizer.progress = progress;
-        }
-    }
-
-    public static void updateNaquadahLiquidizer(BlockPos pos, FluidStack fluidStack1, FluidStack fluidStack2, int progress)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractNaquadahLiquidizerEntity naquadahLiquidizer)
-        {
-        	naquadahLiquidizer.setFluid1(fluidStack1);
-        	naquadahLiquidizer.setFluid2(fluidStack2);
-        	naquadahLiquidizer.progress = progress;
         }
     }
 }

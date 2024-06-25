@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -11,6 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,6 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -92,59 +96,58 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
         return null;
     }
 
-    @Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
-	{
-        if(!level.isClientSide()) 
-        {
-        	BlockEntity blockEntity = level.getBlockEntity(pos);
-			
-        	if(blockEntity instanceof SymbolBlockEntity symbolBlock) 
-        	{
-        		int symbolNumber = symbolBlock.getSymbolNumber();
-        		MutableComponent text;
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+		if(!level.isClientSide())
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        		player.sendSystemMessage(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": " + symbolNumber)).withStyle(ChatFormatting.YELLOW));
-        		
-        		if(symbolNumber == 0)
-        		{
-        			MutableComponent pointOfOrigin = Component.literal(symbolBlock.getPointOfOrigin().toString());
-    				text = Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": ")).append(pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE);
-        		}
-        		else
-        		{
-        			MutableComponent symbols = Component.literal(symbolBlock.getSymbols().toString());
-    				text = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
-        		}
-        		
-        		player.sendSystemMessage(text);
-        	}
-        }
-        return InteractionResult.SUCCESS;
-    }
-	
+			if(blockEntity instanceof SymbolBlockEntity symbolBlock)
+			{
+				int symbolNumber = symbolBlock.getSymbolNumber();
+				MutableComponent text;
+
+				player.sendSystemMessage(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": " + symbolNumber)).withStyle(ChatFormatting.YELLOW));
+
+				if(symbolNumber == 0)
+				{
+					MutableComponent pointOfOrigin = Component.literal(symbolBlock.getPointOfOrigin().toString());
+					text = Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": ")).append(pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE);
+				}
+				else
+				{
+					MutableComponent symbols = Component.literal(symbolBlock.getSymbols().toString());
+					text = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
+				}
+
+				player.sendSystemMessage(text);
+			}
+		}
+		return InteractionResult.SUCCESS;
+	}
+
 	public abstract ItemLike getItem();
     
     @Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(!level.isClientSide() && !player.isCreative() && player.hasCorrectToolForDrops(state))
 		{
 			ItemStack itemstack = new ItemStack(getItem());
 			
-			blockentity.saveToItem(itemstack);
+			blockentity.saveToItem(itemstack, VanillaRegistries.createLookup());
 
 			ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 			itementity.setDefaultPickUpDelay();
 			level.addFreshEntity(itementity);
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
@@ -154,9 +157,9 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		String symbol = "";
     	String symbols = "";
 		
-    	if(stack.hasTag() && stack.getTag().contains("BlockEntityTag"))
+    	if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA))
     	{
-        	CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
+        	CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag();
         	
         	if(blockEntityTag.contains(SymbolBlockEntity.SYMBOL_NUMBER))
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);
@@ -172,8 +175,8 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
             	{
             		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
             		
-            		if(pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)) != null)
-                		symbol = pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)).getName();
+            		if(pointOfOriginRegistry.get(ResourceLocation.parse(pointOfOrigin)) != null)
+                		symbol = pointOfOriginRegistry.get(ResourceLocation.parse(pointOfOrigin)).getName();
                 	else
                 		symbol = "Error";
             	}
@@ -189,8 +192,8 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
             	{
             		Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
             		
-            		if(symbolsRegistry.get(new ResourceLocation(symbols)) != null)
-            			symbols = symbolsRegistry.get(new ResourceLocation(symbols)).getName();
+            		if(symbolsRegistry.get(ResourceLocation.parse(symbols)) != null)
+            			symbols = symbolsRegistry.get(ResourceLocation.parse(symbols)).getName();
                 	else
                 		symbols = "Error";
             	}
@@ -205,7 +208,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbols))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
     	
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
     
     public static class Stone extends SymbolBlock
@@ -213,6 +216,11 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		public Stone(Properties properties)
 		{
 			super(properties);
+		}
+
+		@Override
+		protected MapCodec<? extends DirectionalBlock> codec() {
+			return simpleCodec(Stone::new);
 		}
 
 		@Override
@@ -234,6 +242,11 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		public Sandstone(Properties properties)
 		{
 			super(properties);
+		}
+
+		@Override
+		protected MapCodec<? extends DirectionalBlock> codec() {
+			return simpleCodec(Sandstone::new);
 		}
 
 		@Override

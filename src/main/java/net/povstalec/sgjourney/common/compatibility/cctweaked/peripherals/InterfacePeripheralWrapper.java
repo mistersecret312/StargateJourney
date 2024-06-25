@@ -5,8 +5,8 @@ import java.util.List;
 
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraftforge.common.util.LazyOptional;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 
@@ -14,7 +14,7 @@ public class InterfacePeripheralWrapper
 {
 	private AbstractInterfaceEntity interfaceEntity;
 	private InterfacePeripheral basicInterfacePeripheral;
-	private LazyOptional<IPeripheral> peripheral;
+	private Lazy<IPeripheral> peripheral;
     protected final List<IComputerAccess> computerList = new LinkedList<>();
 	
 	public InterfacePeripheralWrapper(AbstractInterfaceEntity interfaceEntity)
@@ -22,7 +22,7 @@ public class InterfacePeripheralWrapper
 		this.interfaceEntity = interfaceEntity;
 	}
 	
-	public static InterfacePeripheral createPeripheral(AbstractInterfaceEntity interfaceEntity, EnergyBlockEntity energyBlockEntity)
+	public static InterfacePeripheral createPeripheral(AbstractInterfaceEntity interfaceEntity, BlockEntity energyBlockEntity)
 	{
 		if(energyBlockEntity instanceof AbstractStargateEntity stargate)
 			return new StargatePeripheral(interfaceEntity, stargate);
@@ -32,7 +32,7 @@ public class InterfacePeripheralWrapper
 	
 	public boolean resetInterface()
 	{
-		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
+		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity, interfaceEntity.findBlockEntity());
 		if(basicInterfacePeripheral != null && basicInterfacePeripheral.equals(newPeripheral))
 		{
 			// Peripheral is same as before, no changes needed.
@@ -44,20 +44,20 @@ public class InterfacePeripheralWrapper
 		if(peripheral != null)
 		{
 			peripheral.invalidate();
-			peripheral = LazyOptional.of(() -> newPeripheral);
+			peripheral = Lazy.of(() -> newPeripheral);
 		}
 		return true;
 	}
 	
-	public LazyOptional<IPeripheral> newPeripheral()
+	public Lazy<IPeripheral> newPeripheral()
 	{
-		basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-		peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
+		basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findBlockEntity());
+		peripheral = Lazy.of(() -> basicInterfacePeripheral);
 		
 		if(peripheral == null)
 		{
-			basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-			peripheral = LazyOptional.of(() -> basicInterfacePeripheral);
+			basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findBlockEntity());
+			peripheral = Lazy.of(() -> basicInterfacePeripheral);
 		}
 		return peripheral;
 	}

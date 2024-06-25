@@ -10,8 +10,10 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -84,7 +86,7 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	}
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
@@ -96,9 +98,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 			Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 	    	
 	    	String pointOfOrigin = "";
-			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("PointOfOrigin"))
+			if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().contains("PointOfOrigin"))
 			{
-				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("PointOfOrigin"));
+				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getString("PointOfOrigin"));
 				if(location.toString().equals("sgjourney:empty"))
 					pointOfOrigin = "Empty";
 				else if(pointOfOriginRegistry.containsKey(location))
@@ -107,9 +109,9 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 					pointOfOrigin = "Error";
 			}
 			String symbols = "";
-			if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Symbols"))
+			if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().contains("Symbols"))
 			{
-				ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString("Symbols"));
+				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getString("Symbols"));
 				if(location.toString().equals("sgjourney:empty"))
 					symbols = "Empty";
 				else if(symbolsRegistry.containsKey(location))
@@ -122,6 +124,6 @@ public class MilkyWayStargateBlock extends AbstractStargateBaseBlock
 	        tooltipComponents.add(Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
 }

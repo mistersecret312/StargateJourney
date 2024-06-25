@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 
 public class TransportRingsModel
 {
-	private static final ResourceLocation TRANSPORT_RINGS_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/block/transport_rings.png");
+	private static final ResourceLocation TRANSPORT_RINGS_TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/block/transport_rings.png");
 	
 	private final ModelPart transportRings;
 	

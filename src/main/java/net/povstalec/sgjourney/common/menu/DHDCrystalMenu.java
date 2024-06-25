@@ -9,8 +9,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
@@ -34,8 +35,10 @@ public class DHDCrystalMenu extends AbstractContainerMenu
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-        
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
+
+        IItemHandler handler =  this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, null);
+        if(handler != null)
+        {
             this.addSlot(new SlotItemHandler(handler, 0, 80, 35));
             
             this.addSlot(new SlotItemHandler(handler, 1, 80, 17));
@@ -46,9 +49,9 @@ public class DHDCrystalMenu extends AbstractContainerMenu
             this.addSlot(new SlotItemHandler(handler, 6, 62, 53));
             this.addSlot(new SlotItemHandler(handler, 7, 62, 35));
             this.addSlot(new SlotItemHandler(handler, 8, 62, 17));
-        });
+        }
     }
-	
+
     @Override
     public boolean stillValid(Player player)
     {

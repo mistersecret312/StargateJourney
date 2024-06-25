@@ -16,14 +16,14 @@ public class SGJourneyModel
 			float x2, float y2, float z2,
 			float x3, float y3, float z3)
 	{
-		consumer.vertex(matrix4, x1, y1, z1).color(red, green, blue, alpha).uv(x1 / 2.5F / 2 + 0.5F, y1 / 2.5F / 2 + 0.5F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(x1 / 2.5F / 2 + 0.5F, y1 / 2.5F / 2 + 0.5F)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 		
-		consumer.vertex(matrix4, x2, y2, z2).color(red, green, blue, alpha).uv(x2 / 2.5F / 2 + 0.5F, y2 / 2.5F / 2 + 0.5F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(x2 / 2.5F / 2 + 0.5F, y2 / 2.5F / 2 + 0.5F)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 		
-		consumer.vertex(matrix4, x3, y3, z3).color(red, green, blue, alpha).uv(x3 / 2.5F / 2 + 0.5F, y3 / 2.5F / 2 + 0.5F)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(x3 / 2.5F / 2 + 0.5F, y3 / 2.5F / 2 + 0.5F)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 	}
 	
 	public static void createCircleTriangle(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light, 
@@ -46,14 +46,14 @@ public class SGJourneyModel
 			float x3, float y3, float z3, float u3, float v3)
 	{
 		//A
-		consumer.vertex(matrix4, x1, y1, z1).color(red, green, blue, alpha).uv(u1, v1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
+		consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(u1, v1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal1, normal2, normal3);
 		//B
-		consumer.vertex(matrix4, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
+		consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal1, normal2, normal3);
 		//C
-		consumer.vertex(matrix4, x3, y3, z3).color(red, green, blue, alpha).uv(u3, v3)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
+		consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(u3, v3)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal1, normal2, normal3);
 	}
 	
 	public static void createTriangle(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light, 
@@ -79,17 +79,17 @@ public class SGJourneyModel
 			float x4, float y4, float z4, float u4, float v4)
 	{
 		//TOP LEFT
-		consumer.vertex(matrix4, x1, y1, z1).color(red, green, blue, alpha).uv(u1, v1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
+		consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(u1, v1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal1, normal2, normal3);
 		//BOTTOM LEFT
-		consumer.vertex(matrix4, x2, y2, z2).color(red, green, blue, alpha).uv(u2, v2)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
+		consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal1, normal2, normal3);
 		//BOTTOM RIGHT
-		consumer.vertex(matrix4, x3, y3, z3).color(red, green, blue, alpha).uv(u3, v3)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
+		consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(u3, v3)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal1, normal2, normal3);
 		//TOP RIGHT
-		consumer.vertex(matrix4, x4, y4, z4).color(red, green, blue, alpha).uv(u4, v4)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, normal1, normal2, normal3).endVertex();
+		consumer.addVertex(matrix4, x4, y4, z4).setColor(red, green, blue, alpha).setUv(u4, v4)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal1, normal2, normal3);
 	}
 	
 	public static void createQuad(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3, int light, 

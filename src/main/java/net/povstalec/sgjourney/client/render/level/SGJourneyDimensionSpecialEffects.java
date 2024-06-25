@@ -10,19 +10,19 @@ import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientSkyConfig;
 
 public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialEffects
 {
-	public static final ResourceLocation OVERWORLD_EFFECTS = new ResourceLocation("overworld");
+	public static final ResourceLocation OVERWORLD_EFFECTS = ResourceLocation.withDefaultNamespace("overworld");
 	
-	public static final ResourceLocation ABYDOS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "abydos");
-	public static final ResourceLocation CHULAK_EFFECTS = new ResourceLocation(StargateJourney.MODID, "chulak");
-	public static final ResourceLocation CAVUM_TENEBRAE_EFFECTS = new ResourceLocation(StargateJourney.MODID, "cavum_tenebrae");
-	public static final ResourceLocation LANTEA_EFFECTS = new ResourceLocation(StargateJourney.MODID, "lantea");
-	public static final ResourceLocation ATHOS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "athos");
+	public static final ResourceLocation ABYDOS_EFFECTS = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "abydos");
+	public static final ResourceLocation CHULAK_EFFECTS = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "chulak");
+	public static final ResourceLocation CAVUM_TENEBRAE_EFFECTS = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "cavum_tenebrae");
+	public static final ResourceLocation LANTEA_EFFECTS = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "lantea");
+	public static final ResourceLocation ATHOS_EFFECTS = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "athos");
 	
 	protected SGJourneySkyRenderer skyRenderer;
 	
@@ -39,22 +39,20 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	}
 
 	@Override
-	public boolean isFoggyAt(int x, int y)
-	{
+	public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
 		return false;
 	}
 
 	@Override
-	public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix)
-    {
-        return false;
-    }
-	
+	public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+		return false;
+	}
+
 	@Override
-	public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
-    {
-        return false;
-    }
+	public boolean isFoggyAt(int x, int y)
+	{
+		return false;
+	}
 	
 	@Override
 	public boolean renderSnowAndRain(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ)
@@ -73,10 +71,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		}
 		
 		@Override
-		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_abydos_sky.get())
-				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+				skyRenderer.renderSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy,setupFog);
 			
 	        return ClientSkyConfig.custom_abydos_sky.get();
 	    }
@@ -91,10 +89,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		}
 		
 		@Override
-		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_chulak_sky.get())
-				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+				skyRenderer.renderSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return ClientSkyConfig.custom_chulak_sky.get();
 	    }
@@ -109,10 +107,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		}
 		
 		@Override
-		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_cavum_tenebrae_sky.get())
-				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+				skyRenderer.renderSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return ClientSkyConfig.custom_cavum_tenebrae_sky.get();
 	    }
@@ -127,10 +125,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		}
 		
 		@Override
-		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_lantea_sky.get())
-				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+				skyRenderer.renderSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return ClientSkyConfig.custom_lantea_sky.get();
 	    }
@@ -145,10 +143,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		}
 		
 		@Override
-		public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+		public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	    {
 			if(ClientSkyConfig.custom_athos_sky.get())
-				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
+				skyRenderer.renderSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
 			
 	        return ClientSkyConfig.custom_athos_sky.get();
 	    }

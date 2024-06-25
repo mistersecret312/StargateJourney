@@ -2,8 +2,10 @@ package net.povstalec.sgjourney.common.blocks.tech;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -19,6 +21,11 @@ public class CrystalInterfaceBlock extends AbstractInterfaceBlock
 	public CrystalInterfaceBlock(Properties properties)
 	{
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(CrystalInterfaceBlock::new);
 	}
 
 	@Override

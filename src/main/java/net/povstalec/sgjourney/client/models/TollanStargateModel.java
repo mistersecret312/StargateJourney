@@ -40,7 +40,7 @@ public class TollanStargateModel extends AbstractStargateModel<TollanStargateEnt
 
 	public TollanStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "tollan"), (short) 0);
+		super(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "tollan"), (short) 0);
 	}
 	
 	@Override

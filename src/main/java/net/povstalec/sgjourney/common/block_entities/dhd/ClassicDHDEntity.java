@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -13,14 +12,8 @@ public class ClassicDHDEntity extends AbstractDHDEntity
 	{
 		super(BlockEntityInit.CLASSIC_DHD.get(), pos, state);
 	}
-	
-	@Override
-	public boolean isCorrectEnergySide(Direction side)
-	{
-		return side == Direction.DOWN;
-	}
 
-	@Override
+    @Override
 	protected SoundEvent getEnterSound()
 	{
 		return SoundInit.CLASSIC_DHD_ENTER.get();

@@ -1,12 +1,15 @@
 package net.povstalec.sgjourney.common.init;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
 
 public enum ToolMaterialInit implements Tier
 {
-	naquadah(4, 3200, 9.0F, 4.0F, 12, ItemInit.NAQUADAH.get());
+	naquadah(4, 8600, 11.0F, 6.0F, 30, ItemInit.NAQUADAH.get());
 	
 	private float attackDamage, efficiency;
 	private int durability, harvestLevel, enchantability;
@@ -41,9 +44,8 @@ public enum ToolMaterialInit implements Tier
 	}
 
 	@Override
-	public int getLevel()
-	{
-		return this.harvestLevel;
+	public TagKey<Block> getIncorrectBlocksForDrops() {
+		return Tags.Blocks.GLASS_BLOCKS_CHEAP;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -32,7 +33,12 @@ public class GoldenIdolBlock extends HorizontalDirectionalBlock
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
-	
+
+	@Override
+	protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+		return simpleCodec(GoldenIdolBlock::new);
+	}
+
 	public BlockState rotate(BlockState state, Rotation rotation)
 	{
 	      return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));

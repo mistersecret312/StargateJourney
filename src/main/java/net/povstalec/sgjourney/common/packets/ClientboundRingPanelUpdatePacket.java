@@ -1,14 +1,16 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundRingPanelUpdatePacket
+public class ClientboundRingPanelUpdatePacket implements NetworkMessage<ClientNetworkContext>
 {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundRingPanelUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundRingPanelUpdatePacket::encode, ClientboundRingPanelUpdatePacket::new);
+
     public final BlockPos pos;
     public final int ringsFound;
     public final BlockPos rings1Pos;
@@ -30,12 +32,12 @@ public class ClientboundRingPanelUpdatePacket
         this.rings6Pos = rings6Pos;
     }
 
-    public ClientboundRingPanelUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundRingPanelUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readInt(), buffer.readBlockPos(), buffer.readBlockPos(), buffer.readBlockPos(), buffer.readBlockPos(), buffer.readBlockPos(), buffer.readBlockPos());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeInt(this.ringsFound);
@@ -47,13 +49,15 @@ public class ClientboundRingPanelUpdatePacket
         buffer.writeBlockPos(this.rings6Pos);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-    	BlockPos ringsPos[] = {rings1Pos, rings2Pos, rings3Pos, rings4Pos, rings5Pos, rings6Pos};
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateRingPanel(this.pos, this.ringsFound, ringsPos);
-        });
-        return true;
+    @Override
+    public void handle(ClientNetworkContext context) {
+        BlockPos ringsPos[] = {rings1Pos, rings2Pos, rings3Pos, rings4Pos, rings5Pos, rings6Pos};
+        ClientAccess.updateRingPanel(this.pos, this.ringsFound, ringsPos);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.RING_PANEL;
     }
 }
 

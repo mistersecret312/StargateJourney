@@ -16,7 +16,7 @@ public class Conversion
 		String[] split = dimensionString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(ResourceKey.createRegistryKey(new ResourceLocation("minecraft", "dimension")), new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("minecraft", "dimension")), ResourceLocation.fromNamespaceAndPath(split[0], split[1]));
 		
 		return null;
 	}
@@ -26,7 +26,7 @@ public class Conversion
 		String[] split = pointOfOriginString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(split[0], split[1]));
 		
 		return null;
 	}
@@ -36,7 +36,7 @@ public class Conversion
 		String[] split = symbolsString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(Symbols.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(Symbols.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(split[0], split[1]));
 		
 		return null;
 	}
@@ -46,7 +46,7 @@ public class Conversion
 		String[] split = galaxyString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(Galaxy.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(Galaxy.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(split[0], split[1]));
 		
 		return null;
 	}
@@ -56,7 +56,7 @@ public class Conversion
 		String[] split = solarSystemString.split(":");
 		
 		if(split.length > 1)
-			return ResourceKey.create(SolarSystem.REGISTRY_KEY, new ResourceLocation(split[0], split[1]));
+			return ResourceKey.create(SolarSystem.REGISTRY_KEY, ResourceLocation.fromNamespaceAndPath(split[0], split[1]));
 		
 		return null;
 	}

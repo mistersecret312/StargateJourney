@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.povstalec.sgjourney.common.init.TagInit;
 
 public class PlasmaProjectile extends ThrowableProjectile
@@ -40,7 +40,7 @@ public class PlasmaProjectile extends ThrowableProjectile
 		super.onHit(hitResult);
 		if(!this.level().isClientSide())
 		{
-			boolean canDestroy = ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
+			boolean canDestroy = false;
 			this.level().explode((Entity)this.getOwner(), this.getX(), this.getY(), this.getZ(), this.explosionPower, canDestroy,
 					canDestroy ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
 			this.discard();
@@ -57,9 +57,6 @@ public class PlasmaProjectile extends ThrowableProjectile
 			Entity attacker = this.getOwner();
 			
 			entity.hurt(level().damageSources().explosion(entity, attacker), 14.0F);
-			
-			if(attacker instanceof LivingEntity)
-				this.doEnchantDamageEffects((LivingEntity)attacker, entity);
 		}
 	}
 	
@@ -70,7 +67,7 @@ public class PlasmaProjectile extends ThrowableProjectile
 		if(!this.level().isClientSide())
 		{
 			Entity entity = this.getOwner();
-			if(!(entity instanceof Mob) || ForgeEventFactory.getMobGriefingEvent(this.level(), entity))
+			if(!(entity instanceof Mob))
 			{
 				BlockPos blockpos = result.getBlockPos().relative(result.getDirection());
 				
@@ -95,10 +92,9 @@ public class PlasmaProjectile extends ThrowableProjectile
 		}
 		return false;
 	}
-	
+
 	@Override
-	protected void defineSynchedData()
-	{
-		
+	protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+
 	}
 }

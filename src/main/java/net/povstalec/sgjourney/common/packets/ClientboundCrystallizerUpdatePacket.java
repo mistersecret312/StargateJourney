@@ -1,15 +1,18 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundCrystallizerUpdatePacket
+public class ClientboundCrystallizerUpdatePacket implements NetworkMessage<ClientNetworkContext>
 {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundCrystallizerUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundCrystallizerUpdatePacket::encode, ClientboundCrystallizerUpdatePacket::new);
+
+
     public final BlockPos pos;
     private final FluidStack fluidStack;
     public final int progress;
@@ -21,24 +24,26 @@ public class ClientboundCrystallizerUpdatePacket
         this.progress = progress;
     }
 
-    public ClientboundCrystallizerUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundCrystallizerUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos(), buffer.readFluidStack(), buffer.readInt());
+        this(buffer.readBlockPos(), FluidStack.OPTIONAL_STREAM_CODEC.decode(buffer), buffer.readInt());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
-        buffer.writeFluidStack(this.fluidStack);
+        FluidStack.OPTIONAL_STREAM_CODEC.encode(buffer, this.fluidStack);
         buffer.writeInt(this.progress);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateCrystallizer(this.pos, this.fluidStack, this.progress);
-        });
-        return true;
+    @Override
+    public void handle(ClientNetworkContext context) {
+        //ClientAccess.updateCrystallizer(this.pos, this.fluidStack, this.progress);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.CRYSTALLIZER;
     }
 }
 

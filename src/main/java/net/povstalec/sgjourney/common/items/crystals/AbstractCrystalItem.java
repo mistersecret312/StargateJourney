@@ -46,7 +46,7 @@ public abstract class AbstractCrystalItem extends Item
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		if(descriptionInDHD(stack).isPresent())
 		{
@@ -60,7 +60,7 @@ public abstract class AbstractCrystalItem extends Item
 			tooltipComponents.add(descriptionInRing().get());
 		}*/
 
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
 	}
 	
 	public static class Storage

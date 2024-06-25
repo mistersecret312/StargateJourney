@@ -151,7 +151,7 @@ public class SoundAccess
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 		
-		Optional<StargateVariant> variant = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variantString)));
+		Optional<StargateVariant> variant = Optional.ofNullable(variantRegistry.get(ResourceLocation.parse(variantString)));
 		
 		return variant;
     }

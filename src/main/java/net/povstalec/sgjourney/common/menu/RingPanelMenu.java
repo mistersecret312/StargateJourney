@@ -10,12 +10,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
 
 public class RingPanelMenu extends AbstractContainerMenu
@@ -35,15 +36,16 @@ public class RingPanelMenu extends AbstractContainerMenu
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-        
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 5, 36));
+
+        IItemHandler handler =  this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, null);
+        if(handler != null)
+        {    this.addSlot(new SlotItemHandler(handler, 0, 5, 36));
             this.addSlot(new SlotItemHandler(handler, 1, 23, 36));
             this.addSlot(new SlotItemHandler(handler, 2, 5, 54));
             this.addSlot(new SlotItemHandler(handler, 3, 23, 54));
             this.addSlot(new SlotItemHandler(handler, 4, 5, 72));
             this.addSlot(new SlotItemHandler(handler, 5, 23, 72));
-        });
+        }
     }
     
     public String getRingsPos(int i)
@@ -85,14 +87,9 @@ public class RingPanelMenu extends AbstractContainerMenu
     
     public void activateRings(int number)
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundRingPanelUpdatePacket(this.blockEntity.getBlockPos(), number));
+        PacketDistributor.sendToServer(new ServerboundRingPanelUpdatePacket(this.blockEntity.getBlockPos(), number));
     }
-    
-    public int[] getTargetCoords(int chosenNumber)
-    {
-    	return blockEntity.getTargetCoords(chosenNumber);
-    }
-	
+
     @Override
     public boolean stillValid(Player player) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),

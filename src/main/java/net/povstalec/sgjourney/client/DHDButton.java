@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 public class DHDButton extends Button
 {
 	
-	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/milky_way_dhd_widgets.png");
+	public static final ResourceLocation WIDGETS_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/gui/milky_way_dhd_widgets.png");
 	
     public DHDButton(int x, int y, AbstractDHDMenu menu, int i)
 	{
@@ -40,7 +40,7 @@ public class DHDButton extends Button
 	}
     
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float p_93679_)
+    public void renderWidget(GuiGraphics graphics, int x, int y, float p_93679_)
     {
     	this.isHovered = x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
     	Minecraft minecraft = Minecraft.getInstance();

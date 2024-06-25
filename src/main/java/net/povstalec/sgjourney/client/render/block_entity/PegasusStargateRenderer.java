@@ -25,8 +25,8 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer implements
 	public static final int WORMHOLE_B = 255;
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
-	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon.png");
-	private static final ResourceLocation SHINY_EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon_shiny.png");
+	private static final ResourceLocation EVENT_HORIZON_TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon.png");
+	private static final ResourceLocation SHINY_EVENT_HORIZON_TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon_shiny.png");
 	
 	public PegasusStargateRenderer(BlockEntityRendererProvider.Context context)
 	{

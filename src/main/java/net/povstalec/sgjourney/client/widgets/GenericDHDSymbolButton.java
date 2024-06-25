@@ -179,25 +179,20 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 				((Math.pow(mouseX - xCenter, 2) + Math.pow(mouseY - yCenter, 2)) > this.innerRadius2) &&
 				((Math.pow(mouseX - xCenter, 2) + Math.pow(mouseY - yCenter, 2)) < this.outerRadius2);
 	}
-	
-	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
-	{
-		if(this.visible)
-		{
-			if((mouseY - yCenter) != 0)
-			{
-				float phi = CoordinateSystems.cartesianToPolarPhi((mouseX - xCenter), (mouseY - yCenter)) + 180;
-				
-				this.isHovered = phi > this.angle && phi < this.angle + ANGLE &&
-						((Math.pow(mouseX - xCenter, 2) + Math.pow(mouseY - yCenter, 2)) > this.innerRadius2) &&
-						((Math.pow(mouseX - xCenter, 2) + Math.pow(mouseY - yCenter, 2)) < this.outerRadius2);
-			}
-			else
-				this.isHovered = false;	
-			
-			this.renderWidget(graphics, mouseX, mouseY, partialTick);
-			//this.updateTooltip();
-		}
-	}
+
+    @Override
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        if((mouseY - yCenter) != 0)
+        {
+            float phi = CoordinateSystems.cartesianToPolarPhi((mouseX - xCenter), (mouseY - yCenter)) + 180;
+
+            this.isHovered = phi > this.angle && phi < this.angle + ANGLE &&
+                    ((Math.pow(mouseX - xCenter, 2) + Math.pow(mouseY - yCenter, 2)) > this.innerRadius2) &&
+                    ((Math.pow(mouseX - xCenter, 2) + Math.pow(mouseY - yCenter, 2)) < this.outerRadius2);
+        }
+        else
+            this.isHovered = false;
+
+        super.renderWidget(graphics, mouseX, mouseY, partialTick);
+    }
 }

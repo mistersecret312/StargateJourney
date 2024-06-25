@@ -43,35 +43,34 @@ public class ATAGeneDetectorBlock extends Block implements AncientTech
 	{
 		state.add(MEASURED_GENE);
 	}
-	
+
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
-	{
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
 		if(!level.isClientSide)
 		{
 			int measured;
-			
+
 			switch(getGeneType(player))
 			{
-			case ARTIFICIAL:
-				measured = 1;
-				break;
-			case INHERITED:
-				measured = 2;
-				break;
-			case ANCIENT:
-				measured = 3;
-				break;
-			default:
-				measured = 0;
+				case ARTIFICIAL:
+					measured = 1;
+					break;
+				case INHERITED:
+					measured = 2;
+					break;
+				case ANCIENT:
+					measured = 3;
+					break;
+				default:
+					measured = 0;
 			}
-			
+
 			if(state.getValue(MEASURED_GENE) != measured)
 				level.setBlock(pos, state.setValue(MEASURED_GENE, measured), 3);
 		}
-		
+
 		level.scheduleTick(pos, this, TICKS_ACTIVE);
-		
+
 		return InteractionResult.SUCCESS;
 	}
 	

@@ -20,7 +20,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.IHasPDAStatus;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.tech.AncientTech;
 import net.povstalec.sgjourney.common.tech.GoauldTech;
@@ -47,7 +47,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		if(block instanceof AbstractStargateRingBlock)
 			blockpos = state.getValue(AbstractStargateRingBlock.PART).getBaseBlockPos(blockpos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
 		
-		if(level.getBlockEntity(blockpos) instanceof EnergyBlockEntity blockEntity)
+		if(level.getBlockEntity(blockpos) instanceof IHasPDAStatus blockEntity)
 			blockEntity.getStatus(player);
 		
 		return super.useOn(context);
@@ -75,7 +75,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.pda.info").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}

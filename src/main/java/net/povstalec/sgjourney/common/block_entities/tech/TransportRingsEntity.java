@@ -6,15 +6,15 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ChunkLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -48,12 +48,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		super(BlockEntityInit.TRANSPORT_RINGS.get(), pos, state);
 	}
-
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return INFINITE_EXTENT_AABB;
-    }
 	
 	public boolean canTransport()
 	{
@@ -109,7 +103,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 			target = null;
 		
 		//TODO sync difference with client
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight, this.transportLight));
+		PacketHandlerInit.sendToAllTracking(new ClientboundRingsUpdatePacket(this.getBlockPos(), this.emptySpace, this.transportHeight, this.transportLight), level.getChunkAt(this.getBlockPos()));
 	}
 	
 	public int getTransportHeight()
@@ -141,8 +135,8 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 	{
 		if(level.isClientSide())
 			return;
-		
-		ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(), level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+
+		level.getServer().getLevel(level.dimension()).setChunkForced(level.getChunkAt(this.getBlockPos()).getPos().x, level.getChunkAt(this.getBlockPos()).getPos().z, true);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TransportRingsEntity rings)
@@ -315,24 +309,6 @@ public class TransportRingsEntity extends AbstractTransporterEntity
 				}
 			}
 		}
-		return 0;
-	}
-
-	@Override
-	public long capacity()
-	{
-		return 0;
-	}
-
-	@Override
-	public long maxReceive()
-	{
-		return 0;
-	}
-
-	@Override
-	public long maxExtract()
-	{
 		return 0;
 	}
 	

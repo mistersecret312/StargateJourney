@@ -3,12 +3,17 @@ package net.povstalec.sgjourney.common.packets;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundDHDUpdatePacket
+public class ClientboundDHDUpdatePacket implements NetworkMessage<ClientNetworkContext>
 {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundDHDUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundDHDUpdatePacket::encode, ClientboundDHDUpdatePacket::new);
+
+
     public final BlockPos pos;
     public final String symbols;
     public final int[] address;
@@ -22,12 +27,12 @@ public class ClientboundDHDUpdatePacket
         this.isCenterButtonEngaged = isCenterButtonEngaged;
     }
 
-    public ClientboundDHDUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundDHDUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readUtf(), buffer.readVarIntArray(), buffer.readBoolean());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeUtf(this.symbols);
@@ -35,12 +40,14 @@ public class ClientboundDHDUpdatePacket
         buffer.writeBoolean(this.isCenterButtonEngaged);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateDHD(pos, symbols, address, isCenterButtonEngaged);
-        });
-        return true;
+    @Override
+    public void handle(ClientNetworkContext context) {
+        ClientAccess.updateDHD(pos, symbols, address, isCenterButtonEngaged);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.DHD;
     }
 }
 

@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -526,7 +527,7 @@ public final class StargateNetwork extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		tag = serialize();
 		
@@ -547,6 +548,6 @@ public final class StargateNetwork extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+        return storage.computeIfAbsent(new Factory<StargateNetwork>(() -> create(server), (tag, provider) -> load(server, tag)), FILE_NAME);
     }
 }

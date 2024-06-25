@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.blocks;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 
@@ -41,49 +41,53 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 	{
 		super(properties);
 	}
-	
+
+	@Override
+	protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+		return simpleCodec(RingPanelBlock::new);
+	}
+
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
 		return new RingPanelEntity(pos, state);
 	}
-	
+
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
-	{
-        if (!level.isClientSide()) 
-        {
-        	BlockEntity blockEntity = level.getBlockEntity(pos);
-			
-        	if (blockEntity instanceof RingPanelEntity panel) 
-        	{
-        		panel.setTransportRings();
-        		panel.getNearest6Rings(level, pos, 32768);
-				
-        		MenuProvider containerProvider = new MenuProvider() 
-        		{
-        			@Override
-        			public Component getDisplayName() 
-        			{
-        				return Component.translatable("screen.sgjourney.transport_rings");
-        			}
-        			
-        			@Override
-        			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-        			{
-        				return new RingPanelMenu(windowId, playerInventory, blockEntity);
-        			}
-        		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-        	}
-        	else
-        	{
-        		throw new IllegalStateException("Our named container provider is missing!");
-        	}
-        }
-        return InteractionResult.SUCCESS;
-    }
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+		if (!level.isClientSide())
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+
+			if (blockEntity instanceof RingPanelEntity panel)
+			{
+				panel.setTransportRings();
+				panel.getNearest6Rings(level, pos, 32768);
+
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public Component getDisplayName()
+					{
+						return Component.translatable("screen.sgjourney.transport_rings");
+					}
+
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+					{
+						return new RingPanelMenu(windowId, playerInventory, blockEntity);
+					}
+				};
+				player.openMenu(containerProvider, blockEntity.getBlockPos());
+			}
+			else
+			{
+				throw new IllegalStateException("Our named container provider is missing!");
+			}
+		}
+		return InteractionResult.SUCCESS;
+	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{

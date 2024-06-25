@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -8,7 +9,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -47,9 +47,9 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	}
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries)
     {
-    	super.load(tag);
+    	super.loadAdditional(tag, pRegistries);
     	
     	if(tag.contains(SYMBOL_NUMBER))
     		symbolNumber = tag.getInt(SYMBOL_NUMBER);
@@ -62,7 +62,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	}
 	
 	@Override
-    protected void saveAdditional(@NotNull CompoundTag tag)
+    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		tag.putInt(SYMBOL_NUMBER, symbolNumber);
 		
@@ -72,7 +72,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols);
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, pRegistries);
 	}
 	
 	public int getSymbolNumber()
@@ -110,7 +110,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	{
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundSymbolUpdatePacket(worldPosition, symbolNumber, pointOfOrigin, symbols));
+		PacketHandlerInit.sendToAllTracking(new ClientboundSymbolUpdatePacket(this.worldPosition, symbolNumber, pointOfOrigin, symbols), level.getChunkAt(this.worldPosition));
 	}
 	
 	

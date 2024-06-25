@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -52,9 +53,9 @@ public class ClassicStargateEntity extends AbstractStargateEntity
     }
 
 	@Override
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
-		super.serializeStargateInfo(tag);
+		super.serializeStargateInfo(tag, pRegistries);
 		
 		tag.putString("PointOfOrigin", pointOfOrigin);
 		tag.putString("Symbols", symbols);
@@ -64,7 +65,7 @@ public class ClassicStargateEntity extends AbstractStargateEntity
 	}
 	
 	@Override
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider pRegistries, boolean isUpgraded)
 	{
 		if(tag.contains("PointOfOrigin"))
 			this.pointOfOrigin = tag.getString("PointOfOrigin");
@@ -75,7 +76,7 @@ public class ClassicStargateEntity extends AbstractStargateEntity
         if(tag.contains("Rotation"))
         	rotation = tag.getShort("Rotation");
     	
-    	super.deserializeStargateInfo(tag, isUpgraded);
+    	super.deserializeStargateInfo(tag, pRegistries, isUpgraded);
 	}
 
 	@Override

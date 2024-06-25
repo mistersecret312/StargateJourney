@@ -49,17 +49,17 @@ public abstract class CartoucheRenderer
 		float halfsize = size / 2;
 		float textureHalf = 1F / textureSize / 2;
 		//TOP LEFT
-		consumer.vertex(matrix4, x - halfsize, y + halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 0)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x - halfsize, y + halfsize, z).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset - textureHalf, 0)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 		//BOTTOM LEFT
-		consumer.vertex(matrix4, x - halfsize, y - halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x - halfsize, y - halfsize, z).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset - textureHalf, 1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 		//BOTTOM RIGHT
-		consumer.vertex(matrix4, x + halfsize, y - halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x + halfsize, y - halfsize, z).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset + textureHalf, 1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 		//TOP RIGHT
-		consumer.vertex(matrix4, x + halfsize, y + halfsize, z).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 0)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, x + halfsize, y + halfsize, z).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset + textureHalf, 0)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 	}
 	
 	protected void renderCartoucheBlock(CartoucheEntity cartouche, PoseStack stack, MultiBufferSource source, int light)

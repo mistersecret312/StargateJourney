@@ -35,8 +35,8 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected static final int DEFAULT_TEXTURE_SIZE = 64;
 	
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
-	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
+	public static final ResourceLocation ERROR_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/symbols/error.png");
+	public static final ResourceLocation EMPTY_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/symbols/empty.png");
 	public static final String EMPTY = StargateJourney.EMPTY;
 	
 	private static Minecraft minecraft = Minecraft.getInstance();
@@ -57,15 +57,15 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		namespace = stargateName.getNamespace();
 		name = stargateName.getPath();
 		
-		stargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate.png");
-		engagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_engaged.png");
+		stargateTexture = ResourceLocation.fromNamespaceAndPath(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate.png");
+		engagedTexture = ResourceLocation.fromNamespaceAndPath(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_engaged.png");
 		
 		this.numberOfSymbols = numberOfSymbols;
 	}
 	
 	public ResourceLocation getResourceLocation()
 	{
-		return new ResourceLocation(namespace, name + "_stargate");
+		return ResourceLocation.fromNamespaceAndPath(namespace, name + "_stargate");
 	}
 	
 	public boolean canUseVariant(StargateVariant variant)
@@ -89,7 +89,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 		
-		optional = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variantString)));
+		optional = Optional.ofNullable(variantRegistry.get(ResourceLocation.parse(variantString)));
 		
 		return optional;
 	}
@@ -117,8 +117,8 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		{
 			String pointOfOrigin = stargate.getPointOfOrigin();
 			
-			if(isLocationValid(pointOfOrigin) && pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin)))
-				return Optional.of(pointOfOriginRegistry.get(new ResourceLocation(pointOfOrigin)));
+			if(isLocationValid(pointOfOrigin) && pointOfOriginRegistry.containsKey(ResourceLocation.parse(pointOfOrigin)))
+				return Optional.of(pointOfOriginRegistry.get(ResourceLocation.parse(pointOfOrigin)));
 		}
 		
 		return Optional.empty();
@@ -145,8 +145,8 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		{
 			String symbols = stargate.getSymbols();
 			
-			if(isLocationValid(symbols) && symbolRegistry.containsKey(new ResourceLocation(symbols)))
-				return Optional.of(symbolRegistry.get(new ResourceLocation(symbols)));
+			if(isLocationValid(symbols) && symbolRegistry.containsKey(ResourceLocation.parse(symbols)))
+				return Optional.of(symbolRegistry.get(ResourceLocation.parse(symbols)));
 		}
 		
 		return Optional.empty();

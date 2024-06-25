@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,6 +20,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -36,8 +39,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
@@ -74,43 +75,42 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	{
 	      return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection());
 	}
-	
+
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
-	{
-        if(!level.isClientSide()) 
-        {
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+		if(!level.isClientSide())
+		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if(blockEntity instanceof AbstractInterfaceEntity interfaceEntity) 
-        	{
-        		if(!player.isShiftKeyDown())
-        		{
-        			MenuProvider containerProvider = new MenuProvider() 
-            		{
-            			@Override
-            			public Component getDisplayName() 
-            			{
-            				return Component.translatable("screen.sgjourney." + interfaceEntity.getInterfaceType().getName());
-            			}
-            			
-            			@Override
-            			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-            			{
-            				return new InterfaceMenu(windowId, playerInventory, blockEntity);
-            			}
-            		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-        		}
-        		else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
-        			level.setBlock(pos, state.cycle(MODE), 3);
-        	}
-        	else
-        	{
-        		throw new IllegalStateException("Our named container provider is missing!");
-        	}
-        }
-        return InteractionResult.SUCCESS;
-    }
+			if(blockEntity instanceof AbstractInterfaceEntity interfaceEntity)
+			{
+				if(!player.isShiftKeyDown())
+				{
+					MenuProvider containerProvider = new MenuProvider()
+					{
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney." + interfaceEntity.getInterfaceType().getName());
+						}
+
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new InterfaceMenu(windowId, playerInventory, blockEntity);
+						}
+					};
+					player.openMenu(containerProvider, blockEntity.getBlockPos());
+				}
+				else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
+					level.setBlock(pos, state.cycle(MODE), 3);
+			}
+			else
+			{
+				throw new IllegalStateException("Our named container provider is missing!");
+			}
+		}
+		return InteractionResult.SUCCESS;
+	}
 	
 	public RenderShape getRenderShape(BlockState state)
 	{
@@ -122,7 +122,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	public abstract long getCapacity();
 	
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof AbstractInterfaceEntity)
@@ -131,7 +131,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			{
 				ItemStack itemstack = new ItemStack(getDroppedBlock());
 				
-				blockentity.saveToItem(itemstack);
+				blockentity.saveToItem(itemstack, VanillaRegistries.createLookup());
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -139,7 +139,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			}
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	@Override
@@ -167,7 +167,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 	}
 	
-	private int getRingSegmentOutput(EnergyBlockEntity blockEntity)
+	private int getRingSegmentOutput(BlockEntity blockEntity)
 	{
 		if(blockEntity instanceof AbstractStargateEntity stargate)
 			return stargate.getRedstoneSegmentOutput();
@@ -175,7 +175,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		return 0;
 	}
 	
-	private int getRotationOutput(EnergyBlockEntity blockEntity)
+	private int getRotationOutput(BlockEntity blockEntity)
 	{
 		if(blockEntity instanceof AbstractStargateEntity stargate)
 			return stargate.getRedstoneSymbolOutput();
@@ -183,14 +183,14 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		return 0;
 	}
 	
-	private int getChevronOutput(EnergyBlockEntity blockEntity)
+	private int getChevronOutput(BlockEntity blockEntity)
 	{
 		if(blockEntity instanceof AbstractStargateEntity stargate)
 			return stargate.getChevronsEngaged();
 		return 0;
 	}
 	
-	private int getConnectionOutput(EnergyBlockEntity blockEntity)
+	private int getConnectionOutput(BlockEntity blockEntity)
 	{
 		if(blockEntity instanceof AbstractStargateEntity stargate)
 			return stargate.isConnected()
@@ -199,7 +199,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		return 0;
 	}
 	
-	public int comparatorOutput(BlockState state, EnergyBlockEntity blockEntity)
+	public int comparatorOutput(BlockState state, BlockEntity blockEntity)
 	{
 		switch(state.getValue(MODE))
 		{
@@ -228,20 +228,20 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		BlockEntity entity = level.getBlockEntity(pos);
 
 		if(entity instanceof AbstractInterfaceEntity interfaceEntity)
-			return comparatorOutput(state, interfaceEntity.energyBlockEntity);
+			return comparatorOutput(state, interfaceEntity.blockEntity);
 
 		return 0;
 	}
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	int energy = 0;
     	
-		if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains("Energy"))
-			energy = stack.getTag().getCompound("BlockEntityTag").getInt("Energy");
+		if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().contains("Energy"))
+			energy = stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getInt("Energy");
 		
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + "/" + getCapacity() +" FE")).withStyle(ChatFormatting.DARK_RED));
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
 }

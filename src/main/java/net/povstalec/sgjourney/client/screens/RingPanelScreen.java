@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 
 public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/ring_panel_gui.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/gui/ring_panel_gui.png");
 
     public RingPanelScreen(RingPanelMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -55,7 +55,7 @@ public class RingPanelScreen extends AbstractContainerScreen<RingPanelMenu>
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, delta);
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
         

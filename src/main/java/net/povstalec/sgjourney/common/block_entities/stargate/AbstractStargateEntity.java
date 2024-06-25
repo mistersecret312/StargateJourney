@@ -6,14 +6,12 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.povstalec.sgjourney.common.block_entities.IHasPDAStatus;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -30,10 +28,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.BasicInterfaceEntity;
@@ -64,7 +61,7 @@ import net.povstalec.sgjourney.common.stargate.StargateConnection;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 import net.povstalec.sgjourney.common.stargate.Wormhole;
 
-public abstract class AbstractStargateEntity extends EnergyBlockEntity
+public abstract class AbstractStargateEntity extends BlockEntity implements IHasPDAStatus
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
 	public static final String ADD_TO_NETWORK = "AddToNetwork";
@@ -77,7 +74,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 
 	public static final String ADDRESS = "Address";
 	public static final String DHD_POS = "DHDPos";
-	public static final String ENERGY = "Energy";
 	// Connections
 	public static final String CONNECTION_ID = "ConnectionID";
 	public static final String NETWORK = "Network";
@@ -179,16 +175,17 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
         
         loadDHD();
 	}
-	
+
 	@Override
-	public void load(CompoundTag tag)
-	{
-		deserializeStargateInfo(tag, false);
+	public void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+		super.loadAdditional(pTag, pRegistries);
+
+		this.deserializeStargateInfo(pTag, pRegistries, false);
 	}
 	
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider pRegistries, boolean isUpgraded)
 	{
-		super.load(tag);
+		super.loadAdditional(tag, pRegistries);
 		
 		timesOpened = tag.getInt(TIMES_OPENED);
 		address.fromArray(tag.getIntArray(ADDRESS));
@@ -219,14 +216,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
     	this.setChanged();
 	}
-	
+
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
-	{
-		serializeStargateInfo(tag);
+	protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+		serializeStargateInfo(pTag, pRegistries);
 	}
 	
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		tag.putInt(TIMES_OPENED, timesOpened);
 		tag.putIntArray(ADDRESS, address.toArray());
@@ -237,8 +233,6 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 		tag.putBoolean(ADD_TO_NETWORK, addToNetwork);
-
-		tag.putLong(ENERGY, this.getEnergyStored());
 
 		tag.putBoolean(DISPLAY_ID, displayID);
 		tag.putBoolean(UPGRADED, upgraded);
@@ -254,7 +248,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		
 		serializeFilters(tag);
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, pRegistries);
 		
 		return tag;
 	}
@@ -349,12 +343,13 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		return address;
 	}
 
-	
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return new AABB(getCenterPos().getX() - 3, getCenterPos().getY() - 3, getCenterPos().getZ() - 3, getCenterPos().getX() + 4, getCenterPos().getY() + 4, getCenterPos().getZ() + 4);
-    }
+
+
+	//@Override
+	//public AABB getRenderBoundingBox()
+    //{
+    //    return new AABB(getCenterPos().getX() - 3, getCenterPos().getY() - 3, getCenterPos().getZ() - 3, getCenterPos().getX() + 4, getCenterPos().getY() + 4, getCenterPos().getZ() + 4);
+    //}
 	
 	//============================================================================================
 	//******************************************Dialing*******************************************
@@ -463,29 +458,29 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	public void chevronSound(boolean primary, boolean incoming, boolean open, boolean encode)
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, primary, incoming, open, encode));
+			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.Chevron(this.worldPosition, primary, incoming, open, encode), level.getChunkAt(this.worldPosition));
 	}
 	
 	public void openWormholeSound()
 	{
 		if(level.isClientSide())
 			return;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.OpenWormhole(this.worldPosition));
+
+		PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.OpenWormhole(this.worldPosition), level.getChunkAt(this.worldPosition));
 	}
 	
 	public void idleWormholeSound()
 	{
 		if(level.isClientSide())
 			return;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.IdleWormhole(this.worldPosition));
+
+		PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.IdleWormhole(this.worldPosition), level.getChunkAt(this.worldPosition));
 	}
 	
 	public void closeWormholeSound()
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.CloseWormhole(this.worldPosition));
+			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.CloseWormhole(this.worldPosition), level.getChunkAt(this.worldPosition));
 	}
 	
 	public abstract void playRotationSound();
@@ -638,8 +633,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		updateClient();
 		
 		if(feedback.playFailSound() && !level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
-		
+            PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.Fail(this.worldPosition), level.getChunkAt(this.worldPosition));
+
 		if(updateInterfaces)
 		{
 			updateBasicInterfaceBlocks(EVENT_RESET, feedback.getCode());
@@ -784,7 +779,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(!isLocationValid(pointOfOrigin))
 			return false;
 		
-		return pointOfOriginRegistry.containsKey(new ResourceLocation(pointOfOrigin));
+		return pointOfOriginRegistry.containsKey(ResourceLocation.parse(pointOfOrigin));
 	}
 	
 	public void setSymbolsFromDimension(ResourceKey<Level> dimension)
@@ -801,7 +796,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 		if(!isLocationValid(symbols))
 			return false;
 		
-		return symbolRegistry.containsKey(new ResourceLocation(symbols));
+		return symbolRegistry.containsKey(ResourceLocation.parse(symbols));
 	}
 	
 	private boolean isLocationValid(String location)
@@ -1481,34 +1476,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 
 		player.sendSystemMessage(Component.translatable("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
 		player.sendSystemMessage(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + addToNetwork)).withStyle(ChatFormatting.YELLOW));
-		
-		super.getStatus(player);
-	}
-	
-	@Override
-	public boolean isCorrectEnergySide(Direction side)
-	{
-		return false;
 	}
 
-	@Override
-	public long capacity()
-	{
-		return CommonStargateConfig.stargate_energy_capacity.get();
-	}
 
-	@Override
-	public long maxReceive()
-	{
-		return CommonStargateConfig.stargate_energy_max_receive.get();
-	}
-
-	@Override
-	public long maxExtract()
-	{
-		return CommonStargateConfig.intergalactic_connection_energy_cost.get();
-	}
-	
 	public float getVerticalCenterHeight()
 	{
 		return this.verticalCenterHeight;
@@ -1533,8 +1503,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 	{
 		if(level.isClientSide())
 			return;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant));
+
+        PacketHandlerInit.sendToAllTracking(new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant), level.getChunkAt(this.worldPosition));
 	}
 	
 	public String getConnectionID()

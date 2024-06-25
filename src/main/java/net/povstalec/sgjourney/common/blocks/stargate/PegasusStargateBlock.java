@@ -10,11 +10,14 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -67,7 +70,7 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
     }
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	Minecraft minecraft = Minecraft.getInstance();
 		ClientPacketListener clientPacketListener = minecraft.getConnection();
@@ -78,16 +81,16 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 			Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
 			Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
 	    	
-			if(!stack.hasTag() ||
-					(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(PegasusStargateEntity.DYNAMC_SYMBOLS) &&
-							stack.getTag().getCompound("BlockEntityTag").getBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS)))
+			if(!stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA) ||
+					(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().contains(PegasusStargateEntity.DYNAMC_SYMBOLS) &&
+							stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS)))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
 			else
 			{
 		    	String pointOfOrigin = "";
-				if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.POINT_OF_ORIGIN))
+				if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().contains(AbstractStargateEntity.POINT_OF_ORIGIN))
 				{
-					ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString(AbstractStargateEntity.POINT_OF_ORIGIN));
+					ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getString(AbstractStargateEntity.POINT_OF_ORIGIN));
 					if(location.toString().equals("sgjourney:empty"))
 						pointOfOrigin = "Empty";
 					else if(pointOfOriginRegistry.containsKey(location))
@@ -96,9 +99,9 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 						pointOfOrigin = "Error";
 				}
 				String symbols = "";
-				if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.SYMBOLS))
+				if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().contains(AbstractStargateEntity.SYMBOLS))
 				{
-					ResourceLocation location = new ResourceLocation(stack.getTag().getCompound("BlockEntityTag").getString(AbstractStargateEntity.SYMBOLS));
+					ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getString(AbstractStargateEntity.SYMBOLS));
 					if(location.toString().equals("sgjourney:empty"))
 						symbols = "Empty";
 					else if(symbolsRegistry.containsKey(location))
@@ -111,14 +114,14 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 			}
 		}
 		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
 	
 	public static ItemStack localSymbols(ItemStack stack)
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS, false);
-		stack.addTagElement("BlockEntityTag", compoundtag);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;
 	}

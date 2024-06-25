@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.core.HolderLookup;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -23,9 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -33,7 +31,7 @@ import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
 
-public abstract class AbstractDHDEntity extends EnergyBlockEntity
+public abstract class AbstractDHDEntity extends BlockEntity
 {
 	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
 	public static final String CRYSTAL_MODE = "CrystalMode";
@@ -76,24 +74,22 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 		
 		this.setStargate();
 	}
-	
+
 	@Override
-	public void load(CompoundTag tag)
-	{
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
 		if(tag.contains(STARGATE_POS))
 		{
 			int[] pos = tag.getIntArray(STARGATE_POS);
 			stargateRelativePos = Optional.of(new Vec3i(pos[0], pos[1], pos[2]));
 		}
-		
-		super.load(tag);
+
+		super.loadAdditional(tag, pRegistries);
 	}
-	
+
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
-	{
-		super.saveAdditional(tag);
-		
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
+		super.saveAdditional(tag, pRegistries);
+
 		if(stargateRelativePos.isPresent())
 		{
 			Vec3i pos = stargateRelativePos.get();
@@ -230,51 +226,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
 	//============================================================================================
 	//*******************************************Energy*******************************************
 	//============================================================================================
-	
-	@Override
-	public boolean isCorrectEnergySide(Direction side)
-	{
-		return false;
-	}
-
-	@Override
-	protected long capacity()
-	{
-		return 0;
-	}
-
-	@Override
-	protected long maxReceive()
-	{
-		return 0;
-	}
-
-	@Override
-	protected long maxExtract()
-	{
-		return 0;
-	}
-	
-	@Override
-	protected void outputEnergy(Direction outputDirection)
-	{
-		if(!this.stargate.isPresent())
-			return;
-		
-		AbstractStargateEntity stargate = this.stargate.get();
-		
-		if(stargate == null)
-			return;
-		
-		if(stargate.getEnergyStored() < getEnergyTarget())
-		{
-			long needed = getEnergyTarget() - stargate.getEnergyStored();
-			
-			long energySent = needed > getMaxEnergyTransfer() ? getMaxEnergyTransfer() : needed;
-			
-			stargate.receiveEnergy(energySent, false);
-		}
-	}
 
 	public void setCallForwardingState(boolean enableCallForwarding)
 	{
@@ -415,15 +366,13 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity
     {
 		if(level.isClientSide())
 			return;
-		
-		dhd.outputEnergy(null);
     }
 	
 	public void updateClient()
 	{
 		if(level.isClientSide())
 			return;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundDHDUpdatePacket(this.worldPosition, StargateJourney.EMPTY, this.address.toArray(), this.isCenterButtonEngaged));
+
+		PacketHandlerInit.sendToAllTracking(new ClientboundDHDUpdatePacket(this.worldPosition, StargateJourney.EMPTY, this.address.toArray(), this.isCenterButtonEngaged), level.getChunkAt(this.worldPosition));
 	}
 }

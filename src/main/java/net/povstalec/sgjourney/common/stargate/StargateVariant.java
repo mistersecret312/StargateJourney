@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class StargateVariant
 {
-	public static final ResourceLocation STARGATE_VARIANT_LOCATION = new ResourceLocation(StargateJourney.MODID, "stargate_variant");
+	public static final ResourceLocation STARGATE_VARIANT_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "stargate_variant");
 	public static final ResourceKey<Registry<StargateVariant>> REGISTRY_KEY = ResourceKey.createRegistryKey(STARGATE_VARIANT_LOCATION);
 	public static final Codec<ResourceKey<StargateVariant>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	

@@ -25,7 +25,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
+import net.povstalec.sgjourney.common.capabilities.AncientGene;
+import net.povstalec.sgjourney.common.capabilities.IAncientGene;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
@@ -393,8 +394,10 @@ public class CommandInit
 	private static int setAncientGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
-		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
+
+		IAncientGene gene = entity.getCapability(AncientGene.ANCIENT_GENE);
+		if(gene != null)
+			gene.giveGene();
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -402,8 +405,10 @@ public class CommandInit
 	private static int setInheritedGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
-		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.inheritGene());
+
+		IAncientGene gene = entity.getCapability(AncientGene.ANCIENT_GENE);
+		if(gene != null)
+			gene.inheritGene();
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -411,8 +416,10 @@ public class CommandInit
 	private static int setArtificialGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
-		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.implantGene());
+
+		IAncientGene gene = entity.getCapability(AncientGene.ANCIENT_GENE);
+		if(gene != null)
+			gene.implantGene();
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -420,8 +427,10 @@ public class CommandInit
 	private static int removeGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
-		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.removeGene());
+
+		IAncientGene gene = entity.getCapability(AncientGene.ANCIENT_GENE);
+		if(gene != null)
+			gene.removeGene();
 		
 		return Command.SINGLE_SUCCESS;
 	}

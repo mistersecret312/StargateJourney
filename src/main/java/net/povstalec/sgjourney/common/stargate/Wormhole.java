@@ -20,11 +20,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.ITeleporter;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -34,7 +33,7 @@ import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.stargate.Stargate.WormholeTravel;
 
-public class Wormhole implements ITeleporter
+public class Wormhole
 {
 	private static final String EVENT_DECONSTRUCTING_ENTITY = "stargate_deconstructing_entity";
 	private static final String EVENT_RECONSTRUCTING_ENTITY = "stargate_reconstructing_entity";
@@ -217,14 +216,13 @@ public class Wormhole implements ITeleporter
 
 					player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
 					player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled*100);
-		    		WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
 		    	}
 		    	else
 		    	{
 		    		deconstructEvent(initialStargate, traveler, false);
 		    		Entity newTraveler = traveler;
 		    		if((ServerLevel) level != destinationlevel)
-		    			newTraveler = traveler.changeDimension(destinationlevel, this);
+		    			newTraveler = traveler.changeDimension(new DimensionTransition(destinationlevel, traveler, DimensionTransition.DO_NOTHING));
 
 		    		newTraveler.moveTo(targetStargate.getCenterPos().getX() + 0.5 + position.x(), targetStargate.getCenterPos().getY() + destinationYAddition + position.y(), targetStargate.getCenterPos().getZ() + 0.5 + position.z(), CoordinateHelper.Relative.preserveYRot(initialDirection, destinationDirection, traveler.getYRot()), traveler.getXRot());
 		    		newTraveler.setDeltaMovement(CoordinateHelper.Relative.preserveRelative(initialDirection, initialOrientation, destinationDirection, destinationOrientation, momentum));

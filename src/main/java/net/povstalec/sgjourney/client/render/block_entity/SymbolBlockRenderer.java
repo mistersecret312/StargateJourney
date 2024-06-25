@@ -28,7 +28,7 @@ import net.povstalec.sgjourney.common.stargate.Symbols;
 
 public abstract class SymbolBlockRenderer
 {
-	private static final ResourceLocation ERROR = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
+	private static final ResourceLocation ERROR = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/symbols/error.png");
 
 	protected static final float SYMBOL_OFFSET = 0.51F;
 	protected static final float SYMBOL_SIZE = 1;
@@ -55,17 +55,17 @@ public abstract class SymbolBlockRenderer
 	{
 		float textureHalf = 1F / textureSize / 2;
 		//TOP LEFT
-		consumer.vertex(matrix4, SYMBOL_START, SYMBOL_END, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 0)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, SYMBOL_START, SYMBOL_END, SYMBOL_OFFSET).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset - textureHalf, 0)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 		//BOTTOM LEFT
-		consumer.vertex(matrix4, SYMBOL_START, SYMBOL_START, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset - textureHalf, 1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, SYMBOL_START, SYMBOL_START, SYMBOL_OFFSET).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset - textureHalf, 1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 		//BOTTOM RIGHT
-		consumer.vertex(matrix4, SYMBOL_END, SYMBOL_START, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 1)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, SYMBOL_END, SYMBOL_START, SYMBOL_OFFSET).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset + textureHalf, 1)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 		//TOP RIGHT
-		consumer.vertex(matrix4, SYMBOL_END, SYMBOL_END, SYMBOL_OFFSET).color((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).uv(textureOffset + textureHalf, 0)
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3, 0.0F, 0.0F, 1.0F).endVertex();
+		consumer.addVertex(matrix4, SYMBOL_END, SYMBOL_END, SYMBOL_OFFSET).setColor((float) red / 255, (float) green / 255, (float) blue / 255, 1.0F).setUv(textureOffset + textureHalf, 0)
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0.0F, 0.0F, 1.0F);
 	}
 	
 	protected void renderSymbolBlock(SymbolBlockEntity symbolBlock, PoseStack stack, MultiBufferSource source, int light)

@@ -26,7 +26,7 @@ public class SGJourneyRenderTypes extends RenderType
 				.setOutputState(ITEM_ENTITY_TARGET)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(OVERLAY)
-				.setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
+				.setWriteMaskState(RenderStateShard.DEPTH_WRITE)
 				.createCompositeState(true));
 	}
 

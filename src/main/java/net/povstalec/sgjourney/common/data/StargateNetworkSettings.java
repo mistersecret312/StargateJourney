@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.data;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -117,7 +118,7 @@ public class StargateNetworkSettings extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		tag = this.stargateNetworkSettings.copy();
 		
@@ -138,6 +139,6 @@ public class StargateNetworkSettings extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+        return storage.computeIfAbsent(new Factory<>(() -> create(server), (tag, registries) -> load(server, tag)), FILE_NAME);
     }
 }

@@ -16,6 +16,7 @@
   },
 
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
+  "liquid_settings": "apply_waterlogging",
 
   "use_expansion_hack": false,
 

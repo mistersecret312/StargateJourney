@@ -18,35 +18,9 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	public static final int DEFAULT_MAX_DISTANCE = 16;
 	public static final int ADVANCED_MAX_DISTANCE = 32;
 	
-	public static final int DEFAULT_FREQUENCY = 0;
-	
-	private static final String FREQUENCY = "Frequency";
-	
 	public CommunicationCrystalItem(Properties properties)
 	{
 		super(properties);
-	}
-	
-	public int getFrequency(ItemStack stack)
-	{
-		int frequency;
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(!tag.contains(FREQUENCY))
-			tag.putInt(FREQUENCY, DEFAULT_FREQUENCY);
-		
-		frequency = tag.getInt(FREQUENCY);
-		
-		return frequency;
-	}
-	
-	public static CompoundTag tagSetup(int frequency)
-	{
-		CompoundTag tag = new CompoundTag();
-		
-		tag.putInt(FREQUENCY, frequency);
-		
-		return tag;
 	}
 	
 	public int getMaxDistance()
@@ -61,16 +35,12 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(Component.literal(": ")).withStyle(ChatFormatting.GRAY);
-        int frequency = getFrequency(stack);
-        if(frequency == DEFAULT_FREQUENCY)
-            tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));
-        else
-        	tooltipComponents.add(description.append(Component.literal("" + frequency).withStyle(ChatFormatting.GRAY)));
+        tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));
 
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
     
     public static class Advanced extends CommunicationCrystalItem

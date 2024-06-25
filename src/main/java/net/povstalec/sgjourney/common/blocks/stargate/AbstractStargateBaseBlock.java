@@ -2,27 +2,22 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -32,18 +27,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.stargate.Address;
 import net.povstalec.sgjourney.common.stargate.Stargate;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
-import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
@@ -56,88 +47,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
 	public abstract AbstractStargateRingBlock getRing();
-	
-	public boolean setVariant(Level level, BlockPos pos, Player player, InteractionHand hand)
-	{
-		ItemStack stack = player.getItemInHand(hand);
-		Item item = stack.getItem();
-		
-		if(item instanceof StargateVariantItem)
-		{
-			if(!stack.hasTag())
-			{
-				BlockEntity blockEntity = level.getBlockEntity(pos);
-				if(blockEntity instanceof AbstractStargateEntity stargate)
-				{
-					if(stargate.getVariant().equals(StargateJourney.EMPTY))
-					{
-						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
-						return true;
-					}
-					
-					stargate.setVariant(StargateJourney.EMPTY);
-					
-					if(!player.isCreative())
-						stack.shrink(1);
-				}
-				
-				return true;
-			}
-			
-			Optional<String> variant = StargateVariantItem.getVariantString(stack);
-			
-			if(variant.isPresent())
-			{
-				if(level.isClientSide())
-					return true;
-				
-				BlockEntity blockEntity = level.getBlockEntity(pos);
-				
-				if(blockEntity instanceof AbstractStargateEntity stargate)
-				{
-					if(variant.get().equals(stargate.getVariant()))
-					{
-						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
-						return true;
-					}
-					
-					RegistryAccess registries = level.getServer().registryAccess();
-			        Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
-			        
-			        Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(new ResourceLocation(variant.get())));
-					
-					if(stargateVariant.isPresent() && !stargateVariant.get().getBaseStargate().equals(BlockEntityType.getKey(stargate.getType())))
-					{
-						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.incorrect_stargate_type"), true);
-						return true;
-					}
-					
-					stargate.setVariant(variant.get());
-					
-					if(!player.isCreative())
-						stack.shrink(1);
-					
-					return true;
-				}
-			}
-			else
-			{
-				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.invalid_variant"), true);
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
-	{
-		if(player.getItemInHand(hand).is(ItemInit.STARGATE_VARIANT_CRYSTAL.get()))
-			return setVariant(level, pos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
-		
-		return super.use(state, level, pos, player, hand, result);
-	}
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context)
@@ -170,7 +79,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	@Nullable
 	@Override
 	public abstract BlockEntity newBlockEntity(BlockPos pos, BlockState state);
-	
+
 	public abstract BlockState ringState();
 	
 	@Override
@@ -277,70 +186,66 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			}
 		}
 	}
-	
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
-    {
-    	long energy = 0;
-        String id = "";
-    	
-        if(stack.hasTag())
-        {
-            CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
-            
-            if(blockEntityTag.contains(AbstractStargateEntity.VARIANT))
-            {
-            	String variant = blockEntityTag.getString(AbstractStargateEntity.VARIANT);
-            	
-            	if(!variant.equals(EMPTY))
-            		tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
-            }
-            
-            if(blockEntityTag.contains(AbstractStargateEntity.ENERGY))
-            	energy = blockEntityTag.getLong(AbstractStargateEntity.ENERGY);
-        }
-        
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + " FE")).withStyle(ChatFormatting.DARK_RED));
-		
-        
-        if(stack.hasTag())
-        {
-        	CompoundTag blockEntityTag = stack.getTag().getCompound("BlockEntityTag");
-        	
-        	if((blockEntityTag.contains(AbstractStargateEntity.DISPLAY_ID) && blockEntityTag.getBoolean(AbstractStargateEntity.DISPLAY_ID)) || CommonStargateConfig.always_display_stargate_id.get())
-        	{
-        		if(blockEntityTag.contains(AbstractStargateEntity.ID))
-        		{
-        			id = blockEntityTag.getString(AbstractStargateEntity.ID);
-                	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
-        		}
-        		else if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
-        		{
 
-        			id = new Address(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS)).toString();
-                	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
-        		}
-            	
-        	}
-        	
-        	if((blockEntityTag.contains(AbstractStargateEntity.UPGRADED) && blockEntityTag.getBoolean(AbstractStargateEntity.UPGRADED)))
-            	tooltipComponents.add(Component.translatable("tooltip.sgjourney.upgraded").withStyle(ChatFormatting.DARK_GREEN));
-        	
-        	if((blockEntityTag.contains(LOCAL_POINT_OF_ORIGIN)))
-            	tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
-        }
-        
-        if(stack.hasTag() && stack.getTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.ADD_TO_NETWORK) && !stack.getTag().getCompound("BlockEntityTag").getBoolean(AbstractStargateEntity.ADD_TO_NETWORK))
-            tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
-        
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
-    }
+	@Override
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+		long energy = 0;
+		String id = "";
+
+		if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA))
+		{
+			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag();
+
+			if(blockEntityTag.contains(AbstractStargateEntity.VARIANT))
+			{
+				String variant = blockEntityTag.getString(AbstractStargateEntity.VARIANT);
+
+				if(!variant.equals(EMPTY))
+					tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+			}
+		}
+
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + energy + " FE")).withStyle(ChatFormatting.DARK_RED));
+
+
+		if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA))
+		{
+			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag();
+
+			if((blockEntityTag.contains(AbstractStargateEntity.DISPLAY_ID) && blockEntityTag.getBoolean(AbstractStargateEntity.DISPLAY_ID)) || CommonStargateConfig.always_display_stargate_id.get())
+			{
+				if(blockEntityTag.contains(AbstractStargateEntity.ID))
+				{
+					id = blockEntityTag.getString(AbstractStargateEntity.ID);
+					tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
+				}
+				else if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
+				{
+
+					id = new Address(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS)).toString();
+					tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
+				}
+
+			}
+
+			if((blockEntityTag.contains(AbstractStargateEntity.UPGRADED) && blockEntityTag.getBoolean(AbstractStargateEntity.UPGRADED)))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.upgraded").withStyle(ChatFormatting.DARK_GREEN));
+
+			if((blockEntityTag.contains(LOCAL_POINT_OF_ORIGIN)))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
+		}
+
+		if(stack.getComponents().has(DataComponents.BLOCK_ENTITY_DATA) && stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getCompound("BlockEntityTag").contains(AbstractStargateEntity.ADD_TO_NETWORK) && !stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getCompound("BlockEntityTag").getBoolean(AbstractStargateEntity.ADD_TO_NETWORK))
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.not_added_to_network").withStyle(ChatFormatting.YELLOW));
+
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+	}
 	
 	public static ItemStack excludeFromNetwork(ItemStack stack)
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(AbstractStargateEntity.ADD_TO_NETWORK, false);
-		stack.addTagElement("BlockEntityTag", compoundtag);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;
 	}
@@ -349,8 +254,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
-		stack.addTagElement("BlockEntityTag", compoundtag);
-		
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
+
 		return stack;
 	}
 	

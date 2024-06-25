@@ -10,6 +10,7 @@
   "biomes": "#sgjourney:has_structure/stargate_temple/great_pyramid_biomes",
 
   "step": "strongholds",
+  "liquid_settings": "apply_waterlogging",
 
   "start_height": {
     "absolute": 0

@@ -9,6 +9,10 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -21,12 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -47,7 +45,7 @@ public class RingPanelEntity extends BlockEntity
 	public BlockPos ringsPos[] = new BlockPos[6];
 	
 	private final ItemStackHandler itemHandler = createHandler();
-	private final LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+	private final Lazy<IItemHandler> handler = Lazy.of(() -> itemHandler);
 	
 	private TransportRingsEntity transportRings;
 	
@@ -57,17 +55,17 @@ public class RingPanelEntity extends BlockEntity
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries)
 	{
-		super.load(nbt);
-		itemHandler.deserializeNBT(nbt.getCompound(INVENTORY));
+		super.loadAdditional(nbt, pRegistries);
+		itemHandler.deserializeNBT(pRegistries, nbt.getCompound(INVENTORY));
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider pRegistries)
 	{
-		nbt.put(INVENTORY, itemHandler.serializeNBT());
-		super.saveAdditional(nbt);
+		nbt.put(INVENTORY, itemHandler.serializeNBT(pRegistries));
+		super.saveAdditional(nbt, pRegistries);
 	}
 	
 	private void drops()
@@ -142,16 +140,6 @@ public class RingPanelEntity extends BlockEntity
 			};
 	}
 	
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side)
-	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
-			return handler.cast();
-		
-		return super.getCapability(capability, side);
-	}
-	
 	
 	
 	public void getNearest6Rings(Level level, BlockPos pos, double maxDistance)
@@ -188,8 +176,8 @@ public class RingPanelEntity extends BlockEntity
 			else
 				ringsPos[i] = new BlockPos(0, 0, 0);
 		}
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientboundRingPanelUpdatePacket(worldPosition, ringsFound, ringsPos[0], ringsPos[1], ringsPos[2], ringsPos[3], ringsPos[4], ringsPos[5]));
+
+		PacketHandlerInit.sendToAllTracking(new ClientboundRingPanelUpdatePacket(worldPosition, ringsFound, ringsPos[0], ringsPos[1], ringsPos[2], ringsPos[3], ringsPos[4], ringsPos[5]) , level.getChunkAt(worldPosition));
 		return;
 	}
 	
@@ -255,17 +243,7 @@ public class RingPanelEntity extends BlockEntity
 	
 	public void activateRings(int chosenNumber)
 	{
-		ItemStack stack = this.itemHandler.getStackInSlot(chosenNumber);
-		
-		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
-		{
-			int[] coordinates = this.itemHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
-			targetPos = new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
-		}
-		else
-		{
-			targetPos = ringsPos[chosenNumber];
-		}
+		targetPos = ringsPos[chosenNumber];
 
 		if(targetPos == null)
 			return;
@@ -282,19 +260,6 @@ public class RingPanelEntity extends BlockEntity
 			
 			transportRings.activate(targetPos);
 		}
-	}
-	
-	public int[] getTargetCoords(int chosenNumber)
-	{
-		ItemStack stack = this.itemHandler.getStackInSlot(chosenNumber);
-		
-		if(!stack.isEmpty() && stack.getTag().contains("coordinates"))
-			return this.itemHandler.getStackInSlot(chosenNumber).getTag().getIntArray("coordinates");
-		
-		//TODO FIX THIS
-		//CompoundTag ringsTag = BlockEntityList.get(level).getBlockEntities("TransportRings");
-		//int[] coords = {ringsTag.getIntArray(this.rings[chosenNumber])[0], ringsTag.getIntArray(this.rings[chosenNumber])[1], ringsTag.getIntArray(this.rings[chosenNumber])[2]};
-		return new int[] {0, 0, 0};//coords;
 	}
 	
 }

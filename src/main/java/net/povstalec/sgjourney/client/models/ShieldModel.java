@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 
 public class ShieldModel
 {
-	private static final ResourceLocation SHIELD_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/shield/shield.png");
+	private static final ResourceLocation SHIELD_TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/entity/stargate/shield/shield.png");
 	
 	private static final float OFFSET = 1F / 16 / 2;
 	private static final int TOTAL_SIDES = 36;

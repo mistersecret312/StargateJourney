@@ -2,6 +2,10 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.util.datafix.fixes.ChunkPalettedStorageFix;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -11,21 +15,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
-import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 
-public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
+public abstract class AbstractInterfaceEntity extends BlockEntity
 {
 	public static final String ENERGY_TARGET = "EnergyTarget";
 	private static final long DEFAULT_ENERGY_TARGET = 200000;
@@ -36,8 +34,8 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	private boolean rotateClockwise = true;
 	
 	private long energyTarget = DEFAULT_ENERGY_TARGET;
-	
-	public EnergyBlockEntity energyBlockEntity = null;
+
+	public BlockEntity blockEntity = null;
 	protected InterfacePeripheralWrapper peripheralWrapper;
 	
 	public enum InterfaceType
@@ -93,32 +91,9 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		super.onLoad();
 	}
 	
-	@Override
-	public void load(CompoundTag tag)
-	{
-		super.load(tag);
-		energyTarget = tag.getLong(ENERGY_TARGET);
-	}
-	
-	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
-	{
-		tag.putLong(ENERGY_TARGET, energyTarget);
-		super.saveAdditional(tag);
-	}
-	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
-	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
-	{
-		if(ModList.get().isLoaded("computercraft") && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
-			return peripheralWrapper.newPeripheral().cast();
-			
-		return super.getCapability(cap, side);
-	}
 	
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{
@@ -144,7 +119,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	}
 
 	@Nullable
-	public EnergyBlockEntity findEnergyBlockEntity()
+	public BlockEntity findBlockEntity()
 	{
 		Direction direction = getDirection();
 		if(direction == null)
@@ -157,9 +132,9 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 			realPos = state.getValue(AbstractStargateRingBlock.PART)
 					.getBaseBlockPos(realPos, state.getValue(AbstractStargateRingBlock.FACING), state.getValue(AbstractStargateRingBlock.ORIENTATION));
 
-		return level.getBlockEntity(realPos) instanceof EnergyBlockEntity energyBlockEntity ? energyBlockEntity : null;
+		return level.getBlockEntity(realPos) instanceof BlockEntity energyBlockEntity ? energyBlockEntity : null;
 	}
-	
+
 	public InterfaceType getInterfaceType()
 	{
 		return this.interfaceType;
@@ -168,48 +143,6 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	//============================================================================================
 	//*******************************************Energy*******************************************
 	//============================================================================================
-	
-	@Override
-	public boolean isCorrectEnergySide(Direction side)
-	{
-		if(side == getDirection())
-			return false;
-		return true;
-	}
-
-	@Override
-	protected boolean outputsEnergy()
-	{
-		return true;
-	}
-	
-	@Override
-	protected boolean receivesEnergy()
-	{
-		return true;
-	}
-	
-	@Override
-	protected void outputEnergy(Direction outputDirection)
-	{
-		if(energyBlockEntity.getEnergyStored() >= energyTarget)
-			return;
-		
-		long simulatedOutputAmount = ENERGY_STORAGE.extractLongEnergy(this.maxExtract(), true);
-		long simulatedReceiveAmount = energyBlockEntity.ENERGY_STORAGE.receiveLongEnergy(simulatedOutputAmount, true);
-		ENERGY_STORAGE.extractLongEnergy(simulatedReceiveAmount, false);
-		energyBlockEntity.ENERGY_STORAGE.receiveLongEnergy(simulatedReceiveAmount, false);
-	}
-	
-	public long getEnergyTarget()
-	{
-		return this.energyTarget;
-	}
-	
-	public void setEnergyTarget(long energyTarget)
-	{
-		this.energyTarget = energyTarget;
-	}
 	
 	//============================================================================================
 	//*****************************************CC: Tweaked****************************************
@@ -237,14 +170,13 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractInterfaceEntity interfaceEntity)
 	{
-		interfaceEntity.energyBlockEntity = interfaceEntity.findEnergyBlockEntity();
+		interfaceEntity.blockEntity = interfaceEntity.findBlockEntity();
 		
-		if(interfaceEntity.energyBlockEntity != null)
+		if(interfaceEntity.blockEntity != null)
 		{
 			int lastSymbol = interfaceEntity.currentSymbol;
-			interfaceEntity.outputEnergy(interfaceEntity.getDirection());
-			
-			if(interfaceEntity.energyBlockEntity instanceof MilkyWayStargateEntity stargate)
+
+			if(interfaceEntity.blockEntity instanceof MilkyWayStargateEntity stargate)
 				interfaceEntity.rotateStargate(stargate);
 
 			if(lastSymbol != interfaceEntity.currentSymbol)
@@ -259,9 +191,7 @@ public abstract class AbstractInterfaceEntity extends EnergyBlockEntity
 		
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(interfaceEntity.worldPosition)),
-				new ClientboundInterfaceUpdatePacket(interfaceEntity.worldPosition, interfaceEntity.getEnergyStored()));
-			
+		PacketHandlerInit.sendToAllTracking(new ClientboundInterfaceUpdatePacket(interfaceEntity.worldPosition, 0L), level.getChunkAt(interfaceEntity.worldPosition));
 	}
 	
 	private void rotateStargate(MilkyWayStargateEntity stargate)

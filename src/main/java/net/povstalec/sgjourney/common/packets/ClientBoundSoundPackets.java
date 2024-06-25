@@ -3,13 +3,15 @@ package net.povstalec.sgjourney.common.packets;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.sound.SoundAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public abstract class ClientBoundSoundPackets
+public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNetworkContext>
 {
-    public final BlockPos pos;
+	public final BlockPos pos;
     public final boolean stop;
 
     public ClientBoundSoundPackets(BlockPos pos, boolean stop)
@@ -18,90 +20,94 @@ public abstract class ClientBoundSoundPackets
         this.stop = stop;
     }
 
-    public ClientBoundSoundPackets(FriendlyByteBuf buffer)
+    public ClientBoundSoundPackets(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readBoolean());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeBoolean(this.stop);
     }
 
-    public abstract boolean handle(Supplier<NetworkEvent.Context> ctx);
-    
-    
-    
     public static class OpenWormhole extends ClientBoundSoundPackets
     {
-    	public OpenWormhole(BlockPos pos)
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.OpenWormhole> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.OpenWormhole::encode, ClientBoundSoundPackets.OpenWormhole::new);
+
+		public OpenWormhole(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public OpenWormhole(FriendlyByteBuf buffer)
+    	public OpenWormhole(RegistryFriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
-    	
-    	@Override
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playWormholeOpenSound(pos);
-            });
-            return true;
-        }
-    }
+
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playWormholeOpenSound(pos);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_OPEN_WORMHOLE;
+		}
+	}
     
     public static class IdleWormhole extends ClientBoundSoundPackets
     {
-    	public IdleWormhole(BlockPos pos)
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.IdleWormhole> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.IdleWormhole::encode, ClientBoundSoundPackets.IdleWormhole::new);
+
+		public IdleWormhole(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public IdleWormhole(FriendlyByteBuf buffer)
+    	public IdleWormhole(RegistryFriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
-    	
-    	@Override
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playWormholeIdleSound(pos);
-            });
-            return true;
-        }
-    }
+
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playWormholeIdleSound(pos);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_IDLE_WORMHOLE;
+		}
+	}
     
     public static class CloseWormhole extends ClientBoundSoundPackets
     {
-    	public CloseWormhole(BlockPos pos)
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.CloseWormhole> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.CloseWormhole::encode, ClientBoundSoundPackets.CloseWormhole::new);
+
+		public CloseWormhole(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public CloseWormhole(FriendlyByteBuf buffer)
+    	public CloseWormhole(RegistryFriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
-    	
-    	@Override
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playWormholeCloseSound(pos);
-            });
-            return true;
-        }
-    }
 
-    public static class Chevron
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playWormholeCloseSound(pos);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_CLOSE_WORMHOLE;
+		}
+	}
+
+    public static class Chevron implements NetworkMessage<ClientNetworkContext>
     {
-	    public final BlockPos pos;
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.Chevron> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.Chevron::encode, ClientBoundSoundPackets.Chevron::new);
+
+		public final BlockPos pos;
     	public final boolean primary;
     	public final boolean incoming;
     	public final boolean open;
@@ -115,12 +121,12 @@ public abstract class ClientBoundSoundPackets
     		this.open = open;
     		this.encode = encode;
     	}
-    	public Chevron(FriendlyByteBuf buffer)
+    	public Chevron(RegistryFriendlyByteBuf buffer)
     	{
     		 this(buffer.readBlockPos(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean());
     	}
 
-        public void encode(FriendlyByteBuf buffer)
+        public void encode(RegistryFriendlyByteBuf buffer)
         {
             buffer.writeBlockPos(this.pos);
             buffer.writeBoolean(this.primary);
@@ -128,126 +134,137 @@ public abstract class ClientBoundSoundPackets
             buffer.writeBoolean(this.open);
             buffer.writeBoolean(this.encode);
         }
-    	
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playChevronSound(pos, primary, incoming, open, encode);
-            });
-            return true;
-        }
-    }
+
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playChevronSound(pos, primary, incoming, open, encode);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_CHEVRON;
+		}
+	}
 
     public static class Fail extends ClientBoundSoundPackets
     {
-    	public Fail(BlockPos pos)
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.Fail> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.Fail::encode, ClientBoundSoundPackets.Fail::new);
+
+		public Fail(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public Fail(FriendlyByteBuf buffer)
+    	public Fail(RegistryFriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
-    	
-    	@Override
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playFailSound(pos);
-            });
-            return true;
-        }
-    }
+
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playFailSound(pos);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_FAIL;
+		}
+	}
     
     public static class StargateRotation extends ClientBoundSoundPackets
     {
-    	public StargateRotation(BlockPos pos, boolean stop)
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.StargateRotation> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.StargateRotation::encode, ClientBoundSoundPackets.StargateRotation::new);
+
+		public StargateRotation(BlockPos pos, boolean stop)
     	{
     		super(pos, stop);
     	}
-    	public StargateRotation(FriendlyByteBuf buffer)
+    	public StargateRotation(RegistryFriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
-    	
-    	@Override
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playRotationSound(pos, stop);
-            });
-            return true;
-        }
-    }
+
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playRotationSound(pos, stop);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_STARGATE_ROTATION;
+		}
+	}
     
     public static class UniverseStart extends ClientBoundSoundPackets
     {
-    	public UniverseStart(BlockPos pos)
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.UniverseStart> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.UniverseStart::encode, ClientBoundSoundPackets.UniverseStart::new);
+
+		public UniverseStart(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public UniverseStart(FriendlyByteBuf buffer)
+    	public UniverseStart(RegistryFriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
-    	
-    	@Override
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playUniverseStartSound(pos);
-            });
-            return true;
-        }
-    }
+
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playUniverseStartSound(pos);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_STARGATE_UNIVERSE_START;
+		}
+	}
     
     public static class MilkyWayBuildup extends ClientBoundSoundPackets
     {
-    	public MilkyWayBuildup(BlockPos pos)
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.MilkyWayBuildup> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.MilkyWayBuildup::encode, ClientBoundSoundPackets.MilkyWayBuildup::new);
+
+		public MilkyWayBuildup(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public MilkyWayBuildup(FriendlyByteBuf buffer)
+    	public MilkyWayBuildup(RegistryFriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
-    	
-    	@Override
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playMilkyWayBuildupSound(pos);
-            });
-            return true;
-        }
-    }
+
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playMilkyWayBuildupSound(pos);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_STARGATE_MILKYWAY_BUILDUP;
+		}
+	}
     
     public static class MilkyWayStop extends ClientBoundSoundPackets
     {
-    	public MilkyWayStop(BlockPos pos)
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.MilkyWayStop> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.MilkyWayStop::encode, ClientBoundSoundPackets.MilkyWayStop::new);
+
+		public MilkyWayStop(BlockPos pos)
     	{
     		super(pos, false);
     	}
-    	public MilkyWayStop(FriendlyByteBuf buffer)
+    	public MilkyWayStop(RegistryFriendlyByteBuf buffer)
     	{
     		super(buffer);
     	}
-    	
-    	@Override
-    	public boolean handle(Supplier<NetworkEvent.Context> ctx)
-        {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playMilkyWayStopSound(pos);
-            });
-            return true;
-        }
-    }
+
+		@Override
+		public void handle(ClientNetworkContext context) {
+			SoundAccess.playMilkyWayStopSound(pos);
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return PacketHandlerInit.SOUND_STARGATE_MILKYWAY_STOP;
+		}
+	}
 }
 
 

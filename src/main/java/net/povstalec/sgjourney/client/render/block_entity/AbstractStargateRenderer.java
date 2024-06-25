@@ -13,13 +13,17 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.common.data.internal.NeoForgeRecipeProvider;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.povstalec.sgjourney.client.models.AbstractStargateModel;
 import net.povstalec.sgjourney.client.models.ShieldModel;
 import net.povstalec.sgjourney.client.models.WormholeModel;
@@ -83,7 +87,7 @@ public abstract class AbstractStargateRenderer
 	
 	protected void renderCover(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("minecraft:red_sand"));
+		Block block = Blocks.RED_SAND;
 		
 	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.LEFT2, stack, source, combinedOverlay);
 	    renderCoverBlock(stargate, block.defaultBlockState(), StargatePart.LEFT, stack, source, combinedOverlay);

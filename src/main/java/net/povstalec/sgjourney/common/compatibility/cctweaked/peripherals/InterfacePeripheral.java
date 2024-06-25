@@ -25,8 +25,7 @@ public class InterfacePeripheral implements IPeripheral, IDynamicPeripheral
 	public InterfacePeripheral(AbstractInterfaceEntity interfaceEntity)
 	{
 		this.interfaceEntity = interfaceEntity;
-		
-		this.registerMethod(new InterfaceMethods.SetEnergyTarget());
+
 		this.registerMethod(new InterfaceMethods.AddressToString());
 		
 		/*if(this.interfaceEntity.getInterfaceType().hasCrystalMethods())
@@ -79,7 +78,7 @@ public class InterfacePeripheral implements IPeripheral, IDynamicPeripheral
 	{
 		String methodName = getMethodNames()[method];
 		
-		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.interfaceEntity.energyBlockEntity, arguments);
+		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.interfaceEntity.blockEntity, arguments);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -92,21 +91,4 @@ public class InterfacePeripheral implements IPeripheral, IDynamicPeripheral
 	//*****************************************CC: Tweaked****************************************
 	//============================================================================================
 
-	@LuaFunction(mainThread = true)
-	public final long getEnergy() throws LuaException
-	{
-		return interfaceEntity.getEnergyStored();
-	}
-
-	@LuaFunction(mainThread = true)
-	public final long getEnergyCapacity() throws LuaException
-	{
-		return interfaceEntity.getEnergyCapacity();
-	}
-
-	@LuaFunction(mainThread = true)
-	public final long getEnergyTarget() throws LuaException
-	{
-		return interfaceEntity.getEnergyTarget();
-	}
 }

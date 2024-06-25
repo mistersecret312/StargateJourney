@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -112,7 +113,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		AbstractStargateEntity stargate = getStargate(level, pos, state);
 		if(stargate != null)
@@ -121,7 +122,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			{
 				ItemStack itemstack = new ItemStack(asItem());
 
-				stargate.saveToItem(itemstack);
+				stargate.saveToItem(itemstack, VanillaRegistries.createLookup());
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -130,7 +131,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			}
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 
 	@Override

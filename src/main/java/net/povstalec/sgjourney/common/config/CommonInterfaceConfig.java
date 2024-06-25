@@ -1,19 +1,19 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonInterfaceConfig
 {
-	public static ForgeConfigSpec.LongValue basic_interface_capacity;
-	public static ForgeConfigSpec.LongValue basic_interface_max_transfer;
+	public static ModConfigSpec.LongValue basic_interface_capacity;
+	public static ModConfigSpec.LongValue basic_interface_max_transfer;
 	
-	public static ForgeConfigSpec.LongValue crystal_interface_capacity;
-	public static ForgeConfigSpec.LongValue crystal_interface_max_transfer;
+	public static ModConfigSpec.LongValue crystal_interface_capacity;
+	public static ModConfigSpec.LongValue crystal_interface_max_transfer;
 	
-	public static ForgeConfigSpec.LongValue advanced_crystal_interface_capacity;
-	public static ForgeConfigSpec.LongValue advanced_crystal_interface_max_transfer;
+	public static ModConfigSpec.LongValue advanced_crystal_interface_capacity;
+	public static ModConfigSpec.LongValue advanced_crystal_interface_max_transfer;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		basic_interface_capacity = server
 				.comment("The amount of energy a Basic Interface can hold")

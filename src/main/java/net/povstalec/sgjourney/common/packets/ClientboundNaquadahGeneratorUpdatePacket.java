@@ -4,11 +4,16 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundNaquadahGeneratorUpdatePacket
+public class ClientboundNaquadahGeneratorUpdatePacket implements NetworkMessage<ClientNetworkContext>
 {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundNaquadahGeneratorUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundNaquadahGeneratorUpdatePacket::encode, ClientboundNaquadahGeneratorUpdatePacket::new);
+
     public final BlockPos pos;
     public final int reactionProgress;
     public final long energy;
@@ -20,24 +25,26 @@ public class ClientboundNaquadahGeneratorUpdatePacket
         this.energy = energy;
     }
 
-    public ClientboundNaquadahGeneratorUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundNaquadahGeneratorUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readInt(), buffer.readLong());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeInt(this.reactionProgress);
         buffer.writeLong(this.energy);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateNaquadahGenerator(this.pos, this.reactionProgress, this.energy);
-        });
-        return true;
+    @Override
+    public void handle(ClientNetworkContext context) {
+        //ClientAccess.updateNaquadahGenerator(this.pos, this.reactionProgress, this.energy);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.NAQUADAH_GENERATOR;
     }
 }
 

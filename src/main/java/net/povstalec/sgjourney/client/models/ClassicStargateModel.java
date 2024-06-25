@@ -86,7 +86,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	
 	public ClassicStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "classic"), (short) 39);
+		super(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "classic"), (short) 39);
 		this.symbolColor = new Stargate.RGBA(0, 109, 121, 255);
 	}
 	

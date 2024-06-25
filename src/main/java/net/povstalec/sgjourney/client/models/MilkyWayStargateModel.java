@@ -23,10 +23,10 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	
 	public MilkyWayStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "milky_way"), (short) 39, new Stargate.RGBA(48, 49, 63, 255));
+		super(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "milky_way"), (short) 39, new Stargate.RGBA(48, 49, 63, 255));
 		
-		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
-		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
+		this.alternateStargateTexture = ResourceLocation.fromNamespaceAndPath(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
+		this.alternateEngagedTexture = ResourceLocation.fromNamespaceAndPath(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
 	}
 	
 	@Override

@@ -2,11 +2,19 @@ package net.povstalec.sgjourney.common.capabilities;
 
 import java.util.Random;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.povstalec.sgjourney.StargateJourney;
+import org.jetbrains.annotations.UnknownNullability;
 
-public class AncientGene
+public class AncientGene implements IAncientGene, INBTSerializable<CompoundTag>
 {
+	public static final EntityCapability<IAncientGene, Void> ANCIENT_GENE = EntityCapability.createVoid(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "ancient_gene"), IAncientGene.class);
+
 	public enum ATAGene
 	{
 		ANCIENT(true),
@@ -82,7 +90,7 @@ public class AncientGene
 	
 	public static void addAncient(Entity entity)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
+		//entity.getCapability(AncientGeneProvider.ANCIENT_GENE)ifPresent(cap -> cap.giveGene());
 	}
 	
 	public static void inheritGene(long seed, Entity entity, int inheritanceChance)
@@ -103,16 +111,15 @@ public class AncientGene
 	
 	private static void inheritGene(Entity entity, int inheritanceChance, int chance)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> 
-		{
-			if(cap.firstJoin())
-			{
-				if(chance <= inheritanceChance)
-					cap.inheritGene();
-				
-				cap.markJoined();
+		IAncientGene gene = entity.getCapability(AncientGene.ANCIENT_GENE);
+		if(gene != null) {
+			if (gene.firstJoin()) {
+				if (chance <= inheritanceChance)
+					gene.inheritGene();
+
+				gene.markJoined();
 			}
-		});
+		}
 	}
 	
 	
@@ -126,19 +133,21 @@ public class AncientGene
 		this.firstJoin = false;
 	}
 	
-	public void copyFrom(AncientGene source)
+	public void copyFrom(IAncientGene source)
 	{
-		this.gene = source.gene;
+		this.gene = source.getGeneType();
 	}
-	
-	public void saveData(CompoundTag tag)
-	{
+
+	@Override
+	public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
+		CompoundTag tag = new CompoundTag();
 		tag.putBoolean("FirstJoin", firstJoin);
 		tag.putString("AncientGene", this.gene.toString().toUpperCase());
+		return tag;
 	}
-	
-	public void loadData(CompoundTag tag)
-	{
+
+	@Override
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
 		this.firstJoin = tag.getBoolean("FirstJoin");
 		this.gene = ATAGene.valueOf(tag.getString("AncientGene"));
 	}

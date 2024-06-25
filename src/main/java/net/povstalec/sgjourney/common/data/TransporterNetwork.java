@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -291,7 +292,7 @@ public final class TransporterNetwork extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		tag = serialize();
 		
@@ -312,11 +313,9 @@ public final class TransporterNetwork extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+        return storage.computeIfAbsent(new Factory<TransporterNetwork>(() -> create(server), (tag, provider) -> load(server, tag)), FILE_NAME);
     }
-    
-    
-    
+
     private static class Dimension
     {
     	private static final String DIMENSION = "Dimension";

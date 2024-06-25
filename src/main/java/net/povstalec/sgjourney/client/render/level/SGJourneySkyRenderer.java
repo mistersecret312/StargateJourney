@@ -2,17 +2,11 @@ package net.povstalec.sgjourney.client.render.level;
 
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexBuffer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Camera;
@@ -33,12 +27,12 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public abstract class SGJourneySkyRenderer
 {
-	protected static final ResourceLocation MOON_HALO_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/blue_halo.png");
-	protected static final ResourceLocation MOON_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/moon_phases.png");
-	protected static final ResourceLocation SUN_LOCATION = new ResourceLocation("textures/environment/sun.png");
-	protected static final ResourceLocation BLACK_HOLE_HALO_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/black_hole_halo.png");
-	protected static final ResourceLocation BLACK_HOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/black_hole.png");
-	protected static final ResourceLocation GALAXY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/environment/galaxy.png");
+	protected static final ResourceLocation MOON_HALO_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/environment/blue_halo.png");
+	protected static final ResourceLocation MOON_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/environment/moon_phases.png");
+	protected static final ResourceLocation SUN_LOCATION = ResourceLocation.withDefaultNamespace("textures/environment/sun.png");
+	protected static final ResourceLocation BLACK_HOLE_HALO_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/environment/black_hole_halo.png");
+	protected static final ResourceLocation BLACK_HOLE_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/environment/black_hole.png");
+	protected static final ResourceLocation GALAXY_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/environment/galaxy.png");
 	
 	protected Minecraft minecraft = Minecraft.getInstance();
 	@Nullable
@@ -78,12 +72,12 @@ public abstract class SGJourneySkyRenderer
 	protected void createDarkSky()
 	{
 		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
+		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
 		if (this.darkBuffer != null)
 			this.darkBuffer.close();
 		
 		this.darkBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = buildSkyDisc(bufferbuilder, -16.0F);
+		MeshData bufferbuilder$renderedbuffer = buildSkyDisc(bufferbuilder, -16.0F);
 		this.darkBuffer.bind();
 		this.darkBuffer.upload(bufferbuilder$renderedbuffer);
 		VertexBuffer.unbind();
@@ -92,52 +86,49 @@ public abstract class SGJourneySkyRenderer
 	protected void createLightSky()
 	{
 		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
+		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
 		if (this.skyBuffer != null)
 			this.skyBuffer.close();
 		
 		this.skyBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = buildSkyDisc(bufferbuilder, 16.0F);
+		MeshData bufferbuilder$renderedbuffer = buildSkyDisc(bufferbuilder, 16.0F);
 		this.skyBuffer.bind();
 		this.skyBuffer.upload(bufferbuilder$renderedbuffer);
 		VertexBuffer.unbind();
 	}
 
-	protected static BufferBuilder.RenderedBuffer buildSkyDisc(BufferBuilder builder, float scale)
+	protected static MeshData buildSkyDisc(BufferBuilder builder, float scale)
 	{
 		float f = Math.signum(scale) * 512.0F;
 		float f1 = 512.0F;
 		RenderSystem.setShader(GameRenderer::getPositionShader);
-		builder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
-		builder.vertex(0.0D, (double)scale, 0.0D).endVertex();
+		builder.addVertex(0.0F, (float) scale, 0.0F);
 		
 		for(int i = -180; i <= 180; i += 45) {
-			builder.vertex((double)(f * Mth.cos((float)i * ((float)Math.PI / 180F))), (double)scale, (double)(512.0F * Mth.sin((float)i * ((float)Math.PI / 180F)))).endVertex();
+			builder.addVertex((float) (f * Mth.cos((float)i * ((float)Math.PI / 180F))), (float) scale, (float) (512.0F * Mth.sin((float)i * ((float)Math.PI / 180F))));
 		}
 		
-		return builder.end();
+		return builder.build();
 	}
 	
 	protected void createStars(long seed, int numberOfStars)
 	{
 		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
+		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		if(this.starBuffer != null)
 			this.starBuffer.close();
 
 		this.starBuffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
-		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = this.drawStars(bufferbuilder, seed, numberOfStars);
+		MeshData bufferbuilder$renderedbuffer = this.drawStars(bufferbuilder, seed, numberOfStars);
 		this.starBuffer.bind();
 		this.starBuffer.upload(bufferbuilder$renderedbuffer);
 		VertexBuffer.unbind();
 	}
 	
-	protected BufferBuilder.RenderedBuffer drawStars(BufferBuilder builder, long seed, int numberOfStars)
+	protected MeshData drawStars(BufferBuilder builder, long seed, int numberOfStars)
 	{
 		RandomSource randomsource = RandomSource.create(seed);
-		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-		
 		for(int i = 0; i < numberOfStars; ++i)
 		{
 			/* 
@@ -267,11 +258,11 @@ public abstract class SGJourneySkyRenderer
 					double projectedX = heightProjectionXZ * sinTheta - width * cosTheta;
 					double projectedZ = width * sinTheta + heightProjectionXZ * cosTheta;
 					
-					builder.vertex(starX + projectedX, starY + heightProjectionY, starZ + projectedZ).color(190, 160, 0, 0xAA).endVertex();
+					builder.addVertex((float) (starX + projectedX), (float) (starY + heightProjectionY), (float) (starZ + projectedZ)).setColor(190, 160, 0, 0xAA);
 				}
 			}
 		}
-		return builder.end();
+		return builder.build();
 	}
 	
 	protected void renderStars(ClientLevel level, float partialTicks, float rain, PoseStack stack, Matrix4f projectionMatrix, Runnable setupFog)
@@ -317,12 +308,12 @@ public abstract class SGJourneySkyRenderer
 		float[] u0v1 = moveSpherical(-size, size, distance, theta, phi);
 		
 		RenderSystem.setShaderTexture(0, location);
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.vertex(lastMatrix, u0v0[0], u0v0[1], u0v0[2]).uv(uv[0], uv[1]).endVertex();
-        bufferbuilder.vertex(lastMatrix, u1v0[0], u1v0[1], u1v0[2]).uv(uv[2], uv[1]).endVertex();
-        bufferbuilder.vertex(lastMatrix, u1v1[0], u1v1[1], u1v1[2]).uv(uv[2], uv[3]).endVertex();
-        bufferbuilder.vertex(lastMatrix, u0v1[0], u0v1[1], u0v1[2]).uv(uv[0], uv[3]).endVertex();
-        BufferUploader.drawWithShader(bufferbuilder.end());
+        BufferBuilder bufferbuilderer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilderer.addVertex(lastMatrix, u0v0[0], u0v0[1], u0v0[2]).setUv(uv[0], uv[1]);
+        bufferbuilderer.addVertex(lastMatrix, u1v0[0], u1v0[1], u1v0[2]).setUv(uv[2], uv[1]);
+        bufferbuilderer.addVertex(lastMatrix, u1v1[0], u1v1[1], u1v1[2]).setUv(uv[2], uv[3]);
+        bufferbuilderer.addVertex(lastMatrix, u0v1[0], u0v1[1], u0v1[2]).setUv(uv[0], uv[3]);
+        BufferUploader.drawWithShader(bufferbuilderer.build());
 	}
 	
 	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size)
@@ -374,7 +365,7 @@ public abstract class SGJourneySkyRenderer
 		RenderSystem.enableBlend();
 	}
 	
-	protected void renderSunrise(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f projectionMatrix, Runnable setupFog, BufferBuilder bufferbuilder)
+	protected void renderSunrise(ClientLevel level, float partialTicks, PoseStack stack)
 	{
 		float[] sunriseColor = level.effects().getSunriseColor(level.getTimeOfDay(partialTicks), partialTicks);
 		if(sunriseColor != null)
@@ -391,8 +382,9 @@ public abstract class SGJourneySkyRenderer
 			float sunriseB = sunriseColor[2];
 			float sunriseA = sunriseColor[2];
 			Matrix4f sunriseMatrix = stack.last().pose();
-			bufferbuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-			bufferbuilder.vertex(sunriseMatrix, 0.0F, 100.0F, 0.0F).color(sunriseR, sunriseG, sunriseB, sunriseA).endVertex();
+
+			BufferBuilder bufferbuilderer = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+			bufferbuilderer.addVertex(sunriseMatrix, 0.0F, 100.0F, 0.0F).setColor(sunriseR, sunriseG, sunriseB, sunriseA);
 			
 			for(int i = 0; i <= 16; ++i)
 			{
@@ -401,10 +393,10 @@ public abstract class SGJourneySkyRenderer
 				float x = Mth.sin(rotation);
 				float y = Mth.cos(rotation);
 				// The Z coordinate is multiplied by -y to make the circle angle upwards towards the sun
-				bufferbuilder.vertex(sunriseMatrix, x * 120.0F, y * 120.0F, -y * 40.0F * sunriseA).color(sunriseR, sunriseG, sunriseB, 0.0F).endVertex();
+				bufferbuilderer.addVertex(sunriseMatrix, x * 120.0F, y * 120.0F, -y * 40.0F * sunriseA).setColor(sunriseR, sunriseG, sunriseB, 0.0F);
 			}
 			
-			BufferUploader.drawWithShader(bufferbuilder.end());
+			BufferUploader.drawWithShader(bufferbuilderer.build());
 			stack.popPose();
 		}
 	}
@@ -429,10 +421,11 @@ public abstract class SGJourneySkyRenderer
         
         stack.popPose();
 	}
-	
-	public void renderSky(ClientLevel level, float partialTicks, PoseStack stack, Camera camera, Matrix4f projectionMatrix, Runnable setupFog)
+
+	public void renderSky(ClientLevel level, int ticks, float partialTicks, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	{
 		setupFog.run();
+		PoseStack stack = new PoseStack();
 		
 		if(this.isFoggy(camera))
 			return;
@@ -442,17 +435,17 @@ public abstract class SGJourneySkyRenderer
         float skyY = (float)skyColor.y;
         float skyZ = (float)skyColor.z;
         FogRenderer.levelFogColor();
-		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, VertexFormat.builder().build());
 		RenderSystem.depthMask(false);
 		RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
 		ShaderInstance shaderinstance = RenderSystem.getShader();
 		this.skyBuffer.bind();
-		this.skyBuffer.drawWithShader(stack.last().pose(), projectionMatrix, shaderinstance);
+		this.skyBuffer.drawWithShader(modelViewMatrix, projectionMatrix, shaderinstance);
 		VertexBuffer.unbind();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		
-		this.renderSunrise(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder);
+		this.renderSunrise(level, partialTicks, stack);
 		
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		
@@ -477,5 +470,5 @@ public abstract class SGJourneySkyRenderer
         
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.depthMask(true);
-	}
+    }
 }

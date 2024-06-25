@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class RingPanelButton extends Button
 {
-	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/widgets.png");
+	public static final ResourceLocation WIDGETS_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/gui/widgets.png");
 	
     public RingPanelButton(int x, int y, Component component, OnPress press)
 	{
@@ -37,7 +37,7 @@ public class RingPanelButton extends Button
 	}
     
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float p_93679_)
+    public void renderWidget(GuiGraphics graphics, int x, int y, float p_93679_)
     {
     	this.isHovered = x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
         Minecraft minecraft = Minecraft.getInstance();

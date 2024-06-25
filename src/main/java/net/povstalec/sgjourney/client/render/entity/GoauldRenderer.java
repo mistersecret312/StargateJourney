@@ -18,7 +18,7 @@ import net.povstalec.sgjourney.common.entities.Goauld;
 
 public class GoauldRenderer extends EntityRenderer<Goauld>
 {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/jaffa_staff_weapon_plasma.png");
+	private static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/entity/jaffa_staff_weapon_plasma.png");
 	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE_LOCATION);
 	
 	public GoauldRenderer(EntityRendererProvider.Context context)
@@ -47,12 +47,12 @@ public class GoauldRenderer extends EntityRenderer<Goauld>
 	private static void vertex(VertexConsumer vertex, Matrix4f matrix4f, Matrix3f matrix3f, 
 			int p_114093_, float p_114094_, int p_114095_, int p_114096_, int p_114097_)
 	{
-		vertex.vertex(matrix4f, p_114094_ - 0.5F, (float)p_114095_ - 0.25F, 0.0F)
-		.color(255, 255, 255, 255)
-		.uv((float)p_114096_, (float)p_114097_)
-		.overlayCoords(OverlayTexture.NO_OVERLAY)
-		.uv2(p_114093_)
-		.normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
+		vertex.addVertex(matrix4f, p_114094_ - 0.5F, (float)p_114095_ - 0.25F, 0.0F)
+		.setColor(255, 255, 255, 255)
+		.setUv((float)p_114096_, (float)p_114097_)
+		.setOverlay(OverlayTexture.NO_OVERLAY)
+		.setLight(p_114093_)
+		.setNormal(0.0F, 1.0F, 0.0F);
 	}
 	   
 	@Override

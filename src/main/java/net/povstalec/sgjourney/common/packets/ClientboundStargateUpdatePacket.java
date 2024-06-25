@@ -1,14 +1,16 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundStargateUpdatePacket
+public class ClientboundStargateUpdatePacket implements NetworkMessage<ClientNetworkContext>
 {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundStargateUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundStargateUpdatePacket::encode, ClientboundStargateUpdatePacket::new);
+
     public final BlockPos pos;
     public final int[] address;
     public final int[] engagedChevrons;
@@ -30,12 +32,12 @@ public class ClientboundStargateUpdatePacket
         this.variant = variant;
     }
 
-    public ClientboundStargateUpdatePacket(FriendlyByteBuf buffer)
+    public ClientboundStargateUpdatePacket(RegistryFriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos(), buffer.readVarIntArray(), buffer.readVarIntArray(), buffer.readInt(), buffer.readInt(), buffer.readUtf(), buffer.readUtf(), buffer.readUtf());
     }
 
-    public void encode(FriendlyByteBuf buffer)
+    public void encode(RegistryFriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
         buffer.writeVarIntArray(this.address);
@@ -47,12 +49,14 @@ public class ClientboundStargateUpdatePacket
         buffer.writeUtf(this.variant);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateStargate(this.pos, this.address, this.engagedChevrons, this.kawooshTick, this.tick, this.pointOfOrigin, this.symbols, this.variant);
-        });
-        return true;
+    @Override
+    public void handle(ClientNetworkContext context) {
+        ClientAccess.updateStargate(this.pos, this.address, this.engagedChevrons, this.kawooshTick, this.tick, this.pointOfOrigin, this.symbols, this.variant);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return PacketHandlerInit.STARGATE_UPDATE;
     }
 }
 

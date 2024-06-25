@@ -28,38 +28,11 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
 		INCREASE_RANGE,
 		ENABLE_INTERDIMENSIONAL_TRANSPORT;
 	}
-	
-	public static CompoundTag tagSetup(CrystalMode crystalMode)
-	{
-		CompoundTag tag = new CompoundTag();
-		
-		tag.putString(CRYSTAL_MODE, crystalMode.toString().toUpperCase());
-		
-		return tag;
-	}
-	
-	public static CrystalMode getCrystalMode(ItemStack stack)
-	{
-		CrystalMode mode;
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(!tag.contains(CRYSTAL_MODE))
-			tag.putString(CRYSTAL_MODE, CrystalMode.INCREASE_RANGE.toString().toUpperCase());
-		
-		mode = CrystalMode.valueOf(tag.getString(CRYSTAL_MODE));
-		
-		return mode;
-	}
-	
-	public int getRangeIncrement()
-	{
-		return DEFAULT_RANGE_INCREMENT;
-	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-        CrystalMode mode = getCrystalMode(stack);
+        CrystalMode mode = CrystalMode.INCREASE_RANGE;
         String text = "";
         switch(mode)
         {
@@ -73,7 +46,7 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
         
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.mode").append(Component.literal(": ")).append(Component.translatable(text)).withStyle(ChatFormatting.DARK_AQUA));
 
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
     
     public static class Advanced extends MaterializationCrystalItem
@@ -82,12 +55,6 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
 		{
 			super(properties);
 		}
-
-		@Override
-    	public int getRangeIncrement()
-    	{
-    		return ADVANCED_RANGE_INCREMENT;
-    	}
 		
 		@Override
 		public boolean isAdvanced()

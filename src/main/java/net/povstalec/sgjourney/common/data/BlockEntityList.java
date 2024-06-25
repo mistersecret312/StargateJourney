@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
+import com.jcraft.jorbis.Block;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -34,7 +37,7 @@ public class BlockEntityList extends SavedData
 	public static final String TRANSPORTERS = "Transporters"; //TODO Replace TransportRings with this
 	
 	private MinecraftServer server;
-	
+
 	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<Address.Immutable, Stargate>();
 	protected HashMap<UUID, Transporter> transporterMap = new HashMap<UUID, Transporter>();
 	
@@ -303,8 +306,8 @@ public class BlockEntityList extends SavedData
 	{
 		return new BlockEntityList(server);
 	}
-	
-	public static BlockEntityList load(MinecraftServer server, CompoundTag tag)
+
+	public static BlockEntityList load(MinecraftServer server, CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		BlockEntityList data = create(server);
 
@@ -315,7 +318,7 @@ public class BlockEntityList extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider pRegistries)
 	{
 		tag = serialize();
 		
@@ -335,7 +338,7 @@ public class BlockEntityList extends SavedData
 	public static BlockEntityList get(MinecraftServer server)
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
-        
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), INCORRECT_FILE_NAME);
+
+		return storage.computeIfAbsent(new Factory<>(() -> create(server), (tag, registry) -> load(server, tag, registry)), INCORRECT_FILE_NAME);
     }
 }

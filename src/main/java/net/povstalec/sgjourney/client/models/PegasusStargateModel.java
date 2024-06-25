@@ -32,10 +32,10 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	
 	public PegasusStargateModel()
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "pegasus"), (short) 36, new Stargate.RGBA(RED, GREEN, BLUE, 255));
+		super(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "pegasus"), (short) 36, new Stargate.RGBA(RED, GREEN, BLUE, 255));
 		
-		this.alternateStargateTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
-		this.alternateEngagedTexture = new ResourceLocation(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
+		this.alternateStargateTexture = ResourceLocation.fromNamespaceAndPath(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate.png");
+		this.alternateEngagedTexture = ResourceLocation.fromNamespaceAndPath(namespace, "textures/entity/stargate/" + name + "/" + name +"_stargate_alternate_engaged.png");
 		
 		this.engagedSymbolColor = new Stargate.RGBA(RED, ENGAGED_GREEN, ENGAGED_BLUE, 255);
 	}

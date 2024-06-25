@@ -10,8 +10,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.TollanStargateModel;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
@@ -29,8 +29,8 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 	public static final int WORMHOLE_B = 240;
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
-	private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon.png");
-	private static final ResourceLocation SHINY_EVENT_HORIZON_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon_shiny.png");
+	private static final ResourceLocation EVENT_HORIZON_TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon.png");
+	private static final ResourceLocation SHINY_EVENT_HORIZON_TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon_shiny.png");
 
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{

@@ -1,10 +1,13 @@
 package net.povstalec.sgjourney.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -35,7 +38,12 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
-	
+
+	@Override
+	protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+		return simpleCodec(ClassicStargateBaseBlock::new);
+	}
+
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
@@ -59,78 +67,76 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 	{
 		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
-	
+
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
-	{
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if(!level.isClientSide())
 		{
-			ItemStack stack = player.getItemInHand(hand);
 			Address address = new Address();
-			
+
 			if(CommonStargateConfig.enable_address_choice.get() && stack.is(ItemInit.CONTROL_CRYSTAL.get()))
 			{
-				String name = stack.getHoverName().getString();
+				String name = stack.get(DataComponents.CUSTOM_NAME).getString();
 				address = new Address(name);
-				
+
 				if(address.getLength() != 8)
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.invalid_address"), true);
-					return InteractionResult.FAIL;
+					return ItemInteractionResult.FAIL;
 				}
-				
+
 				if(BlockEntityList.get(level).getStargate(address.immutable()).isPresent())
 				{
 					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.address_exists"), true);
-					return InteractionResult.FAIL;
+					return ItemInteractionResult.FAIL;
 				}
 			}
-			
+
 			Direction direction = level.getBlockState(pos).getValue(FACING);
 			Orientation orientation = getPlacementOrientation(level, pos, direction);
-			
+
 			if(orientation == null)
 			{
 				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.incorrect_setup"), true);
-				return InteractionResult.FAIL;
+				return ItemInteractionResult.FAIL;
 			}
-			
+
 			ClassicStargateBlock block = BlockInit.CLASSIC_STARGATE.get();
 			level.setBlock(pos, block.defaultBlockState()
 					.setValue(ClassicStargateBlock.FACING, direction)
 					.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
-			
+
 			for(StargatePart part : block.getParts())
 			{
 				if(!part.equals(StargatePart.BASE))
 				{
-					level.setBlock(part.getRingPos(pos, direction, orientation), 
+					level.setBlock(part.getRingPos(pos, direction, orientation),
 							BlockInit.CLASSIC_RING.get().defaultBlockState()
-							.setValue(AbstractStargateRingBlock.PART, part)
-							.setValue(AbstractStargateRingBlock.FACING, direction)
-							.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
+									.setValue(AbstractStargateRingBlock.PART, part)
+									.setValue(AbstractStargateRingBlock.FACING, direction)
+									.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
 				}
 			}
-			
+
 			BlockEntity baseEntity = level.getBlockEntity(pos);
-			
+
 			if(baseEntity instanceof ClassicStargateEntity stargate)
 			{
 				if(address.getLength() == 8)
 				{
 					stargate.set9ChevronAddress(address);
-					
+
 					if(!player.isCreative())
 						stack.shrink(1);
 				}
-				
+
 				stargate.addStargateToNetwork();
 			}
-			
-			return InteractionResult.SUCCESS;
+
+			return ItemInteractionResult.SUCCESS;
 		}
-		
-		return InteractionResult.SUCCESS;
+
+		return ItemInteractionResult.SUCCESS;
 	}
 	
 	private static Block getClassicStargateBlock(StargatePart part)

@@ -37,7 +37,7 @@ public class WormholeModel
 	//protected Stargate.RGBA rgba;
 	protected float maxDefaultDistortion;
 	
-	//new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png")
+	//ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/entity/stargate/event_horizon/event_horizon_idle.png")
 	private final ResourceLocation eventHorizonTexture;
 	private final Optional<ResourceLocation> shinyEventHorizonTexture;
 	
@@ -359,13 +359,13 @@ public class WormholeModel
 			int frames)
 	{
 		
-		consumer.vertex(matrix4, x1, y1, z1).color(1F, 1F, 1F, 0.75F).uv(x1 * MULTIPLY_STATIC + 0.5F, (y1 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
+		consumer.addVertex(matrix4, x1, y1, z1).setColor(1F, 1F, 1F, 0.75F).setUv(x1 * MULTIPLY_STATIC + 0.5F, (y1 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(MAX_LIGHT).setNormal(0, 0, 0);
 		
-		consumer.vertex(matrix4, x2, y2, z2).color(1F, 1F, 1F, 0.75F).uv(x2 * MULTIPLY_STATIC + 0.5F, (y2 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
+		consumer.addVertex(matrix4, x2, y2, z2).setColor(1F, 1F, 1F, 0.75F).setUv(x2 * MULTIPLY_STATIC + 0.5F, (y2 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(MAX_LIGHT).setNormal(0, 0, 0);
 		
-		consumer.vertex(matrix4, x3, y3, z3).color(1F, 1F, 1F, 0.75F).uv(x3 * MULTIPLY_STATIC + 0.5F, (y3 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
-		.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
+		consumer.addVertex(matrix4, x3, y3, z3).setColor(1F, 1F, 1F, 0.75F).setUv(x3 * MULTIPLY_STATIC + 0.5F, (y3 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
+		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(MAX_LIGHT).setNormal(0, 0, 0);
 	}
 }

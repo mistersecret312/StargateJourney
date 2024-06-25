@@ -14,7 +14,7 @@ import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 
 public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/interface_gui.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "textures/gui/interface_gui.png");
 
     public InterfaceScreen(InterfaceMenu pMenu, Inventory pPlayerInventory, Component pTitle)
     {
@@ -40,7 +40,7 @@ public class InterfaceScreen extends AbstractContainerScreen<InterfaceMenu>
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-        renderBackground(graphics);
+        renderBackground(graphics, mouseX, mouseY, delta);
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
         

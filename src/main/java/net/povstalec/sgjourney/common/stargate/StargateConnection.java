@@ -373,24 +373,6 @@ public final class StargateConnection
 			return;
 		}
 		
-		// Depletes energy over time
-		if(requireEnergy)
-		{
-			long energyDraw = this.connectionType.getPowerDraw();
-			energyDraw = this.connectionTime >= maxOpenTime ? energyDraw * energyBypassMultiplier : energyDraw;
-			
-			if(!this.dialingStargate.canExtractEnergy(energyDraw) && !this.dialedStargate.canExtractEnergy(energyDraw))
-			{
-				terminate(server, Stargate.Feedback.RAN_OUT_OF_POWER);
-				return;
-			}
-			
-			if(this.dialedStargate.getEnergyStored() > this.dialingStargate.getEnergyStored())
-				this.dialedStargate.depleteEnergy(energyDraw, false);
-			else
-				this.dialingStargate.depleteEnergy(energyDraw, false);
-		}
-		
 		if(this.used)
 			this.timeSinceLastTraveler++;
 		

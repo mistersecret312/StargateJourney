@@ -9,7 +9,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.pools.DimensionPadding;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 
 public abstract class StargateStructure extends SGJourneyStructure
@@ -19,14 +21,16 @@ public abstract class StargateStructure extends SGJourneyStructure
     private static Optional<Integer> z = Optional.empty();
     
     public StargateStructure(Structure.StructureSettings config,
-			Holder<StructureTemplatePool> startPool,
-			Optional<ResourceLocation> startJigsawName,
-			int size,
-			HeightProvider startHeight,
-			Optional<Heightmap.Types> projectStartToHeightmap,
-			int maxDistanceFromCenter)
+							 Holder<StructureTemplatePool> startPool,
+							 Optional<ResourceLocation> startJigsawName,
+							 int size,
+							 HeightProvider startHeight,
+							 Optional<Heightmap.Types> projectStartToHeightmap,
+							 int maxDistanceFromCenter,
+							 DimensionPadding dimensionPadding,
+							 LiquidSettings liquidSettings)
     {
-    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter);
+    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, dimensionPadding, liquidSettings);
     }
     
     private static final void checkSeed(long seed)

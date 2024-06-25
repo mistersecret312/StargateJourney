@@ -19,12 +19,12 @@ public class TagInit
 		
 		private static TagKey<Item> tag(String name)
 		{
-            return ItemTags.create(new ResourceLocation(StargateJourney.MODID, name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, name));
         }
 
         private static TagKey<Item> forgeTag(String name)
         {
-            return ItemTags.create(new ResourceLocation("forge", name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("neoforge", name));
         }
 	}
 	
@@ -36,12 +36,12 @@ public class TagInit
 		
 		private static TagKey<Block> tag(String name)
 		{
-            return BlockTags.create(new ResourceLocation(StargateJourney.MODID, name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, name));
         }
 
         private static TagKey<Block> forgeTag(String name)
         {
-            return BlockTags.create(new ResourceLocation("forge", name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("neoforge", name));
         }
 	}
 	
@@ -53,12 +53,12 @@ public class TagInit
 		
 		private static TagKey<EntityType<?>> tag(String name)
 		{
-            return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(StargateJourney.MODID, name));
+            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, name));
         }
 
         private static TagKey<EntityType<?>> forgeTag(String name)
         {
-            return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("forge", name));
+            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("neoforge", name));
         }
 	}
 	
@@ -78,7 +78,7 @@ public class TagInit
 		
 		private static TagKey<Structure> tag(String name)
 		{
-			return TagKey.create(Registries.STRUCTURE, new ResourceLocation(StargateJourney.MODID, name));
+			return TagKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, name));
 		}
 	}
 }

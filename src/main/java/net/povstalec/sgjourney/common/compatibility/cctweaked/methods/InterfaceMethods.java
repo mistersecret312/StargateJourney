@@ -14,24 +14,6 @@ import net.povstalec.sgjourney.common.stargate.Address;
 public class InterfaceMethods
 {
 	// Basic Interface
-	public static class SetEnergyTarget implements InterfaceMethod<BlockEntity>
-	{
-		@Override
-		public String getName()
-		{
-			return "setEnergyTarget";
-		}
-
-		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
-		{
-			long energyTarget = arguments.getLong(0);
-			interfaceEntity.setEnergyTarget(energyTarget);
-			
-			return MethodResult.of();
-		}
-	}
-	
 	public static class AddressToString implements InterfaceMethod<BlockEntity>
 	{
 		@Override

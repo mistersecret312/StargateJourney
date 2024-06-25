@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -34,7 +35,12 @@ public class ArcheologyTableBlock extends DirectionalBlock
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
-	
+
+	@Override
+	protected MapCodec<? extends DirectionalBlock> codec() {
+		return simpleCodec(ArcheologyTableBlock::new);
+	}
+
 	public BlockState getStateForPlacement(BlockPlaceContext context) 
 	{
 	      return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
