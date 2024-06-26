@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.common.block_entities;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -12,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolUpdatePacket;
 
 public abstract class SymbolBlockEntity extends BlockEntity
@@ -110,7 +111,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	{
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.sendToAllTracking(new ClientboundSymbolUpdatePacket(this.worldPosition, symbolNumber, pointOfOrigin, symbols), level.getChunkAt(this.worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundSymbolUpdatePacket(this.worldPosition, symbolNumber, pointOfOrigin, symbols));
 	}
 	
 	

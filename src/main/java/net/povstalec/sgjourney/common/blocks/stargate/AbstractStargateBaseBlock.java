@@ -85,6 +85,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	@Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
 	{
+
+
 		super.setPlacedBy(level, pos, state, placer, stack);
 		
 		for(StargatePart part : getParts())
@@ -96,7 +98,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 						.setValue(AbstractStargateRingBlock.PART, part)
 						.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
 						.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
-						.setValue(WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
+						.setValue(WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 2);
 			}
 		}
 	}
@@ -244,7 +246,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public static ItemStack excludeFromNetwork(ItemStack stack)
 	{
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putBoolean(AbstractStargateEntity.ADD_TO_NETWORK, false);
+		compoundtag.putString("id", stack.getItem().toString());
+		compoundtag.putBoolean(AbstractStargateEntity.ADD_TO_NETWORK, false);
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;
@@ -253,12 +256,22 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public static ItemStack localPointOfOrigin(ItemStack stack)
 	{
         CompoundTag compoundtag = new CompoundTag();
-        compoundtag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
+		compoundtag.putString("id", stack.getItem().toString());
+		compoundtag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 
 		return stack;
 	}
-	
+
+	public static ItemStack addToNetworkTrue(ItemStack stack)
+	{
+		CompoundTag compoundTag = new CompoundTag();
+		compoundTag.putString("id", stack.getItem().toString());
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundTag));
+
+		return stack;
+	}
+
 	@Override
 	public AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state)
 	{

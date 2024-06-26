@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.sound.SoundAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNetworkContext>
+public abstract class ClientBoundSoundPackets implements NetworkMessage
 {
 	public final BlockPos pos;
     public final boolean stop;
@@ -45,7 +45,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
     	}
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playWormholeOpenSound(pos);
 		}
 
@@ -69,7 +69,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
     	}
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playWormholeIdleSound(pos);
 		}
 
@@ -93,7 +93,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
     	}
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playWormholeCloseSound(pos);
 		}
 
@@ -103,7 +103,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
 		}
 	}
 
-    public static class Chevron implements NetworkMessage<ClientNetworkContext>
+    public static class Chevron implements NetworkMessage
     {
 		public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundSoundPackets.Chevron> STREAM_CODEC = StreamCodec.ofMember(ClientBoundSoundPackets.Chevron::encode, ClientBoundSoundPackets.Chevron::new);
 
@@ -136,7 +136,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
         }
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playChevronSound(pos, primary, incoming, open, encode);
 		}
 
@@ -160,7 +160,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
     	}
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playFailSound(pos);
 		}
 
@@ -184,7 +184,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
     	}
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playRotationSound(pos, stop);
 		}
 
@@ -208,7 +208,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
     	}
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playUniverseStartSound(pos);
 		}
 
@@ -232,7 +232,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
     	}
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playMilkyWayBuildupSound(pos);
 		}
 
@@ -256,7 +256,7 @@ public abstract class ClientBoundSoundPackets implements NetworkMessage<ClientNe
     	}
 
 		@Override
-		public void handle(ClientNetworkContext context) {
+		public void handle() {
 			SoundAccess.playMilkyWayStopSound(pos);
 		}
 

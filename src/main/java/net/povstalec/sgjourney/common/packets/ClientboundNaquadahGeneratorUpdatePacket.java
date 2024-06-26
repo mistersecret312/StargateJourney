@@ -10,7 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundNaquadahGeneratorUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundNaquadahGeneratorUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundNaquadahGeneratorUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundNaquadahGeneratorUpdatePacket::encode, ClientboundNaquadahGeneratorUpdatePacket::new);
 
@@ -38,7 +38,7 @@ public class ClientboundNaquadahGeneratorUpdatePacket implements NetworkMessage<
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         //ClientAccess.updateNaquadahGenerator(this.pos, this.reactionProgress, this.energy);
     }
 

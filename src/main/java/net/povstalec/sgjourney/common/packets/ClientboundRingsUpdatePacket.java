@@ -7,7 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundRingsUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundRingsUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundRingsUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundRingsUpdatePacket::encode, ClientboundRingsUpdatePacket::new);
 
@@ -39,7 +39,7 @@ public class ClientboundRingsUpdatePacket implements NetworkMessage<ClientNetwor
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         ClientAccess.updateRings(pos, emptySpace, transportHeight, transportLight);
     }
 

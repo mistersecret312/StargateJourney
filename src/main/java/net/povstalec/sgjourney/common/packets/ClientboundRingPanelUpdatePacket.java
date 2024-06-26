@@ -7,7 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundRingPanelUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundRingPanelUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundRingPanelUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundRingPanelUpdatePacket::encode, ClientboundRingPanelUpdatePacket::new);
 
@@ -50,7 +50,7 @@ public class ClientboundRingPanelUpdatePacket implements NetworkMessage<ClientNe
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         BlockPos ringsPos[] = {rings1Pos, rings2Pos, rings3Pos, rings4Pos, rings5Pos, rings6Pos};
         ClientAccess.updateRingPanel(this.pos, this.ringsFound, ringsPos);
     }

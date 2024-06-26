@@ -10,9 +10,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -29,7 +31,6 @@ import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundRingPanelUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Transporter;
 
@@ -177,7 +178,7 @@ public class RingPanelEntity extends BlockEntity
 				ringsPos[i] = new BlockPos(0, 0, 0);
 		}
 
-		PacketHandlerInit.sendToAllTracking(new ClientboundRingPanelUpdatePacket(worldPosition, ringsFound, ringsPos[0], ringsPos[1], ringsPos[2], ringsPos[3], ringsPos[4], ringsPos[5]) , level.getChunkAt(worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(worldPosition).getPos(), new ClientboundRingPanelUpdatePacket(worldPosition, ringsFound, ringsPos[0], ringsPos[1], ringsPos[2], ringsPos[3], ringsPos[4], ringsPos[5]));
 		return;
 	}
 	

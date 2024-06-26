@@ -58,6 +58,13 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return StargatePart.DEFAULT_PARTS;
 	}
 
+	@Override
+	protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
+			return shapeProvider.HORIZONTAL;
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_FULL : shapeProvider.X_FULL;
+	}
+
 	public VoxelShape getShapeFromArray(VoxelShape[][] shapes, Direction direction, Orientation orientation)
 	{
 		int horizontal = direction.get2DDataValue();
@@ -98,6 +105,15 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
+		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
+			return shapeProvider.HORIZONTAL;
+		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_FULL : shapeProvider.X_FULL;
+	}
+
+
+
+	@Override
+	protected VoxelShape getVisualShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext pContext) {
 		if(state.getValue(ORIENTATION) != Orientation.REGULAR)
 			return shapeProvider.HORIZONTAL;
 		return state.getValue(FACING).getAxis() == Direction.Axis.X ? shapeProvider.Z_FULL : shapeProvider.X_FULL;

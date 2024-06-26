@@ -10,7 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundCartoucheUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundCartoucheUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundCartoucheUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundCartoucheUpdatePacket::encode, ClientboundCartoucheUpdatePacket::new);
 
@@ -38,7 +38,7 @@ public class ClientboundCartoucheUpdatePacket implements NetworkMessage<ClientNe
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         ClientAccess.updateCartouche(pos, symbols, address);
 
     }

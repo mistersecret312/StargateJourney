@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.IHasPDAStatus;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +44,6 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
@@ -161,6 +159,8 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 	{
 		this(blockEntity, pos, state, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
+
+
 	
 	@Override
     public void onLoad()
@@ -458,7 +458,7 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 	public void chevronSound(boolean primary, boolean incoming, boolean open, boolean encode)
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.Chevron(this.worldPosition, primary, incoming, open, encode), level.getChunkAt(this.worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.Chevron(this.worldPosition, primary, incoming, open, encode));
 	}
 	
 	public void openWormholeSound()
@@ -466,7 +466,7 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 		if(level.isClientSide())
 			return;
 
-		PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.OpenWormhole(this.worldPosition), level.getChunkAt(this.worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.OpenWormhole(this.worldPosition));
 	}
 	
 	public void idleWormholeSound()
@@ -474,13 +474,14 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 		if(level.isClientSide())
 			return;
 
-		PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.IdleWormhole(this.worldPosition), level.getChunkAt(this.worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.IdleWormhole(this.worldPosition));
 	}
 	
 	public void closeWormholeSound()
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.CloseWormhole(this.worldPosition), level.getChunkAt(this.worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.CloseWormhole(this.worldPosition));
+
 	}
 	
 	public abstract void playRotationSound();
@@ -633,7 +634,7 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 		updateClient();
 		
 		if(feedback.playFailSound() && !level.isClientSide())
-            PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.Fail(this.worldPosition), level.getChunkAt(this.worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.Fail(this.worldPosition));
 
 		if(updateInterfaces)
 		{
@@ -1504,7 +1505,7 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 		if(level.isClientSide())
 			return;
 
-        PacketHandlerInit.sendToAllTracking(new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant), level.getChunkAt(this.worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundStargateUpdatePacket(this.worldPosition, this.address.toArray(), this.engagedChevrons, this.kawooshTick, this.animationTick, this.pointOfOrigin, this.symbols, this.variant));
 	}
 	
 	public String getConnectionID()

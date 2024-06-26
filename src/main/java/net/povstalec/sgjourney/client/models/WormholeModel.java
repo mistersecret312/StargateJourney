@@ -79,8 +79,6 @@ public class WormholeModel
 		
 		this.renderKawoosh(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
 		this.renderPuddle(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount(), false);
-		if(hasVortex)
-			this.renderVortex(stack, source, texture, frames, scale, stargate.getTickCount(), stargate.getKawooshTickCount());
 	}
 	
 	protected void renderPuddle(PoseStack stack, MultiBufferSource source, Optional<ResourceLocation> texture, int frames, float scale, int ticks, int kawooshProgress, boolean isShieldOn)
@@ -102,6 +100,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
+				stack.pushPose();
 				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i][j % coordinates[i].length][0], 
 						coordinates[i][j % coordinates[i].length][1],
@@ -127,12 +126,14 @@ public class WormholeModel
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1], 
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0), frames);
+				stack.popPose();
 			}
 			
 			VertexConsumer backConsumer = source.getBuffer(SGJourneyRenderTypes.eventHorizonBack(texture.isPresent() ? texture.get() : getEventHorizonTexture(), 0.0F, textureTickOffset));
 			
 			for(int j = 0; j < totalSides; j++)
 			{
+				stack.pushPose();
 				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
@@ -158,6 +159,7 @@ public class WormholeModel
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], 
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], 
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0), frames);
+				stack.popPose();
 			}
 		}
 	}
@@ -180,6 +182,7 @@ public class WormholeModel
 		{
 			for(int j = 0; j < totalSides; j++)
 			{
+				stack.pushPose();
 				createTriangle(kawooshConsumer, matrix4, matrix3,
 						bubbleX(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
@@ -205,6 +208,7 @@ public class WormholeModel
 						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), frames);
+				stack.popPose();
 			}
 		}
 	}

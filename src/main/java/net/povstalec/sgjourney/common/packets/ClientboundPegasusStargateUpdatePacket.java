@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundPegasusStargateUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundPegasusStargateUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundPegasusStargateUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundPegasusStargateUpdatePacket::encode, ClientboundPegasusStargateUpdatePacket::new);
 
@@ -40,7 +40,7 @@ public class ClientboundPegasusStargateUpdatePacket implements NetworkMessage<Cl
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         ClientAccess.updatePegasusStargate(this.pos, this.symbolBuffer, this.addressBuffer, this.currentSymbol);
     }
 

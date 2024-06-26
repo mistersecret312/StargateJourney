@@ -21,8 +21,8 @@ import java.util.*;
 public final class PacketHandlerInit
 {
 	private static final Set<String> seenChannel = new HashSet<>();
-	private static final List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends NetworkMessage<ServerNetworkContext>>> serverMessages = new ArrayList<>();
-	private static final List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends NetworkMessage<ClientNetworkContext>>> clientMessages = new ArrayList<>();
+	private static final List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends ServerNetworkMessage>> serverMessages = new ArrayList<>();
+	private static final List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends NetworkMessage>> clientMessages = new ArrayList<>();
 
 
 	public static final CustomPacketPayload.Type<ServerboundDHDUpdatePacket> DHD_UPDATE = registerServerbound("dhd_update", ServerboundDHDUpdatePacket.STREAM_CODEC);
@@ -56,8 +56,8 @@ public final class PacketHandlerInit
 
 	public PacketHandlerInit(){}
 
-	private static <C, T extends NetworkMessage<C>> CustomPacketPayload.Type<T> register(
-			List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends NetworkMessage<C>>> messages,
+	private static <C, T extends NetworkMessage> CustomPacketPayload.Type<T> register(
+			List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends NetworkMessage>> messages,
 			String channel, StreamCodec<RegistryFriendlyByteBuf, T> codec
 	) {
 		if (!seenChannel.add(channel)) throw new IllegalArgumentException("Duplicate channel " + channel);
@@ -66,11 +66,21 @@ public final class PacketHandlerInit
 		return type;
 	}
 
-	private static <T extends NetworkMessage<ServerNetworkContext>> CustomPacketPayload.Type<T> registerServerbound(String id, StreamCodec<RegistryFriendlyByteBuf, T> codec) {
-		return register(serverMessages, id, codec);
+	private static <C, T extends ServerNetworkMessage> CustomPacketPayload.Type<T> registerServer(
+			List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends ServerNetworkMessage>> messages,
+			String channel, StreamCodec<RegistryFriendlyByteBuf, T> codec
+	) {
+		if (!seenChannel.add(channel)) throw new IllegalArgumentException("Duplicate channel " + channel);
+		var type = new CustomPacketPayload.Type<T>(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, channel));
+		messages.add(new CustomPacketPayload.TypeAndCodec<>(type, codec));
+		return type;
 	}
 
-	private static <T extends NetworkMessage<ClientNetworkContext>> CustomPacketPayload.Type<T> registerClientbound(String id, StreamCodec<RegistryFriendlyByteBuf, T> codec) {
+	private static <T extends ServerNetworkMessage> CustomPacketPayload.Type<T> registerServerbound(String id, StreamCodec<RegistryFriendlyByteBuf, T> codec) {
+		return registerServer(serverMessages, id, codec);
+	}
+
+	private static <T extends NetworkMessage> CustomPacketPayload.Type<T> registerClientbound(String id, StreamCodec<RegistryFriendlyByteBuf, T> codec) {
 		return register(clientMessages, id, codec);
 	}
 
@@ -79,7 +89,7 @@ public final class PacketHandlerInit
 	 *
 	 * @return An unmodifiable sequence of all serverbound message types.
 	 */
-	public static Collection<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends NetworkMessage<ServerNetworkContext>>> getServerbound() {
+	public static Collection<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends ServerNetworkMessage>> getServerbound() {
 		return Collections.unmodifiableCollection(serverMessages);
 	}
 
@@ -88,11 +98,11 @@ public final class PacketHandlerInit
 	 *
 	 * @return An unmodifiable sequence of all clientbound message types.
 	 */
-	public static Collection<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends NetworkMessage<ClientNetworkContext>>> getClientbound() {
+	public static Collection<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends NetworkMessage>> getClientbound() {
 		return Collections.unmodifiableCollection(clientMessages);
 	}
 
-	public static void sendToPlayer(NetworkMessage<ClientNetworkContext> message, ServerPlayer player) {
+	public static void sendToPlayer(NetworkMessage message, ServerPlayer player) {
 		player.connection.send(createPacket(message));
 	}
 
@@ -102,7 +112,7 @@ public final class PacketHandlerInit
 	 * @param message The message to send.
 	 * @param players The players to send it to.
 	 */
-	public static void sendToPlayers(NetworkMessage<ClientNetworkContext> message, Collection<ServerPlayer> players) {
+	public static void sendToPlayers(NetworkMessage message, Collection<ServerPlayer> players) {
 		if (players.isEmpty()) return;
 		var packet = createPacket(message);
 		for (var player : players) player.connection.send(packet);
@@ -114,7 +124,7 @@ public final class PacketHandlerInit
 	 * @param message The message to send.
 	 * @param server  The current server.
 	 */
-	public static void sendToAllPlayers(NetworkMessage<ClientNetworkContext> message, MinecraftServer server) {
+	public static void sendToAllPlayers(NetworkMessage message, MinecraftServer server) {
 		server.getPlayerList().broadcastAll(createPacket(message));
 	}
 
@@ -126,7 +136,7 @@ public final class PacketHandlerInit
 	 * @param pos      The centre position.
 	 * @param distance The distance to the centre players must be within.
 	 */
-	public static void sendToAllAround(NetworkMessage<ClientNetworkContext> message, ServerLevel level, Vec3 pos, float distance) {
+	public static void sendToAllAround(NetworkMessage message, ServerLevel level, Vec3 pos, float distance) {
 		level.getServer().getPlayerList().broadcast(null, pos.x, pos.y, pos.z, distance, level.dimension(), createPacket(message));
 	}
 
@@ -136,7 +146,7 @@ public final class PacketHandlerInit
 	 * @param message The message to send.
 	 * @param chunk   The chunk players must be tracking.
 	 */
-	public static void sendToAllTracking(NetworkMessage<ClientNetworkContext> message, LevelChunk chunk) {
+	public static void sendToAllTracking(NetworkMessage message, LevelChunk chunk) {
 		var packet = createPacket(message);
 		for (var player : ((ServerChunkCache) chunk.getLevel().getChunkSource()).chunkMap.getPlayers(chunk.getPos(), false)) {
 			player.connection.send(packet);
@@ -149,7 +159,7 @@ public final class PacketHandlerInit
 	 * @param message The message to convert.
 	 * @return The converted message.
 	 */
-	private static Packet<ClientCommonPacketListener> createPacket(NetworkMessage<ClientNetworkContext> message) {
+	private static Packet<ClientCommonPacketListener> createPacket(NetworkMessage message) {
 		return new ClientboundCustomPayloadPacket(message);
 	}
 }

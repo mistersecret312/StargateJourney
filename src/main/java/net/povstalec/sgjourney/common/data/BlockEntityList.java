@@ -339,6 +339,6 @@ public class BlockEntityList extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
 
-		return storage.computeIfAbsent(new Factory<>(() -> create(server), (tag, registry) -> load(server, tag, registry)), INCORRECT_FILE_NAME);
+		return storage.computeIfAbsent(new Factory<BlockEntityList>(() -> create(server), (tag, registry) -> load(server, tag, registry)), INCORRECT_FILE_NAME);
     }
 }

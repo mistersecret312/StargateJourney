@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -23,10 +24,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.packets.ClientboundDHDUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -373,6 +374,6 @@ public abstract class AbstractDHDEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 
-		PacketHandlerInit.sendToAllTracking(new ClientboundDHDUpdatePacket(this.worldPosition, StargateJourney.EMPTY, this.address.toArray(), this.isCenterButtonEngaged), level.getChunkAt(this.worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundDHDUpdatePacket(this.worldPosition, StargateJourney.EMPTY, this.address.toArray(), this.isCenterButtonEngaged));
 	}
 }

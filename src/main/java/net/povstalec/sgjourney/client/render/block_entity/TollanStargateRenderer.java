@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.api.distmarker.Dist;
@@ -37,7 +38,12 @@ public class TollanStargateRenderer extends AbstractStargateRenderer implements 
 		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.125F);
 		this.stargateModel = new TollanStargateModel();
 	}
-	
+
+	@Override
+	public AABB getRenderBoundingBox(TollanStargateEntity blockEntity) {
+		return new AABB(blockEntity.getCenterPos().getX() - 3, blockEntity.getCenterPos().getY() - 3, blockEntity.getCenterPos().getZ() - 3, blockEntity.getCenterPos().getX() + 4, blockEntity.getCenterPos().getY() + 4, blockEntity.getCenterPos().getZ() + 4);
+	}
+
 	@Override
 	public void render(TollanStargateEntity stargate, float partialTick, PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)

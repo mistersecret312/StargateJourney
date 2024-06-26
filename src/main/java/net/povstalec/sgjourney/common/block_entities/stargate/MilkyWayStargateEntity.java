@@ -8,10 +8,12 @@ import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
@@ -19,7 +21,6 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheral
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
@@ -264,7 +265,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 			if(!getAddress().containsSymbol(getCurrentSymbol()))
 			{
 				if(!level.isClientSide())
-					PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentSymbol() == 0, false, true, false), level.getChunkAt(this.worldPosition));
+					PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentSymbol() == 0, false, true, false));
 
 				this.isChevronOpen = true;
 				
@@ -341,9 +342,9 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		stargate.rotate();
 		if(stargate.isRotating() && !level.isClientSide())
-			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false), level.getChunkAt(stargate.worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(stargate.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
 
-		AbstractStargateEntity.tick(level, pos, state, (AbstractStargateEntity) stargate);
+		AbstractStargateEntity.tick(level, pos, state, stargate);
 	}
 	
 	private void rotate()
@@ -407,7 +408,8 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		if(level.isClientSide())
 			return;
 
-		PacketHandlerInit.sendToAllTracking(new ClientboundMilkyWayStargateUpdatePacket(this.worldPosition, this.rotation, this.oldRotation, this.isChevronOpen, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol), level.getChunkAt(this.worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundMilkyWayStargateUpdatePacket(this.worldPosition, this.rotation, this.oldRotation, this.isChevronOpen, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol));
+
 	}
 	
 	private void syncRotation()
@@ -426,7 +428,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 		this.desiredSymbol = desiredSymbol;
 		this.rotateClockwise = rotateClockwise;
 		if(!this.level.isClientSide())
-			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.MilkyWayBuildup(worldPosition), level.getChunkAt(worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(worldPosition).getPos(), new ClientBoundSoundPackets.MilkyWayBuildup(worldPosition));
 
 		synchronizeWithClient(this.level);
 		
@@ -437,7 +439,7 @@ public class MilkyWayStargateEntity extends AbstractStargateEntity
 	{
 		
 		if(!this.level.isClientSide() && playSound)
-			PacketHandlerInit.sendToAllTracking(new ClientBoundSoundPackets.MilkyWayStop(worldPosition), level.getChunkAt(worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(worldPosition).getPos(), new ClientBoundSoundPackets.MilkyWayStop(worldPosition));
 
 		if(!this.computerRotation)
 			return Stargate.Feedback.NOT_ROTATING;

@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -46,8 +47,8 @@ public class StargateBlockItem extends BlockItem
 		if(minecraftserver == null)
 			return false;
 		
-		CompoundTag compoundtag = stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag();
-		if(compoundtag != null)
+		CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+		if(data != null)
 		{
 			BlockEntity blockentity = level.getBlockEntity(pos);
             if(blockentity != null)
@@ -58,14 +59,14 @@ public class StargateBlockItem extends BlockItem
             	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata(VanillaRegistries.createLookup());
             	CompoundTag compoundtag2 = compoundtag1.copy();
             	
-            	compoundtag1.merge(compoundtag);
+            	compoundtag1.merge(data.copyTag());
             	
             	if(!compoundtag1.equals(compoundtag2))
             	{
             		blockentity.loadWithComponents(compoundtag1, VanillaRegistries.createLookup());
             		blockentity.setChanged();
             		
-            		return setupBlockEntity(level, blockentity, compoundtag);
+            		return setupBlockEntity(level, blockentity, data.copyTag());
             	}
             }
 		}

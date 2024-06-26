@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundMilkyWayStargateUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundMilkyWayStargateUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundMilkyWayStargateUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundMilkyWayStargateUpdatePacket::encode, ClientboundMilkyWayStargateUpdatePacket::new);
 
@@ -52,7 +52,7 @@ public class ClientboundMilkyWayStargateUpdatePacket implements NetworkMessage<C
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         ClientAccess.updateMilkyWayStargate(this.pos, this.rotation, this.oldRotation, this.isChevronRaised, this.signalStrength, this.computerRotation, this.rotateClockwise, this.desiredSymbol);
     }
 

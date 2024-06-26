@@ -86,20 +86,20 @@ public class TabInit
 		}
 		else if(event.getTab() == STARGATE_STUFF.get())
 		{
-			event.accept(BlockInit.UNIVERSE_STARGATE.get());
-			event.accept(BlockInit.MILKY_WAY_STARGATE.get());
+			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.UNIVERSE_STARGATE.get())));
+			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
 			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
 			event.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
-			event.accept(BlockInit.PEGASUS_STARGATE.get());
+			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
 			event.accept(PegasusStargateBlock.localSymbols(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
 			event.accept(PegasusDHDBlock.pegasusCrystalSetup());
-			event.accept(BlockInit.CLASSIC_STARGATE.get());
+			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
 			event.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
 			event.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
 			event.accept(BlockInit.CLASSIC_DHD.get());
-			event.accept(BlockInit.TOLLAN_STARGATE.get());
+			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.TOLLAN_STARGATE.get())));
 			
 			event.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 			
@@ -107,15 +107,6 @@ public class TabInit
 			event.accept(BlockInit.CRYSTAL_INTERFACE.get());
 			event.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 			event.accept(ItemInit.CALL_FORWARDING_DEVICE.get());
-			
-			if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
-			{
-
-			}
-			if(CommonStargateConfig.enable_stargate_variants.get())
-			{
-
-			}
 		}
 		else if(event.getTab() == STARGATE_BLOCKS.get())
 		{

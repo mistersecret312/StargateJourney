@@ -3,9 +3,11 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.fixes.ChunkPalettedStorageFix;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -20,7 +22,6 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundInterfaceUpdatePacket;
 
 public abstract class AbstractInterfaceEntity extends BlockEntity
@@ -191,7 +192,7 @@ public abstract class AbstractInterfaceEntity extends BlockEntity
 		
 		if(level.isClientSide())
 			return;
-		PacketHandlerInit.sendToAllTracking(new ClientboundInterfaceUpdatePacket(interfaceEntity.worldPosition, 0L), level.getChunkAt(interfaceEntity.worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(interfaceEntity.worldPosition).getPos(), new ClientboundInterfaceUpdatePacket(interfaceEntity.worldPosition, 0L));
 	}
 	
 	private void rotateStargate(MilkyWayStargateEntity stargate)

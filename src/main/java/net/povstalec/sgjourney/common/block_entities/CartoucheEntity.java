@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities;
 import java.util.Optional;
 
 import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientboundCartoucheUpdatePacket;
 import net.povstalec.sgjourney.common.stargate.Address;
@@ -165,7 +165,7 @@ public abstract class CartoucheEntity extends BlockEntity
 			return;
 		
 		int[] address = addressTable.equals(EMPTY) ? this.address.toArray() : new int[0];
-		PacketHandlerInit.sendToAllTracking(new ClientboundCartoucheUpdatePacket(this.worldPosition, symbols, address), level.getChunkAt(this.worldPosition));
+		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(),new ClientboundCartoucheUpdatePacket(this.worldPosition, symbols, address));
 	}
 	
 	public void tick(Level level, BlockPos pos, BlockState state)

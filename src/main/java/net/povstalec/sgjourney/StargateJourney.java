@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -23,12 +23,15 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
-import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.init.*;
+import net.povstalec.sgjourney.common.packets.NetworkMessage;
+import net.povstalec.sgjourney.common.packets.ServerNetworkMessage;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -58,20 +61,6 @@ import net.povstalec.sgjourney.client.screens.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.PegasusDHDScreen;
 import net.povstalec.sgjourney.client.screens.RingPanelScreen;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.EntityInit;
-import net.povstalec.sgjourney.common.init.FeatureInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.init.FluidTypeInit;
-import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.init.MiscInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.init.StatisticsInit;
-import net.povstalec.sgjourney.common.init.StructureInit;
-import net.povstalec.sgjourney.common.init.TabInit;
-import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
 import net.povstalec.sgjourney.common.stargate.AddressTable;
 import net.povstalec.sgjourney.common.stargate.Galaxy;
@@ -82,20 +71,18 @@ import net.povstalec.sgjourney.common.stargate.SymbolSet;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
 @Mod(StargateJourney.MODID)
-public class StargateJourney
-{
+public class StargateJourney {
     public static final String MODID = "sgjourney";
     public static final String EMPTY = MODID + ":empty";
 
     public static final String OCULUS_MODID = "oculus";
-    
+
     private static Optional<Boolean> isOculusLoaded = Optional.empty();
-    
+
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public StargateJourney(IEventBus eventBus, ModContainer container)
-    {
-    	ItemInit.register(eventBus);
+    public StargateJourney(IEventBus eventBus, ModContainer container) {
+        ItemInit.register(eventBus);
         BlockInit.register(eventBus);
         FluidInit.register(eventBus);
         FluidTypeInit.register(eventBus);
@@ -112,8 +99,8 @@ public class StargateJourney
 
         eventBus.addListener((DataPackRegistryEvent.NewRegistry event) ->
         {
-        	//TODO Move Galaxy above Point of Origin
-        	// DON'T DELETE THIS COMMENT UNTIL I APPLY THE CHANGE TO OTHER VERSIONS OR I MIGHT FORGET
+            //TODO Move Galaxy above Point of Origin
+            // DON'T DELETE THIS COMMENT UNTIL I APPLY THE CHANGE TO OTHER VERSIONS OR I MIGHT FORGET
             event.dataPackRegistry(SymbolSet.REGISTRY_KEY, SymbolSet.CODEC, SymbolSet.CODEC);
             event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
             event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
@@ -122,57 +109,67 @@ public class StargateJourney
             event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
             event.dataPackRegistry(StargateVariant.REGISTRY_KEY, StargateVariant.CODEC, StargateVariant.CODEC);
         });
-        
+
         eventBus.addListener(this::commonSetup);
         eventBus.addListener(Layers::registerLayers);
         eventBus.addListener(TabInit::addCreative);
-		
-		container.registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
-		container.registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
+        container.registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
+        container.registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
 
         //NeoForge.EVENT_BUS.register(StargateJourney.GameEvents.class);
-		NeoForge.EVENT_BUS.addListener(MiscInit::registerCommands);
+        NeoForge.EVENT_BUS.addListener(MiscInit::registerCommands);
     }
 
-    
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
-    	event.enqueueWork(() -> 
-    	{
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() ->
+        {
             StatisticsInit.register();
-    		//VillagerInit.registerPOIs();
-    	});
+            //VillagerInit.registerPOIs();
+        });
     }
-    
+
     // BECAUSE OCULUS MESSES WITH RENDERING TOO MUCH
-    public static boolean isOculusLoaded()
-    {
-    	if(isOculusLoaded.isEmpty())
-    		isOculusLoaded = Optional.of(ModList.get().isLoaded(OCULUS_MODID));
-    	
-    	return isOculusLoaded.get();	
+    public static boolean isOculusLoaded() {
+        if (isOculusLoaded.isEmpty())
+            isOculusLoaded = Optional.of(ModList.get().isLoaded(OCULUS_MODID));
+
+        return isOculusLoaded.get();
     }
 
     @EventBusSubscriber(modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD)
-    public static class GameEvents
-    {
+    public static class GameEvents {
         @SubscribeEvent
-        public static void onAttachCapabilitiesEvent(RegisterCapabilitiesEvent event)
-        {
+        public static void onAttachCapabilitiesEvent(RegisterCapabilitiesEvent event) {
             event.registerEntity(AncientGene.ANCIENT_GENE, EntityType.PLAYER, (player, voi) -> new AncientGene());
             event.registerEntity(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH, EntityType.PLAYER, (player, voi) -> new BloodstreamNaquadah());
 
             event.registerEntity(AncientGene.ANCIENT_GENE, EntityType.VILLAGER, (player, voi) -> new AncientGene());
             event.registerEntity(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH, EntityType.VILLAGER, (player, voi) -> new BloodstreamNaquadah());
         }
+
+        @SubscribeEvent
+        public static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
+            var registrar = event.registrar(StargateJourney.MODID).versioned("1");
+
+            for (var type : PacketHandlerInit.getServerbound()) registerServerbound(registrar, type);
+            for (var type : PacketHandlerInit.getClientbound()) registerClientbound(registrar, type);
+        }
+
+
+        private static <T extends ServerNetworkMessage> void registerServerbound(PayloadRegistrar registrar, CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, T> type) {
+            registrar.playToServer(type.type(), type.codec(), (t, context) -> context.enqueueWork(() -> t.handle(context.player().level())));
+        }
+
+        private static <T extends NetworkMessage> void registerClientbound(PayloadRegistrar registrar, CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, T> type) {
+            registrar.playToClient(type.type(), type.codec(), (t, context) -> context.enqueueWork(() -> t.handle()));
+        }
+
     }
 
     @EventBusSubscriber(modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents
-    {
+    public static class ClientModEvents {
         @SubscribeEvent
-        public static void registerMenuScreens(RegisterMenuScreensEvent event)
-        {
+        public static void registerMenuScreens(RegisterMenuScreensEvent event) {
             event.register(MenuInit.INTERFACE.get(), InterfaceScreen::new);
             event.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
             event.register(MenuInit.DHD_CRYSTAL.get(), DHDCrystalScreen::new);
@@ -182,37 +179,35 @@ public class StargateJourney
         }
 
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
-        	ItemProperties.register(ItemInit.MATOK.get(), ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "open"), new WeaponStatePropertyFunction());
-        	
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            ItemProperties.register(ItemInit.MATOK.get(), ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "open"), new WeaponStatePropertyFunction());
+
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
-        	
-        	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
-        	
-        	//EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_CARTOUCHE.get(), CartoucheRenderer.Stone::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.Sandstone::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), SymbolBlockRenderer.Stone::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
 
-        	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
-        	BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
+            EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
+
+            //EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
+
+            BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
+            BlockEntityRenderers.register(BlockEntityInit.STONE_CARTOUCHE.get(), CartoucheRenderer.Stone::new);
+
+            BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.Sandstone::new);
+            BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), SymbolBlockRenderer.Stone::new);
+
+            BlockEntityRenderers.register(BlockEntityInit.TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
+
+            BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
+            BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
+            BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
+            BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
+            BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
         }
-        
+
         @SubscribeEvent
-        public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
-        {
+        public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
             SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
         }
     }
@@ -233,10 +228,8 @@ public class StargateJourney
             }
         });
 
-        public static void register(IEventBus bus)
-        {
+        public static void register(IEventBus bus) {
             REGISTRY.register(bus);
         }
     }
-    
 }

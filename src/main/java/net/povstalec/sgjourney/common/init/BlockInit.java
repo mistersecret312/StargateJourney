@@ -86,12 +86,12 @@ public class BlockInit
 	public static final Supplier<ClassicStargateRingBlock> CLASSIC_RING = BLOCKS.register("classic_ring", 
 			() -> new ClassicStargateRingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)
 					.sound(SoundType.METAL).noOcclusion()));
-	public static final Supplier<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerBlock("classic_stargate_base_block", 
-			() -> new ClassicStargateBaseBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
-	public static final Supplier<Block> CLASSIC_STARGATE_CHEVRON_BLOCK = registerBlock("classic_stargate_chevron_block", 
-			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
-	public static final Supplier<Block> CLASSIC_STARGATE_RING_BLOCK = registerBlock("classic_stargate_ring_block", 
-			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F)), Rarity.UNCOMMON, 64);
+	public static final DeferredBlock<ClassicStargateBaseBlock> CLASSIC_STARGATE_BASE_BLOCK = registerBlock("classic_stargate_base_block", ClassicStargateBaseBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F), Rarity.UNCOMMON, 64);
+	public static final DeferredBlock<Block> CLASSIC_STARGATE_CHEVRON_BLOCK = registerBlock("classic_stargate_chevron_block",
+			Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F), Rarity.UNCOMMON, 64);
+	public static final DeferredBlock<Block> CLASSIC_STARGATE_RING_BLOCK = registerBlock("classic_stargate_ring_block",
+			Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F), Rarity.UNCOMMON, 64);
 	
 	public static final Supplier<TollanStargateBlock> TOLLAN_STARGATE = registerStargateBlock("tollan_stargate",
 			() -> new TollanStargateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
@@ -112,17 +112,17 @@ public class BlockInit
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
 	
-	public static final DeferredBlock<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = BLOCKS.registerBlock("universe_stargate_chevron",
+	public static final DeferredBlock<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerBlock("universe_stargate_chevron",
 			ChevronBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F)
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
-					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0));
+					.lightLevel((state) -> state.getValue(ChevronBlock.LIT) ? 7 : 0), Rarity.UNCOMMON, 64);
 	
 	public static final DeferredBlock<TransportRingsBlock> TRANSPORT_RINGS = registerTransporterBlock("transport_rings",
 			TransportRingsBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion(), Rarity.RARE);
-	public static final Supplier<RingPanelBlock> RING_PANEL = registerBlock("ring_panel", 
-			() -> new RingPanelBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
-					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE, 1);
+	public static final DeferredBlock<RingPanelBlock> RING_PANEL = registerBlock("ring_panel",
+			RingPanelBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
+                    .sound(SoundType.METAL).noOcclusion(), Rarity.RARE, 1);
 	
 	public static final Supplier<ExplosiveBlock> NAQUADAH_ORE = registerBlock("naquadah_ore", 
 			() -> new ExplosiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F).requiresCorrectToolForDrops(), 4.0F));
@@ -154,8 +154,8 @@ public class BlockInit
 			() -> new SlabBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 600.0F).requiresCorrectToolForDrops()));
 	
 	public static final Supplier<GoldenIdolBlock> GOLDEN_IDOL = registerBlock("golden_idol", 
-			() -> new GoldenIdolBlock(BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).strength(3.0F, 6.0F)
-					.sound(SoundType.METAL).requiresCorrectToolForDrops()), Rarity.UNCOMMON, 16);
+			GoldenIdolBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).strength(3.0F, 6.0F)
+                    .sound(SoundType.METAL).requiresCorrectToolForDrops(), Rarity.UNCOMMON, 16);
 
 	
 	public static final Supplier<FirePitBlock> FIRE_PIT = registerBlock("fire_pit", 
@@ -184,13 +184,13 @@ public class BlockInit
 
 	public static final Supplier<BasicInterfaceBlock> BASIC_INTERFACE = registerBlock("basic_interface", 
 			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), 1);
-	public static final Supplier<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerBlock("crystal_interface", 
-			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
-	public static final Supplier<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerBlock("advanced_crystal_interface", 
-			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
+	public static final DeferredBlock<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerBlock("crystal_interface",
+			CrystalInterfaceBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F), Rarity.UNCOMMON, 1);
+	public static final DeferredBlock<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerBlock("advanced_crystal_interface",
+			AdvancedCrystalInterfaceBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F), Rarity.RARE, 1);
 	
 	public static final Supplier<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
-			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
+			ATAGeneDetectorBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F), Rarity.RARE, 1);
 	
 	private static <T extends Block>Supplier<T> registerBlock(String name, Supplier<T> block)
 	{
@@ -208,9 +208,9 @@ public class BlockInit
 		
 		return toReturn;
 	}
-	private static <T extends Block>Supplier<T> registerBlock(String name, Supplier<T> block, Rarity rarity, int stacksTo)
+	private static <T extends Block>DeferredBlock<T> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends T> func, BlockBehaviour.Properties props, Rarity rarity, int stacksTo)
 	{
-		Supplier<T> toReturn = BLOCKS.register(name, block);
+		DeferredBlock<T> toReturn = BLOCKS.registerBlock(name, func, props);
 		
 		registerBlockItem(name, toReturn, rarity, stacksTo);
 		

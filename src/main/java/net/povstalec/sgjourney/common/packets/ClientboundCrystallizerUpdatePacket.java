@@ -8,7 +8,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundCrystallizerUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundCrystallizerUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundCrystallizerUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundCrystallizerUpdatePacket::encode, ClientboundCrystallizerUpdatePacket::new);
 
@@ -37,7 +37,7 @@ public class ClientboundCrystallizerUpdatePacket implements NetworkMessage<Clien
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         //ClientAccess.updateCrystallizer(this.pos, this.fluidStack, this.progress);
     }
 

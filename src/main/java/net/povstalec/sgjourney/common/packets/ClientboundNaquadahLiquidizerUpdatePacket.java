@@ -11,7 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundNaquadahLiquidizerUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundNaquadahLiquidizerUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundNaquadahLiquidizerUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundNaquadahLiquidizerUpdatePacket::encode, ClientboundNaquadahLiquidizerUpdatePacket::new);
 
@@ -42,7 +42,7 @@ public class ClientboundNaquadahLiquidizerUpdatePacket implements NetworkMessage
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         //ClientAccess.updateNaquadahLiquidizer(pos, fluidStack1, fluidStack2, progress);
     }
 

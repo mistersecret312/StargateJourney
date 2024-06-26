@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ClientboundDialerUpdatePacket implements NetworkMessage<ClientNetworkContext>
+public class ClientboundDialerUpdatePacket implements NetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundDialerUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ClientboundDialerUpdatePacket::encode, ClientboundDialerUpdatePacket::new);
 
@@ -31,7 +31,7 @@ public class ClientboundDialerUpdatePacket implements NetworkMessage<ClientNetwo
     }
 
     @Override
-    public void handle(ClientNetworkContext context) {
+    public void handle() {
         //ClientAccess.updateDialer(pos);
     }
 

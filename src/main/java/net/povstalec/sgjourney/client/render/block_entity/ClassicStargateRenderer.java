@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.ClassicStargateModel;
@@ -33,7 +34,12 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer implements
 		super(context, EVENT_HORIZON_TEXTURE, SHINY_EVENT_HORIZON_TEXTURE, 0.25F);
 		this.stargateModel = new ClassicStargateModel();
 	}
-	
+
+	@Override
+	public AABB getRenderBoundingBox(ClassicStargateEntity blockEntity) {
+		return new AABB(blockEntity.getCenterPos().getX() - 3, blockEntity.getCenterPos().getY() - 3, blockEntity.getCenterPos().getZ() - 3, blockEntity.getCenterPos().getX() + 4, blockEntity.getCenterPos().getY() + 4, blockEntity.getCenterPos().getZ() + 4);
+	}
+
 	@Override
 	public void render(ClassicStargateEntity stargate, float partialTick, PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)

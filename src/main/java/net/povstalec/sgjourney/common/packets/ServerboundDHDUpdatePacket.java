@@ -1,16 +1,15 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ServerboundDHDUpdatePacket implements NetworkMessage<ServerNetworkContext>
+public class ServerboundDHDUpdatePacket implements ServerNetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundDHDUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ServerboundDHDUpdatePacket::encode, ServerboundDHDUpdatePacket::new);
 
@@ -35,8 +34,8 @@ public class ServerboundDHDUpdatePacket implements NetworkMessage<ServerNetworkC
     }
 
     @Override
-    public void handle(ServerNetworkContext context) {
-        final BlockEntity blockEntity = context.getSender().level().getBlockEntity(blockPos);
+    public void handle(Level level) {
+        final BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if(blockEntity instanceof AbstractDHDEntity dhd)
         {
             dhd.engageChevron(this.symbol);

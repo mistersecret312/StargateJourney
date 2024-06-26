@@ -4,11 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.RingPanelEntity;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 
-public class ServerboundRingPanelUpdatePacket implements NetworkMessage<ServerNetworkContext>
+public class ServerboundRingPanelUpdatePacket implements ServerNetworkMessage
 {
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundRingPanelUpdatePacket> STREAM_CODEC = StreamCodec.ofMember(ServerboundRingPanelUpdatePacket::encode, ServerboundRingPanelUpdatePacket::new);
 
@@ -33,8 +34,8 @@ public class ServerboundRingPanelUpdatePacket implements NetworkMessage<ServerNe
     }
 
     @Override
-    public void handle(ServerNetworkContext context) {
-        final BlockEntity blockEntity = context.getSender().level().getBlockEntity(blockPos);
+    public void handle(Level level) {
+        final BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if(blockEntity instanceof RingPanelEntity ringPanel)
         {
             ringPanel.activateRings(number);

@@ -53,8 +53,6 @@ public class BlockEntityInit
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TransportRingsEntity>> TRANSPORT_RINGS = BLOCK_ENTITIES.register("transport_rings",
             () -> BlockEntityType.Builder.of(TransportRingsEntity::new, new Block[]{BlockInit.TRANSPORT_RINGS.get()}).build(null));
 
-	ComputerCraft
-
 	public static final Supplier<BlockEntityType<RingPanelEntity>> RING_PANEL = BLOCK_ENTITIES.register("ring_panel",
             () -> BlockEntityType.Builder.of(RingPanelEntity::new, BlockInit.RING_PANEL.get()).build(null));
 	
