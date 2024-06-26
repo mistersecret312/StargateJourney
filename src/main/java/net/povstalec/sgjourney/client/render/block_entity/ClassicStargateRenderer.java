@@ -12,6 +12,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.ClassicStargateModel;
+import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
