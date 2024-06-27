@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.client.render.level;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.*;
+import net.minecraft.client.renderer.LevelRenderer;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -425,37 +426,40 @@ public abstract class SGJourneySkyRenderer
 	public void renderSky(ClientLevel level, int ticks, float partialTicks, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
 	{
 		setupFog.run();
+
 		PoseStack stack = new PoseStack();
-		
+		stack.mulPose(modelViewMatrix);
+
 		if(this.isFoggy(camera))
 			return;
-		
-		Vec3 skyColor = level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), partialTicks);
-		float skyX = (float)skyColor.x;
-        float skyY = (float)skyColor.y;
-        float skyZ = (float)skyColor.z;
-        FogRenderer.levelFogColor();
-		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+
+		Vec3 vec3 = level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), partialTicks);
+		float f = (float)vec3.x;
+		float f1 = (float)vec3.y;
+		float f2 = (float)vec3.z;
+		FogRenderer.levelFogColor();
+		Tesselator tesselator = Tesselator.getInstance();
 		RenderSystem.depthMask(false);
-		RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
+		RenderSystem.setShaderColor(f, f1, f2, 1.0F);
 		ShaderInstance shaderinstance = RenderSystem.getShader();
 		this.skyBuffer.bind();
-		this.skyBuffer.drawWithShader(modelViewMatrix, projectionMatrix, shaderinstance);
+		this.skyBuffer.drawWithShader(stack.last().pose(), projectionMatrix, shaderinstance);
 		VertexBuffer.unbind();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		
+
 		this.renderSunrise(level, partialTicks, stack);
-		
+
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		
+
 		float rain = 1.0F - level.getRainLevel(partialTicks);
-		
+		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+
 		this.renderEcliptic(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder, rain);
-        
+
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
-        
+
         RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
         double height = this.minecraft.player.getEyePosition(partialTicks).y - level.getLevelData().getHorizonHeight(level);
         if(height < 0.0D)
@@ -467,7 +471,7 @@ public abstract class SGJourneySkyRenderer
         	VertexBuffer.unbind();
         	stack.popPose();
         }
-        
+
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.depthMask(true);
     }

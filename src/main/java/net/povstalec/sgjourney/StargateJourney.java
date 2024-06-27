@@ -146,8 +146,8 @@ public class StargateJourney {
             event.registerEntity(AncientGene.ANCIENT_GENE, EntityType.PLAYER, (player, voi) -> new AncientGene());
             event.registerEntity(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH, EntityType.PLAYER, (player, voi) -> new BloodstreamNaquadah());
 
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (cap, dir) -> new ItemStackHandler());
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), (cap, dir) -> new ItemStackHandler());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (cap, dir) -> new ItemStackHandler(9));
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), (cap, dir) -> new ItemStackHandler(9));
 
             event.registerEntity(AncientGene.ANCIENT_GENE, EntityType.VILLAGER, (player, voi) -> new AncientGene());
             event.registerEntity(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH, EntityType.VILLAGER, (player, voi) -> new BloodstreamNaquadah());
