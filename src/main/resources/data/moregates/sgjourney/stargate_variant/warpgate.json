@@ -1,0 +1,28 @@
+{
+	"base_stargate": "sgjourney:pegasus_stargate",
+	
+	"texture": "moregates:textures/entity/stargate/pegasus/warpgate/warpgate_stargate.png",
+	"engaged_texture": "moregates:textures/entity/stargate/pegasus/warpgate/warpgate_stargate_engaged.png",
+	"event_horizon_texture": "moregates:textures/entity/stargate/pegasus/warpgate/warpgate_event_horizon.png",
+	"shiny_event_horizon_texture": "moregates:textures/entity/stargate/pegasus/warpgate/warpgate_event_horizon_shiny.png",
+	"symbol_color": [0, 0, 0, 255],
+	"encoded_symbol_color": [0, 148, 255, 255],
+	"engaged_symbol_color": [0, 148, 255, 255],
+	"event_horizon_frames": 64,
+	
+	"model":
+	{
+		"alternate_model": false,
+		"back_chevrons": false,
+		"engage_symbols_on_incoming": true,
+		"encoded_symbols_glow": true,
+		"engage_encoded_symbols": true
+	},
+	
+	"sounds":
+	{
+		"chevron_engage_sound": "moregates:ori_chevron_encode",
+		"chevron_encode_sound": "moregates:ori_chevron_encode",
+		"chevron_incoming_sound": "moregates:ori_chevron_encode"
+	}
+}

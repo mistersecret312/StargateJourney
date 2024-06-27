@@ -1,0 +1,32 @@
+{
+	"base_stargate": "sgjourney:pegasus_stargate",
+	
+	"texture": "moregates:textures/entity/stargate/pegasus/retrogate/retrogate_stargate.png",
+	"engaged_texture": "moregates:textures/entity/stargate/pegasus/retrogate/retrogate_stargate_engaged.png",
+	"event_horizon_texture": "moregates:textures/entity/stargate/pegasus/retrogate/retrogate_event_horizon.png",
+	"shiny_event_horizon_texture": "moregates:textures/entity/stargate/pegasus/retrogate/retrogate_event_horizon_shiny.png",
+	"symbol_color": [40, 17, 0, 255],
+	"engaged_symbol_color": [255, 108, 0, 255],
+	"event_horizon_frames": 30,
+	"point_of_origin": "moregates:enchant",
+	"symbols": "moregates:enchantment",
+	
+	"model":
+	{
+		"alternate_model": false,
+		"back_chevrons": true
+	},
+	
+	"sounds":
+	{
+		"chevron_engage_sound": "moregates:ae2_chevron_engage",
+		"chevron_encode_sound": "moregates:ae2_chevron_engage",
+		"chevron_open_sound": "moregates:ae2_chevron_engage",
+		"incoming_sound": "moregates:mek_chevron_engage",
+		"fail_sound": "sgjourney:pegasus_dial_fail",
+		"wormhole_open_sound": "moregates:mek_ae2_wormhole_open",
+		"wormhole_idle_sound": "moregates:mek_ae2_wormhole_idle",
+		"wormhole_close_sound": "moregates:mek_ae2_wormhole_close",
+		"rotation_sound": "moregates:mek_ring_spin"
+	}
+}

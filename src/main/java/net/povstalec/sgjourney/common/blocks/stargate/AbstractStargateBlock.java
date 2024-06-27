@@ -1,12 +1,19 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -16,6 +23,8 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -28,11 +37,14 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import net.povstalec.sgjourney.common.items.crystals.StargateChangeCrystal;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.stargate.StargateConnection;
+import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock
 {
@@ -161,7 +173,61 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	{
 		return RenderShape.MODEL;
 	}
-	
+
+
+	public boolean setVariant(Level level, BlockPos pos, Player player, InteractionHand hand)
+	{
+		ItemStack stack = player.getItemInHand(hand);
+		Item item = stack.getItem();
+
+		if(item instanceof StargateChangeCrystal && stack.getComponents().has(StargateJourney.DataComponents.VARIANT.get()))
+		{
+			Optional<String> variant = StargateChangeCrystal.getVariantString(stack);
+
+			if(variant.isPresent())
+			{
+				if(level.isClientSide())
+					return true;
+
+				BlockEntity blockEntity = level.getBlockEntity(pos);
+
+				if(blockEntity instanceof AbstractStargateEntity stargate)
+				{
+					if(variant.get().equals(stargate.getVariant()))
+					{
+						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.same_variant"), true);
+						return true;
+					}
+
+					RegistryAccess registries = level.getServer().registryAccess();
+					Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
+
+					Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(ResourceLocation.parse(variant.get())));
+
+					if(stargateVariant.isPresent() && !stargateVariant.get().getBaseStargate().equals(BlockEntityType.getKey(stargate.getType())))
+					{
+						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.incorrect_stargate_type"), true);
+						return true;
+					}
+
+					stargate.setVariant(variant.get());
+
+					if(!player.isCreative())
+						stack.shrink(1);
+
+					return true;
+				}
+			}
+			else
+			{
+				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.invalid_variant"), true);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public abstract AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state);
 	
 	/*@Override

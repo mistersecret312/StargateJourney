@@ -4,8 +4,12 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import dan200.computercraft.shared.network.codec.MoreStreamCodecs;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EntityType;
@@ -25,6 +29,7 @@ import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
@@ -231,6 +236,19 @@ public class StargateJourney {
             @Override
             public StreamCodec<? super RegistryFriendlyByteBuf, ResourceLocation> streamCodec() {
                 return ResourceLocation.STREAM_CODEC;
+            }
+        });
+
+        public static final Supplier<DataComponentType<String>> VARIANT = REGISTRY.register("variant", () -> new DataComponentType<>() {
+            @Nullable
+            @Override
+            public Codec<String> codec() {
+                return Codec.STRING;
+            }
+
+            @Override
+            public StreamCodec<? super RegistryFriendlyByteBuf, String> streamCodec() {
+                return StreamCodec.of(FriendlyByteBuf::writeUtf, FriendlyByteBuf::readUtf);
             }
         });
 

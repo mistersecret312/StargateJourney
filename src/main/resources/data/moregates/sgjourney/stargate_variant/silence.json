@@ -1,0 +1,38 @@
+{
+	"base_stargate": "sgjourney:milky_way_stargate",
+	
+	"texture": "moregates:textures/entity/stargate/milky_way/silence/silence_stargate.png",
+	"engaged_texture": "moregates:textures/entity/stargate/milky_way/silence/silence_stargate_engaged.png",
+	"event_horizon_texture": "moregates:textures/entity/stargate/milky_way/silence/silence_event_horizon.png",
+	"shiny_event_horizon_texture": "moregates:textures/entity/stargate/milky_way/silence/silence_event_horizon_shiny.png",
+	"symbol_color": [22, 66, 73, 255],
+	"encoded_symbol_color": [26, 255, 201, 255],
+	"engaged_symbol_color": [26, 255, 201, 255],
+	
+	"point_of_origin": "moregates:enchant",
+	"symbols": "moregates:enchantment",
+	
+	"model":
+	{
+		"alternate_model": true,
+		"back_chevrons": false,
+		"engage_symbols_on_incoming": true,
+		"encoded_symbols_glow": true,
+		"engage_encoded_symbols": true
+	},
+	
+	"sounds":
+	{
+		"chevron_engage_sound": "moregates:silence_chevron_encode",
+		"chevron_encode_sound": "moregates:nox_chevron_encode",
+		"chevron_open_sound": "moregates:silence_chevron_open",
+		"chevron_incoming_sound": "moregates:crafter_chevron_open",
+		"dial_fail_sound": "sgjourney:universe_dial_fail",
+		"wormhole_open_sound": "moregates:crafter_gate_open",
+		"wormhole_idle_sound": "moregates:silence_wormhole_idle",
+		"wormhole_close_sound": "moregates:crafter_gate_close",
+		"rotation_stop_sound": "moregates:silence_chevron_encode",
+		"rotation_sound": "bloodgate_ring_spin",
+		"rotation_buildup_sound": "moregates:makeshift_spin_start"
+	}
+}

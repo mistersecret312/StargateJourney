@@ -2,17 +2,13 @@ package net.povstalec.sgjourney.common.init;
 
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.PDAItem;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyAxeItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyHoeItem;
 import net.povstalec.sgjourney.common.items.tools.SGJourneyPickaxeItem;
@@ -65,6 +61,8 @@ public class ItemInit
 	/*public static final Supplier<Item> UNIVERSE_DIALER = ITEMS.register("universe_dialer", 
 			() -> new DialerItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));*/
 
+	public static final DeferredItem<StargateChangeCrystal> CHANGE_CRYSTAL = ITEMS.register("stargate_change_crystal",
+			() -> new StargateChangeCrystal(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 	// Crystals
 	public static final Supplier<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal", 
 			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));

@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:smithing_transform",
+	"category": "misc",
+	"template": {
+		"item": "sgjourney:crystal_base"
+	},
+	"base": {
+		"item": "minecraft_quartz"
+	},
+	"addition": {
+		"item": "minecraft:glowstone_dust"
+	},
+	"result": {
+		"id": "sgjourney:transfer_crystal"
+	}
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern": [
+    "TTT",
+    "TIT",
+    "TTT"
+  ],
+  "key": {
+    "I": {"item": "sgjourney:raw_naquadah"},
+    "T": {"tag": "forge:raw_materials/naquadah"}
+  },
+  "result": {
+    "item": "sgjourney:raw_naquadah_block"
+  }
+}

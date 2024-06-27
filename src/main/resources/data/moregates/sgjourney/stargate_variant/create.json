@@ -1,0 +1,26 @@
+{
+	"base_stargate": "sgjourney:universe_stargate",
+	
+	"texture": "moregates:textures/entity/stargate/universe/create/create_stargate.png",
+	"engaged_texture": "moregates:textures/entity/stargate/universe/create/create_stargate_engaged.png",
+	"event_horizon_texture": "moregates:textures/entity/stargate/universe/create/create_event_horizon.png",
+	"shiny_event_horizon_texture": "moregates:textures/entity/stargate/universe/create/create_event_horizon_shiny.png",
+	"engaged_symbol_color": [248, 145, 44, 255],
+	
+	"model":
+	{
+		"alternate_model": false,
+		"back_chevrons": false
+	},
+	
+	"sounds":
+	{
+   		"chevron_engage_sound": "moregates:create_chevron_encode",
+		"chevron_encode_sound": "moregates:create_chevron_encode",
+		"dial_fail_sound": "sgjourney:milky_way_dial_fail",
+		"wormhole_open_sound": "moregates:create_wormhole_open",
+		"wormhole_idle_sound": "moregates:mek_ae2_wormhole_idle",
+		"wormhole_close_sound": "moregates:create_gate_close",
+		"rotation_sound": "moregates:create_gate_spin"
+	}
+}

@@ -1,0 +1,33 @@
+{
+	"base_stargate": "sgjourney:pegasus_stargate",
+	
+	"texture": "moregates:textures/entity/stargate/pegasus/universe_mk3/universe_mk3_stargate.png",
+	"engaged_texture": "moregates:textures/entity/stargate/pegasus/universe_mk3/universe_mk3_stargate_engaged.png",
+	"event_horizon_texture": "moregates:textures/entity/stargate/pegasus/universe_mk3/universe_mk3_event_horizon.png",
+	"shiny_event_horizon_texture": "moregates:textures/entity/stargate/pegasus/universe_mk3/universe_mk3_event_horizon_shiny.png",
+	"symbol_color": [10, 10, 10, 255],
+	"encoded_symbol_color": [255, 255, 255, 255],
+	"engaged_symbol_color": [255, 255, 255, 255],
+	
+	"point_of_origin": "sgjourney:universal",
+	"symbols": "moregates:universal_custom",
+	
+	"model":
+	{
+		"alternate_model": true,
+		"back_chevrons": false,
+		"engage_symbols_on_incoming": true,
+		"encoded_symbols_glow": true,
+		"engage_encoded_symbols": true
+	},
+	
+	"sounds":
+	{
+		"chevron_engage_sound": "sgjourney:universe_chevron_engage",
+		"chevron_encode_sound": "sgjourney:universe_chevron_engage",
+		"chevron_open_sound": "sgjourney:movie_chevron_open",
+		"chevron_incoming_sound": "moregates:create_chevron_encode",
+		"dial_fail_sound": "sgjourney:universe_dial_fail",
+		"rotation_sound": "moregates:dark_ascension_spin"
+	}
+}

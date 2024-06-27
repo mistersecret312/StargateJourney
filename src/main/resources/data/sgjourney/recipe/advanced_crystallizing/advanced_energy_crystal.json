@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:smithing_transform",
+	"category": "misc",
+	"template": {
+		"item": "sgjourney:advanced_crystal_base"
+	},
+	"base": {
+		"item": "sgjourney:energy_crystal"
+	},
+	"addition": {
+		"item": "sgjourney:energy_crystal"
+	},
+	"result": {
+		"id": "sgjourney:advanced_energy_crystal"
+	}
+}

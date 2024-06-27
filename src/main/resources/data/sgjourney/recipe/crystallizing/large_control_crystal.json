@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:smithing_transform",
+	"category": "misc",
+	"template": {
+		"item": "sgjourney:crystal_base"
+	},
+	"base": {
+		"item": "minecraft:diamond_block"
+	},
+	"addition": {
+		"item": "minecraft:redstone_block"
+	},
+	"result": {
+		"id": "sgjourney:large_control_crystal"
+	}
+}

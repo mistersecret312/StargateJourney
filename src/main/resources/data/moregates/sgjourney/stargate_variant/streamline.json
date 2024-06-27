@@ -1,0 +1,30 @@
+{
+	"base_stargate": "sgjourney:pegasus_stargate",
+	
+	"texture": "moregates:textures/entity/stargate/pegasus/streamline/streamline_stargate.png",
+	"engaged_texture": "moregates:textures/entity/stargate/pegasus/streamline/streamline_stargate_engaged.png",
+	"event_horizon_texture": "moregates:textures/entity/stargate/pegasus/streamline/streamline_event_horizon.png",
+	"shiny_event_horizon_texture": "moregates:textures/entity/stargate/pegasus/streamline/streamline_event_horizon_shiny.png",
+	"symbol_color": [0, 30, 59, 255],
+	"encoded_symbol_color": [38, 147, 255, 255],
+	"engaged_symbol_color": [38, 147, 255, 255],
+	
+	"point_of_origin": "moregates:enchant",
+	"symbols": "moregates:enchantment",
+	
+	"model":
+	{
+		"alternate_model": true,
+		"back_chevrons": false
+	},
+	
+	"sounds":
+	{
+		"chevron_engage_sound": "moregates:ori_chevron_encode",
+		"incoming_sound": "moregates:ori_chevron_encode",
+		"chevron_incoming_sound": "moregates:ori_chevron_encode",
+		"dial_fail_sound": "sgjourney:pegasus_dial_fail",
+		"wormhole_open_sound": "sgjourney:pegasus_wormhole_open",
+		"wormhole_close_sound": "sgjourney:pegasus_wormhole_close"
+	}
+}

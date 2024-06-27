@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"AAA",
+		"NNN",
+		"AAA"
+	],
+	
+	"key": 
+	{
+		"N": { "tag": "forge:ingots/naquadah" },
+		"A": { "tag": "forge:ingots/naquadah_alloy" }
+		
+	},
+	
+	"result": { "item": "sgjourney:classic_stargate_ring_block" }
+}

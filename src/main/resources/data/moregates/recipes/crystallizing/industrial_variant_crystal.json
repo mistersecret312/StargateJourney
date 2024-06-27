@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:smithing_transform",
+	"category": "misc",
+	"template": {
+		"item": "sgjourney:stargate_change_crystal"
+	},
+	"base": {
+		"item": "sgjourney:naquadah"
+	},
+	"addition": {
+		"item": "minecraft:iron_block"
+	},
+	"result": {
+		"id": "sgjourney:stargate_change_crystal",
+		"components": {
+			"sgjourney:variant": "moregates:industrial"
+		}
+	}
+}

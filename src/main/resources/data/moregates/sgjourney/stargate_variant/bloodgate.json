@@ -1,0 +1,39 @@
+{
+	"base_stargate": "sgjourney:milky_way_stargate",
+	
+	"texture": "moregates:textures/entity/stargate/milky_way/bloodgate/bloodgate_stargate.png",
+	"engaged_texture": "moregates:textures/entity/stargate/milky_way/bloodgate/bloodgate_stargate_engaged.png",
+	"event_horizon_texture": "moregates:textures/entity/stargate/milky_way/bloodgate/bloodgate_event_horizon.png",
+	"shiny_event_horizon_texture": "moregates:textures/entity/stargate/milky_way/bloodgate/bloodgate_event_horizon_shiny.png",
+	"symbol_color": [30, 30, 30, 255],
+	"encoded_symbol_color": [174, 0, 0, 255],
+	"engaged_symbol_color": [174, 0, 0, 255],
+	"event_horizon_frames": 64,
+
+	"point_of_origin": "moregates:enchant",
+	"symbols": "moregates:enchantment",
+	
+	"model":
+	{
+		"alternate_model": true,
+		"back_chevrons": false,
+		"engage_symbols_on_incoming": true,
+		"encoded_symbols_glow": true,
+		"engage_encoded_symbols": true
+	},
+	
+	"sounds":
+	{
+		"wormhole_open_sound": "moregates:crafter_gate_open",
+		"wormhole_idle_sound": "moregates:silence_wormhole_idle",
+		"wormhole_close_sound": "moregates:crafter_gate_close",
+		"chevron_engage_sound": "moregates:crafter_chevron_encode",
+		"chevron_encode_sound": "moregates:nox_chevron_encode",
+		"chevron_open_sound": "moregates:crafter_chevron_open",
+		"dial_fail_sound": "sgjourney:universe_dial_fail",
+		"chevron_incoming_sound": "moregates:nox_chevron_encode",
+		"rotation_sound": "moregates:bloodgate_ring_spin",
+		"rotation_buildup_sound": "sgjourney:empty",
+		"rotation_stop_sound": "moregates:crafter_chevron_encode"
+	}
+}

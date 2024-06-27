@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.crystals.StargateChangeCrystal;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
 import java.util.function.Supplier;
@@ -106,6 +107,14 @@ public class TabInit
 			event.accept(BlockInit.CRYSTAL_INTERFACE.get());
 			event.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
 			event.accept(ItemInit.CALL_FORWARDING_DEVICE.get());
+
+			event.accept(StargateChangeCrystal.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
+			event.accept(StargateChangeCrystal.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
+			event.accept(StargateChangeCrystal.stargateType(BlockInit.PEGASUS_STARGATE.get()));
+			event.accept(StargateChangeCrystal.stargateType(BlockInit.TOLLAN_STARGATE.get()));
+
+			event.getParameters().holders().lookup(StargateVariant.REGISTRY_KEY).ifPresent(reg -> reg.listElementIds().forEach(id -> event.accept(StargateChangeCrystal.stargateVariant(id.location().toString()))));
+
 		}
 		else if(event.getTab() == STARGATE_BLOCKS.get())
 		{
@@ -113,7 +122,6 @@ public class TabInit
 			
 			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
 			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.RING_PANEL.get())));
-
 
 			event.accept(BlockInit.GOLDEN_IDOL.get());
 

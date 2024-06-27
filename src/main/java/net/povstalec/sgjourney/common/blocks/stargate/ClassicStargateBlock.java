@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -8,23 +9,36 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.items.crystals.StargateChangeCrystal;
 import net.povstalec.sgjourney.common.stargate.PointOfOrigin;
 import net.povstalec.sgjourney.common.stargate.Symbols;
 
@@ -34,7 +48,100 @@ public class ClassicStargateBlock extends AbstractStargateBaseBlock
 	{
 		super(properties, 8.0D, 0.0D);
 	}
-	
+
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+		upgradeStargate(pLevel, pPos, pPlayer, pHand);
+		return super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
+	}
+
+	public boolean upgradeStargate(Level level, BlockPos pos, Player player, InteractionHand hand)
+	{
+		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get())
+		{
+			player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.upgrading_disabled"), true);
+			return true;
+		}
+
+		ItemStack stack = player.getItemInHand(hand);
+		Item item = stack.getItem();
+
+		if(item instanceof StargateChangeCrystal upgrade)
+		{
+			Optional<AbstractStargateBaseBlock> baseBlock = upgrade.getStargateBaseBlock(stack);
+
+			if(!baseBlock.isPresent())
+			{
+				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.invalid_upgrade"), true);
+				return true;
+			}
+
+			CompoundTag tag = new CompoundTag();
+
+			BlockEntity oldEntity = level.getBlockEntity(pos);
+			if(oldEntity instanceof AbstractStargateEntity stargate)
+			{
+				if(!level.isClientSide())
+					tag = stargate.serializeStargateInfo(new CompoundTag(), VanillaRegistries.createLookup());
+			}
+
+			Direction direction = level.getBlockState(pos).getValue(FACING);
+			Orientation orientation = level.getBlockState(pos).getValue(ORIENTATION);
+
+			// Check if there's enough space for the Stargate (Not all Stargates have the same size)
+			for(StargatePart part : baseBlock.get().getParts())
+			{
+				BlockState partState = level.getBlockState(part.getRingPos(pos, direction, orientation));
+				if(!part.equals(StargatePart.BASE) && (!partState.canBeReplaced() && !(partState.getBlock() instanceof AbstractStargateBlock)))
+				{
+					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
+					return true;
+				}
+			}
+
+			if(level.getBlockState(pos).getBlock() instanceof AbstractStargateBaseBlock oldBaseBlock)
+			{
+				for(StargatePart part : oldBaseBlock.getParts())
+				{
+					level.setBlock(part.getRingPos(pos, direction, orientation), Blocks.AIR.defaultBlockState(), 3);
+				}
+
+				for(StargatePart part : baseBlock.get().getParts())
+				{
+					if(!part.equals(StargatePart.BASE))
+					{
+						level.setBlock(part.getRingPos(pos, direction, orientation),
+								baseBlock.get().getRing().defaultBlockState()
+										.setValue(AbstractStargateRingBlock.PART, part)
+										.setValue(AbstractStargateRingBlock.FACING, direction)
+										.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
+					}
+				}
+
+				level.setBlock(pos, baseBlock.get().defaultBlockState()
+						.setValue(AbstractStargateRingBlock.FACING, direction)
+						.setValue(AbstractStargateRingBlock.ORIENTATION, orientation), 3);
+
+				BlockEntity newEntity = level.getBlockEntity(pos);
+				if(newEntity instanceof AbstractStargateEntity stargate)
+				{
+					if(!level.isClientSide())
+					{
+						stargate.deserializeStargateInfo(tag, VanillaRegistries.createLookup(), true);
+						stargate.addStargateToNetwork();
+					}
+				}
+
+				if(!player.isCreative())
+					stack.shrink(1);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
