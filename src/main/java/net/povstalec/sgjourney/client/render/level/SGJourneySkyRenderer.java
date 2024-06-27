@@ -293,14 +293,14 @@ public abstract class SGJourneySkyRenderer
 		return new float[] {(float) x, (float) y, (float) z};
 	}
 	
-	public void createCelestialObject(BufferBuilder bufferbuilder, Matrix4f lastMatrix, ResourceLocation location,
-			float size, float distance, float[] uv)
+	public void createCelestialObject(Matrix4f lastMatrix, ResourceLocation location,
+									  float size, float distance, float[] uv)
 	{
-		this.createCelestialObject(bufferbuilder, lastMatrix, location, size, distance, 0.0F, 0.0F, uv);
+		this.createCelestialObject(lastMatrix, location, size, distance, 0.0F, 0.0F, uv);
 	}
 	
-	public void createCelestialObject(BufferBuilder bufferbuilder, Matrix4f lastMatrix, ResourceLocation location,
-			float size, float distance, float theta, float phi, float[] uv)
+	public void createCelestialObject(Matrix4f lastMatrix, ResourceLocation location,
+									  float size, float distance, float theta, float phi, float[] uv)
 	{
 		float[] u0v0 = moveSpherical(-size, -size, distance, theta, phi);
 		float[] u1v0 = moveSpherical(size, -size, distance, theta, phi);
@@ -316,36 +316,36 @@ public abstract class SGJourneySkyRenderer
         BufferUploader.drawWithShader(bufferbuilderer.build());
 	}
 	
-	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size)
+	protected void renderSun(Matrix4f lastMatrix, float size)
 	{
-		this.createCelestialObject(bufferbuilder, lastMatrix, SUN_LOCATION, 
+		this.createCelestialObject(lastMatrix, SUN_LOCATION,
 				size, 100.0F, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 
 		RenderSystem.enableBlend();
 	}
 	
-	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size, float theta, float phi)
+	protected void renderSun(Matrix4f lastMatrix, float size, float theta, float phi)
 	{
-		this.createCelestialObject(bufferbuilder, lastMatrix, SUN_LOCATION, 
+		this.createCelestialObject(lastMatrix, SUN_LOCATION,
 				size, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 
 		RenderSystem.enableBlend();
 	}
 	
-	protected void renderBlackHole(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size, float theta, float phi)
+	protected void renderBlackHole(Matrix4f lastMatrix, float size, float theta, float phi)
 	{
-		this.createCelestialObject(bufferbuilder, lastMatrix, BLACK_HOLE_HALO_LOCATION, 
+		this.createCelestialObject(lastMatrix, BLACK_HOLE_HALO_LOCATION,
 				size, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 		
         RenderSystem.disableBlend();
         
-		this.createCelestialObject(bufferbuilder, lastMatrix, BLACK_HOLE_LOCATION, 
+		this.createCelestialObject(lastMatrix, BLACK_HOLE_LOCATION,
 				size, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 
 		RenderSystem.enableBlend();
 	}
 	
-	protected void renderMoon(BufferBuilder bufferbuilder, Matrix4f lastMatrix, float size, int phase, float theta, float phi)
+	protected void renderMoon(Matrix4f lastMatrix, float size, int phase, float theta, float phi)
 	{
         int x = phase % 4;
         int y = phase / 4 % 2;
@@ -354,12 +354,12 @@ public abstract class SGJourneySkyRenderer
         float xEnd = (float)(x + 1) / 4.0F;
         float yEnd = (float)(y + 1) / 2.0F;
         
-		this.createCelestialObject(bufferbuilder, lastMatrix, MOON_HALO_LOCATION, 
+		this.createCelestialObject(lastMatrix, MOON_HALO_LOCATION,
 				size, 100.0F, theta, phi, new float[] {0.0F, 0.0F, 1.0F, 1.0F});
 		
         RenderSystem.disableBlend();
         
-		this.createCelestialObject(bufferbuilder, lastMatrix, MOON_LOCATION, 
+		this.createCelestialObject(lastMatrix, MOON_LOCATION,
 				size / 4, 100.0F, theta, phi, new float[] {xStart, yStart, xEnd, yEnd});
 
 		RenderSystem.enableBlend();
@@ -435,7 +435,7 @@ public abstract class SGJourneySkyRenderer
         float skyY = (float)skyColor.y;
         float skyZ = (float)skyColor.z;
         FogRenderer.levelFogColor();
-		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, VertexFormat.builder().build());
+		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		RenderSystem.depthMask(false);
 		RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
 		ShaderInstance shaderinstance = RenderSystem.getShader();

@@ -54,7 +54,7 @@ public abstract class AbstractStargateRenderer
 	{
 		Optional<ResourceLocation> eventHorizonTexture = Optional.empty();
 		int frames = 32;
-		boolean hasVortex = ClientStargateConfig.enable_vortex.get();
+		boolean hasVortex = false;
 		
 		if(model != null)
 		{

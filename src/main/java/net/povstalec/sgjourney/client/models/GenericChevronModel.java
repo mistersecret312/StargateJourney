@@ -6,8 +6,6 @@ import org.joml.Matrix4f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-
 public class GenericChevronModel
 {
 	protected static final float STARGATE_RING_OFFSET = GenericStargateModel.STARGATE_RING_OFFSET;
@@ -51,14 +49,14 @@ public class GenericChevronModel
 	
 	protected static final float OUTER_CHEVRON_UPPER_BOTTOM_CENTER = (OUTER_CHEVRON_TOP_OFFSET / (OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_BOTTOM_HEIGHT)) * OUTER_CHEVRON_BOTTOM_HEIGHT;
 	
-	public static void renderChevronLight(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isFrontRaised, boolean isBackRaised)
+	public static void renderChevronLight(PoseStack stack, VertexConsumer consumer, int combinedLight, boolean isFrontRaised, boolean isBackRaised)
 	{
-		renderChevronLightFront(stack, consumer, source, combinedLight, isFrontRaised);
-		renderChevronLightCenter(stack, consumer, source, combinedLight, isFrontRaised, isBackRaised);
-		renderChevronLightBack(stack, consumer, source, combinedLight, isBackRaised);
+		renderChevronLightFront(stack, consumer, combinedLight, isFrontRaised);
+		renderChevronLightCenter(stack, consumer, combinedLight, isFrontRaised, isBackRaised);
+		renderChevronLightBack(stack, consumer, combinedLight, isBackRaised);
 	}
 	
-	protected static void renderChevronLightFront(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isRaised)
+	protected static void renderChevronLightFront(PoseStack stack, VertexConsumer consumer, int combinedLight, boolean isRaised)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -200,7 +198,7 @@ public class GenericChevronModel
 		}
 	}
 	
-	protected static void renderChevronLightCenter(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isFrontRaised, boolean isBackRaised)
+	protected static void renderChevronLightCenter(PoseStack stack, VertexConsumer consumer, int combinedLight, boolean isFrontRaised, boolean isBackRaised)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -322,7 +320,7 @@ public class GenericChevronModel
 		}
 	}
 	
-	protected static void renderChevronLightBack(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isRaised)
+	protected static void renderChevronLightBack(PoseStack stack, VertexConsumer consumer, int combinedLight, boolean isRaised)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -464,15 +462,15 @@ public class GenericChevronModel
 				64F/64, 4F/64);
 	}
 	
-	public static void renderOuterChevronFront(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isOpen)
+	public static void renderOuterChevronFront(PoseStack stack, VertexConsumer consumer, int combinedLight, boolean isOpen)
 	{
 		float yOffset = isOpen ? -2F / 16 : 0;
-		renderCenterOuterChevron(stack, consumer, source, combinedLight, isOpen, yOffset);
-		renderLeftOuterChevron(stack, consumer, source, combinedLight, isOpen, yOffset);
-		renderRightOuterChevron(stack, consumer, source, combinedLight, isOpen, yOffset);
+		renderCenterOuterChevron(stack, consumer, combinedLight, isOpen, yOffset);
+		renderLeftOuterChevron(stack, consumer, combinedLight, isOpen, yOffset);
+		renderRightOuterChevron(stack, consumer, combinedLight, isOpen, yOffset);
 	}
 	
-	protected static void renderCenterOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isOpen, float yOffset)
+	protected static void renderCenterOuterChevron(PoseStack stack, VertexConsumer consumer, int combinedLight, boolean isOpen, float yOffset)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -544,7 +542,7 @@ public class GenericChevronModel
 				57F/64, 45F/64);
 	}
 	
-	protected static void renderLeftOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isOpen, float yOffset)
+	protected static void renderLeftOuterChevron(PoseStack stack, VertexConsumer consumer, int combinedLight, boolean isOpen, float yOffset)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -638,7 +636,7 @@ public class GenericChevronModel
 				47F/64, 36F/64);
 	}
 	
-	protected static void renderRightOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isOpen, float yOffset)
+	protected static void renderRightOuterChevron(PoseStack stack, VertexConsumer consumer, int combinedLight, boolean isOpen, float yOffset)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -732,14 +730,14 @@ public class GenericChevronModel
 			56F/64, 36F/64);
 	}
 	
-	public static void renderOuterChevronBack(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
+	public static void renderOuterChevronBack(PoseStack stack, VertexConsumer consumer, int combinedLight)
 	{
-		renderBackCenterOuterChevron(stack, consumer, source, combinedLight);
-		renderLeftOuterChevron(stack, consumer, source, combinedLight);
-		renderRightOuterChevron(stack, consumer, source, combinedLight);
+		renderBackCenterOuterChevron(stack, consumer, combinedLight);
+		renderLeftOuterChevron(stack, consumer, combinedLight);
+		renderRightOuterChevron(stack, consumer, combinedLight);
 	}
 	
-	protected static void renderBackCenterOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
+	protected static void renderBackCenterOuterChevron(PoseStack stack, VertexConsumer consumer, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -811,7 +809,7 @@ public class GenericChevronModel
 				57F/64, 34F/64);
 	}
 	
-	protected static void renderLeftOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
+	protected static void renderLeftOuterChevron(PoseStack stack, VertexConsumer consumer, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
@@ -905,7 +903,7 @@ public class GenericChevronModel
 				47F/64, 34F/64);
 	}
 	
-	protected static void renderRightOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
+	protected static void renderRightOuterChevron(PoseStack stack, VertexConsumer consumer, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();

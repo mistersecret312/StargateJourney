@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client.render.level;
 
+import net.minecraft.client.renderer.DimensionSpecialEffects;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -18,14 +19,14 @@ public class PlanetSkyRenderers
 		
 		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
 		{
-			this.renderSun(bufferbuilder, lastMatrix, 50.0F);
+			this.renderSun(lastMatrix, 50.0F);
 	        
-	        this.renderMoon(bufferbuilder, lastMatrix, 20.0F, level.getMoonPhase(), (float) Math.toRadians(-120), (float) Math.toRadians(170));
-	        this.renderMoon(bufferbuilder, lastMatrix, 25.0F, level.getMoonPhase(), (float) Math.toRadians(80), (float) Math.toRadians(152.5));
-	        this.renderMoon(bufferbuilder, lastMatrix, 35.0F, level.getMoonPhase(), (float) Math.toRadians(-65), (float) Math.toRadians(150));
+	        this.renderMoon(lastMatrix, 20.0F, level.getMoonPhase(), (float) Math.toRadians(-120), (float) Math.toRadians(170));
+	        this.renderMoon(lastMatrix, 25.0F, level.getMoonPhase(), (float) Math.toRadians(80), (float) Math.toRadians(152.5));
+	        this.renderMoon(lastMatrix, 35.0F, level.getMoonPhase(), (float) Math.toRadians(-65), (float) Math.toRadians(150));
 		}
 	}
-	
+
 	public static class ChulakSkyRenderer extends SGJourneySkyRenderer
 	{
 		public ChulakSkyRenderer()
@@ -35,10 +36,10 @@ public class PlanetSkyRenderers
 		
 		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
 		{
-			this.renderSun(bufferbuilder, lastMatrix, 30.0F, (float) Math.toRadians(90), (float) Math.toRadians(10));
-			this.renderSun(bufferbuilder, lastMatrix, 30.0F, (float) Math.toRadians(15), (float) Math.toRadians(-10));
+			this.renderSun(lastMatrix, 30.0F, (float) Math.toRadians(90), (float) Math.toRadians(10));
+			this.renderSun(lastMatrix, 30.0F, (float) Math.toRadians(15), (float) Math.toRadians(-10));
 	        
-	        this.renderMoon(bufferbuilder, lastMatrix, 45.0F, level.getMoonPhase(), 0.0F, (float) Math.toRadians(180));
+	        this.renderMoon(lastMatrix, 45.0F, level.getMoonPhase(), 0.0F, (float) Math.toRadians(180));
 		}
 	}
 	
@@ -51,7 +52,7 @@ public class PlanetSkyRenderers
 		
 		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
 		{
-			this.renderBlackHole(bufferbuilder, lastMatrix, 70.0F, 0.0F, 0.0F);
+			this.renderBlackHole(lastMatrix, 70.0F, 0.0F, 0.0F);
 		}
 	}
 	
@@ -64,9 +65,9 @@ public class PlanetSkyRenderers
 		
 		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
 		{
-			this.renderSun(bufferbuilder, lastMatrix, 30.0F);
+			this.renderSun(lastMatrix, 30.0F);
 	        
-	        this.renderMoon(bufferbuilder, lastMatrix, 20.0F, level.getMoonPhase(), 0.0F, (float) Math.toRadians(180));
+	        this.renderMoon(lastMatrix, 20.0F, level.getMoonPhase(), 0.0F, (float) Math.toRadians(180));
 		}
 	}
 	
@@ -79,9 +80,9 @@ public class PlanetSkyRenderers
 		
 		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
 		{
-			this.renderSun(bufferbuilder, lastMatrix, 30.0F);
+			this.renderSun(lastMatrix, 30.0F);
 	        
-	        this.renderMoon(bufferbuilder, lastMatrix, 20.0F, level.getMoonPhase(), (float) Math.toRadians(40), (float) Math.toRadians(180));
+	        this.renderMoon(lastMatrix, 20.0F, level.getMoonPhase(), (float) Math.toRadians(40), (float) Math.toRadians(180));
 		}
 	}
 }

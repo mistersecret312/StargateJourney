@@ -1,6 +1,4 @@
 {
-	"name": "sgjourney:stargate_pedestal",
-	
 	"fallback": "minecraft:empty",
 	
 	"elements":

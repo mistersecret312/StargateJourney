@@ -1,6 +1,4 @@
 {
-  "name": "sgjourney:abydos_pyramid/abydos_pyramid_center_pool",
-
   "fallback": "minecraft:empty",
 
   "elements": [

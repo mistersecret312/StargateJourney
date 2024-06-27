@@ -1,5 +1,4 @@
 {
-  "name": "sgjourney:great_pyramid/top_pool",
   "fallback": "minecraft:empty",
   "elements": [
     {

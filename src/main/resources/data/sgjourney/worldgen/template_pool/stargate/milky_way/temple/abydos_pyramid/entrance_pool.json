@@ -1,5 +1,4 @@
 {
-  "name": "sgjourney:abydos_pyramid/entrance_pool",
   "fallback": "minecraft:empty",
   "elements": [
     {

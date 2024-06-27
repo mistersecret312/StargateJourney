@@ -142,7 +142,7 @@ public class WormholeModel
 						coordinates[i][j % coordinates[i].length][1],
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i][j % coordinates[i].length][2], yOffset, i, 0), frames);
 				
-				createTriangle(frontConsumer, matrix4, matrix3,
+				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
@@ -168,7 +168,6 @@ public class WormholeModel
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 
-		Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
 		VertexConsumer kawooshConsumer = source.getBuffer(SGJourneyRenderTypes.vortex(texture.orElseGet(this::getEventHorizonTexture), 0, textureTickOffset));
 
 		int totalSides = coordinates[0].length;
@@ -177,7 +176,6 @@ public class WormholeModel
 		{
 			for(int j = 0; j < totalSides; j++)
 			{
-				stack.pushPose();
 				createTriangle(kawooshConsumer, matrix4, matrix3,
 						bubbleX(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
@@ -203,7 +201,6 @@ public class WormholeModel
 						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						distortionMaker(isShieldOn, getMaxDistortion(), coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress), frames);
-				stack.popPose();
 			}
 		}
 	}
@@ -295,7 +292,6 @@ public class WormholeModel
 			float x3, float y3, float z3,
 			int frames)
 	{
-		
 		consumer.addVertex(matrix4, x1, y1, z1).setColor(1F, 1F, 1F, 0.75F).setUv(x1 * MULTIPLY_STATIC + 0.5F, (y1 * MULTIPLY_ANIMATED + HALF_OF_ANIMATED) * ((float) DEFAULT_FRAMES / frames))
 		.setOverlay(OverlayTexture.NO_OVERLAY).setLight(MAX_LIGHT).setNormal(0, 0, 0);
 		

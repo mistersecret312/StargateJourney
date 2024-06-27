@@ -113,12 +113,12 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		stack.pushPose();
 		stack.translate(0, DEFAULT_RADIUS - 2.5F/16, 0);
 		
-		GenericChevronModel.renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate, stargateVariant), isPrimaryChevronBackRaised(stargate, stargateVariant));
+		GenericChevronModel.renderChevronLight(stack, consumer, light, isPrimaryChevronRaised(stargate, stargateVariant), isPrimaryChevronBackRaised(stargate, stargateVariant));
 		if(useMovieStargateModel(stargate, stargateVariant))
 			MovieChevronModel.renderMovieChevronFront(stack, consumer, source, light);
 		else
-			GenericChevronModel.renderOuterChevronFront(stack, consumer, source, light, isPrimaryChevronLowered(stargate, stargateVariant));
-		GenericChevronModel.renderOuterChevronBack(stack, consumer, source, light);
+			GenericChevronModel.renderOuterChevronFront(stack, consumer, light, isPrimaryChevronLowered(stargate, stargateVariant));
+		GenericChevronModel.renderOuterChevronBack(stack, consumer, light);
 		
 		stack.popPose();
 	}
@@ -134,9 +134,9 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
 		stack.translate(0, DEFAULT_RADIUS - 2.5F/16, 0);
 		
-		GenericChevronModel.renderChevronLight(stack, consumer, source, light, isChevronRaised(stargate, stargateVariant, chevronNumber), isChevronBackRaised(stargate, stargateVariant, chevronNumber));
-		GenericChevronModel.renderOuterChevronFront(stack, consumer, source, light, isChevronLowered(stargate, stargateVariant, chevronNumber));
-		GenericChevronModel.renderOuterChevronBack(stack, consumer, source, light);
+		GenericChevronModel.renderChevronLight(stack, consumer, light, isChevronRaised(stargate, stargateVariant, chevronNumber), isChevronBackRaised(stargate, stargateVariant, chevronNumber));
+		GenericChevronModel.renderOuterChevronFront(stack, consumer, light, isChevronLowered(stargate, stargateVariant, chevronNumber));
+		GenericChevronModel.renderOuterChevronBack(stack, consumer, light);
 		
 		stack.popPose();
 	}

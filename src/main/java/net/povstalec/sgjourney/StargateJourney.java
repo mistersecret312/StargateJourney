@@ -19,14 +19,17 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
 import net.povstalec.sgjourney.common.init.*;
@@ -142,6 +145,9 @@ public class StargateJourney {
         public static void onAttachCapabilitiesEvent(RegisterCapabilitiesEvent event) {
             event.registerEntity(AncientGene.ANCIENT_GENE, EntityType.PLAYER, (player, voi) -> new AncientGene());
             event.registerEntity(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH, EntityType.PLAYER, (player, voi) -> new BloodstreamNaquadah());
+
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (cap, dir) -> new ItemStackHandler());
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), (cap, dir) -> new ItemStackHandler());
 
             event.registerEntity(AncientGene.ANCIENT_GENE, EntityType.VILLAGER, (player, voi) -> new AncientGene());
             event.registerEntity(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH, EntityType.VILLAGER, (player, voi) -> new BloodstreamNaquadah());

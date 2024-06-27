@@ -1,11 +1,5 @@
 {
-	"base":
-	{
+	"base": {
 		"parent": "sgjourney:item/jaffa_staff_weapon_inventory"
-	},
-	"overrides":
-	[
-		{ "predicate": { "sgjourney:open": 0.0 }, "model": "sgjourney:item/matok_closed"},
-		{ "predicate": { "sgjourney:open": 1.0 }, "model": "sgjourney:item/matok_open"}
-	]
+	}
 }
