@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractTransporterBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -62,8 +63,6 @@ public class TabInit
 			event.accept(ItemInit.NAQUADAH_AXE.get());
 			event.accept(ItemInit.NAQUADAH_SHOVEL.get());
 			event.accept(ItemInit.NAQUADAH_HOE.get());
-			
-			event.accept(ItemInit.MATOK.get());
 
 			event.accept(ItemInit.CRYSTAL_BASE.get());
 			event.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
@@ -112,8 +111,8 @@ public class TabInit
 		{
 			event.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 			
-			event.accept(BlockInit.TRANSPORT_RINGS.get());
-			event.accept(BlockInit.RING_PANEL.get());
+			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.TRANSPORT_RINGS.get())));
+			event.accept(AbstractStargateBaseBlock.addToNetworkTrue(new ItemStack(BlockInit.RING_PANEL.get())));
 
 
 			event.accept(BlockInit.GOLDEN_IDOL.get());

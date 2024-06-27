@@ -36,7 +36,7 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected ItemStackHandler createHandler()
+	public ItemStackHandler createHandler()
 	{
 		return new ItemStackHandler(9)
 			{

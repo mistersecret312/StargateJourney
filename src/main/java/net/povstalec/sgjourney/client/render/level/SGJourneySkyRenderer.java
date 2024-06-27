@@ -443,7 +443,7 @@ public abstract class SGJourneySkyRenderer
 		RenderSystem.setShaderColor(f, f1, f2, 1.0F);
 		ShaderInstance shaderinstance = RenderSystem.getShader();
 		this.skyBuffer.bind();
-		this.skyBuffer.drawWithShader(stack.last().pose(), projectionMatrix, shaderinstance);
+		this.skyBuffer.drawWithShader(stack.last().pose(), modelViewMatrix, shaderinstance);
 		VertexBuffer.unbind();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();

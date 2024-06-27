@@ -68,7 +68,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		super.invalidateCapabilities();
 	}
 	
-	protected ItemStackHandler createHandler()
+	public ItemStackHandler createHandler()
 	{
 		return new ItemStackHandler(9)
 			{

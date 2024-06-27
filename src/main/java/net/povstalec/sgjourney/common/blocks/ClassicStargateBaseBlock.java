@@ -74,7 +74,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 		{
 			Address address = new Address();
 
-			if(CommonStargateConfig.enable_address_choice.get() && stack.is(ItemInit.CONTROL_CRYSTAL.get()))
+			if(stack.is(ItemInit.CONTROL_CRYSTAL.get()))
 			{
 				String name = stack.get(DataComponents.CUSTOM_NAME).getString();
 				address = new Address(name);

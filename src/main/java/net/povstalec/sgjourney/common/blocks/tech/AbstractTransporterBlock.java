@@ -2,8 +2,6 @@ package net.povstalec.sgjourney.common.blocks.tech;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -11,6 +9,7 @@ import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -26,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.TransportRingsEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock
 {
@@ -76,7 +76,12 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
 
 		return super.playerWillDestroy(level, pos, state, player);
 	}
-	
+
+	@Override
+	public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
+		pLevel.setBlock(pPos, pState, 2);
+	}
+
 	@Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
