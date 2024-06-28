@@ -1,10 +1,10 @@
 {
-	"parent": "sgjourney:adventure/use_stargate",
+	"parent": "sgjourney:adventure/root",
 	"display": 
 	{
 		"icon": 
 		{
-			"item": "sgjourney:sandstone_hieroglyphs"
+			"id": "sgjourney:sandstone_hieroglyphs"
 		},
 		"title": 
 		{

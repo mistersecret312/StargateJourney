@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "sgjourney:naquadah_helmet",
+    "sgjourney:naquadah_chestplate",
+    "sgjourney:naquadah_leggings",
+    "sgjourney:naquadah_boots"
+  ]
+}

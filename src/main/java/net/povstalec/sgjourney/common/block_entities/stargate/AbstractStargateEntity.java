@@ -97,6 +97,8 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 	// Basic Info
 	protected Address id9ChevronAddress = new Address();
 	protected boolean addToNetwork = true;
+	protected boolean cfdStatus = false;
+	public Address cfdTarget = new Address();
 	
 	protected final Stargate.Gen generation;
 	protected int symbolBounds = 38;
@@ -199,6 +201,7 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 		else
 			id9ChevronAddress.fromArray(tag.getIntArray(ID_9_CHEVRON_ADDRESS));
     	addToNetwork = tag.getBoolean(ADD_TO_NETWORK);
+		cfdStatus =
 		
 		displayID = tag.getBoolean(DISPLAY_ID);
 		upgraded = isUpgraded ? true : tag.getBoolean(UPGRADED);
@@ -987,6 +990,15 @@ public abstract class AbstractStargateEntity extends BlockEntity implements IHas
 		}
 		
 		return false;
+	}
+
+	public void setShouldCallForward(boolean should)
+	{
+		if(hasDHD())
+		{
+			if(this.dhd.isPresent())
+				this.dhd.get().setCallForwardingState(should);
+		}
 	}
 	
 	public int getOpenTime()

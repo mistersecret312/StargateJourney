@@ -175,7 +175,7 @@ public class StargateMethods
 		}
 	}
 
-	/*public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
+	public static class SetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
 	{
 
 		@Override
@@ -188,13 +188,13 @@ public class StargateMethods
 			return context.executeMainThreadTask(() -> {
 				boolean input = arguments.getBoolean(0);
 
-				blockEntity.setCFD(input);
+				blockEntity.setShouldCallForward(input);
 				return new Object[]{"Call Forwarding successfully"};
 			});
 		}
 	}
 
-	public static class SetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
+	/*public static class SetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
 	{
 
 		@Override
@@ -231,7 +231,7 @@ public class StargateMethods
 
 			return result;
 		}
-	}
+	}*/
 
 	public static class GetCFDStatus implements InterfaceMethod<AbstractStargateEntity>
 	{
@@ -243,11 +243,11 @@ public class StargateMethods
 
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity blockEntity, IArguments arguments) throws LuaException {
-			return context.executeMainThreadTask(() -> new Object[]{blockEntity.getCFD()});
+			return context.executeMainThreadTask(() -> new Object[]{blockEntity.shouldCallForward()});
 		}
 	}
 
-	public static class GetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
+	/*public static class GetCFDTarget implements InterfaceMethod<AbstractStargateEntity>
 	{
 
 		@Override

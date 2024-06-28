@@ -34,10 +34,8 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
 			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 			
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			peripheral.registerMethod(new StargateMethods.SetCFDStatus());
+			peripheral.registerMethod(new StargateMethods.GetCFDStatus());
 			
 			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
 			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
@@ -91,10 +89,8 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
 			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 			
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			peripheral.registerMethod(new StargateMethods.SetCFDStatus());
+			peripheral.registerMethod(new StargateMethods.GetCFDStatus());
 			
 			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
 			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
@@ -139,10 +135,8 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new PegasusStargateMethods.OverridePointOfOrigin());
 			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			peripheral.registerMethod(new StargateMethods.SetCFDStatus());
+			peripheral.registerMethod(new StargateMethods.GetCFDStatus());
 			
 			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
 			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
@@ -183,10 +177,8 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
 			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			peripheral.registerMethod(new StargateMethods.SetCFDStatus());
+			peripheral.registerMethod(new StargateMethods.GetCFDStatus());
 			
 			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
 			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());
@@ -228,10 +220,8 @@ public class CCTweakedCompatibility
 			peripheral.registerMethod(new StargateMethods.SetRestrictNetwork());
 			peripheral.registerMethod(new StargateMethods.GetRestrictNetwork());
 
-			/*peripheral.registerMethod(new StargateMethods.SetCFDStatus());
-			peripheral.registerMethod(new StargateMethods.SetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDTarget());
-			peripheral.registerMethod(new StargateMethods.GetCFDStatus());*/
+			peripheral.registerMethod(new StargateMethods.SetCFDStatus());
+			peripheral.registerMethod(new StargateMethods.GetCFDStatus());
 			
 			peripheral.registerMethod(new StargateFilterMethods.GetFilterType());
 			peripheral.registerMethod(new StargateFilterMethods.SetFilterType());

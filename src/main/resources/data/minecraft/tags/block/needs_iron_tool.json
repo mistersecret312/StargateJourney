@@ -23,15 +23,16 @@
 		"sgjourney:basic_interface",
 		"sgjourney:crystal_interface",
 		"sgjourney:advanced_crystal_interface",
+
+		"sgjourney:sandstone_with_lapis",
+		"sgjourney:sandstone_with_gold",
+		"sgjourney:sandstone_hieroglyphs",
+		"sgjourney:sandstone_switch",
+		"sgjourney:sandstone_symbol",
+		"sgjourney:stone_symbol",
+		"sgjourney:sandstone_cartouche",
+		"sgjourney:stone_cartouche",
 		
-		"sgjourney:naquadah_liquidizer",
-		"sgjourney:heavy_naquadah_liquidizer",
-		
-		"sgjourney:crystallizer",
-		"sgjourney:advanced_crystallizer",
-		
-		"sgjourney:ancient_gene_detector",
-		
-		"sgjourney:zpm_hub"
+		"sgjourney:ancient_gene_detector"
   ]
 }

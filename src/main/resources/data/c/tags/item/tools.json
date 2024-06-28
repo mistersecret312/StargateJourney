@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "sgjourney:naquadah_shovel",
+    "sgjourney:naquadah_pickaxe",
+    "sgjourney:naquadah_axe",
+    "sgjourney:naquadah_hoe"
+  ]
+}

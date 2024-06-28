@@ -1,10 +1,10 @@
 {
-	"parent": "sgjourney:adventure/use_stargate",
+	"parent": "sgjourney:adventure/root",
 	"display": 
 	{
 		"icon": 
 		{
-			"item": "minecraft:deepslate_diamond_ore"
+			"id": "minecraft:deepslate_diamond_ore"
 		},
 		"title": 
 		{

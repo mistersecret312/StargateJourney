@@ -340,7 +340,7 @@ public final class StargateNetwork extends SavedData
 						}
 						
 						incomingStargate = reroutedStargate.get().getStargateEntity(server);
-					}
+					} else incomingStargate = outgoingStargate;
 				}
 			}
 

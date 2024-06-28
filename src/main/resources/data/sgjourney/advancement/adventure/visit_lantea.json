@@ -1,10 +1,10 @@
 {
-	"parent": "sgjourney:adventure/use_stargate",
+	"parent": "sgjourney:adventure/rot",
 	"display": 
 	{
 		"icon": 
 		{
-			"item": "sgjourney:pegasus_stargate"
+			"id": "sgjourney:pegasus_stargate"
 		},
 		"title": 
 		{

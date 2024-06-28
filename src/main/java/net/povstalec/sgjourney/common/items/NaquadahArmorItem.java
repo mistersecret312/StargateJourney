@@ -29,8 +29,8 @@ public class NaquadahArmorItem extends ArmorItem {
         attributeModifiers = super.getDefaultAttributeModifiers();
         if(type.getSlot().equals(EquipmentSlot.HEAD)){
             return attributeModifiers
-                    .withModifierAdded(Attributes.OXYGEN_BONUS, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "oxygen_bonus"), 2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.HEAD)
-                    .withModifierAdded(Attributes.WATER_MOVEMENT_EFFICIENCY, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "water_movement_efficiency"), 2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.HEAD);
+                    .withModifierAdded(Attributes.OXYGEN_BONUS, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "oxygen_bonus"), 2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.HEAD)
+                    .withModifierAdded(Attributes.WATER_MOVEMENT_EFFICIENCY, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "water_movement_efficiency"), 2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.HEAD);
         }
         if(type.getSlot().equals(EquipmentSlot.CHEST)){
             return attributeModifiers
@@ -40,12 +40,12 @@ public class NaquadahArmorItem extends ArmorItem {
         if(type.getSlot().equals(EquipmentSlot.LEGS)){
            return attributeModifiers
                     .withModifierAdded(Attributes.JUMP_STRENGTH, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "jump_strength"), 3, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.LEGS)
-                    .withModifierAdded(Attributes.BURNING_TIME, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "burning_time"), -0.9, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.LEGS);
+                    .withModifierAdded(Attributes.BURNING_TIME, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "burning_time"), -0.9, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.LEGS);
         }
         if(type.getSlot().equals(EquipmentSlot.FEET)){
            return attributeModifiers
                     .withModifierAdded(Attributes.MOVEMENT_EFFICIENCY, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "movement_efficiency"), 2, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.FEET)
-                    .withModifierAdded(Attributes.SAFE_FALL_DISTANCE, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "safe_fall_distance"), 2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.FEET);
+                    .withModifierAdded(Attributes.SAFE_FALL_DISTANCE, new AttributeModifier(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "safe_fall_distance"), 2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.FEET);
         }
         return attributeModifiers;
     }
