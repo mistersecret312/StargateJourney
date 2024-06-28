@@ -22,9 +22,9 @@ public class InterfacePeripheralWrapper
 		this.interfaceEntity = interfaceEntity;
 	}
 	
-	public static InterfacePeripheral createPeripheral(AbstractInterfaceEntity interfaceEntity, BlockEntity energyBlockEntity)
+	public static InterfacePeripheral createPeripheral(AbstractInterfaceEntity interfaceEntity)
 	{
-		if(energyBlockEntity instanceof AbstractStargateEntity stargate)
+		if(interfaceEntity.findBlockEntity() instanceof AbstractStargateEntity stargate)
 			return new StargatePeripheral(interfaceEntity, stargate);
 
 		return new InterfacePeripheral(interfaceEntity);
@@ -32,7 +32,7 @@ public class InterfacePeripheralWrapper
 	
 	public boolean resetInterface()
 	{
-		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity, interfaceEntity.findBlockEntity());
+		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity);
 		if(basicInterfacePeripheral != null && basicInterfacePeripheral.equals(newPeripheral))
 		{
 			// Peripheral is same as before, no changes needed.
@@ -51,12 +51,12 @@ public class InterfacePeripheralWrapper
 	
 	public Lazy<IPeripheral> newPeripheral()
 	{
-		basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findBlockEntity());
+		basicInterfacePeripheral = createPeripheral(interfaceEntity);
 		peripheral = Lazy.of(() -> basicInterfacePeripheral);
 		
 		if(peripheral == null)
 		{
-			basicInterfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findBlockEntity());
+			basicInterfacePeripheral = createPeripheral(interfaceEntity);
 			peripheral = Lazy.of(() -> basicInterfacePeripheral);
 		}
 		return peripheral;

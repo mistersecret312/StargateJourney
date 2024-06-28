@@ -9,8 +9,8 @@
 	
 	"key": 
 	{
-		"A": {"tag": "forge:ingots/naquadah_alloy"}
+		"A": {"tag": "c:ingots/naquadah_alloy"}
 	},
 	
-	"result": { "item": "sgjourney:naquadah_rod", "count": 4 }
+	"result": { "id": "sgjourney:naquadah_rod", "count": 4 }
 }

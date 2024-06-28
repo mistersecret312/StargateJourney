@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GIG",
+    "COK",
+    "GIG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:diamond"
+    },
+    "I": {
+      "item": "sgjourney:naquadah_alloy"
+    },
+    "C": {
+      "item": "sgjourney:communication_crystal"
+    },
+    "O": {
+      "item": "sgjourney:advanced_crystal_base"
+    },
+    "K": {
+      "item": "sgjourney:memory_crystal"
+    }
+  },
+  "result": {
+    "id": "sgjourney:stargate_change_crystal"
+  }
+}

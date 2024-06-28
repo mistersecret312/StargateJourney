@@ -65,6 +65,11 @@ public class TabInit
 			event.accept(ItemInit.NAQUADAH_SHOVEL.get());
 			event.accept(ItemInit.NAQUADAH_HOE.get());
 
+			event.accept(ItemInit.NAQUADAH_HELMET.get());
+			event.accept(ItemInit.NAQUADAH_CHESTPLATE.get());
+			event.accept(ItemInit.NAQUADAH_LEGGINGS.get());
+			event.accept(ItemInit.NAQUADAH_BOOTS.get());
+
 			event.accept(ItemInit.CRYSTAL_BASE.get());
 			event.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
 			

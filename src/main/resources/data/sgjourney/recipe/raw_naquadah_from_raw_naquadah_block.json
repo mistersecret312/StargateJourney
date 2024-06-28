@@ -5,5 +5,5 @@
 	[
 		{ "item": "sgjourney:raw_naquadah_block" }
 	],
-	"result": { "item": "sgjourney:raw_naquadah", "count": 9 }
+	"result": { "id": "sgjourney:raw_naquadah", "count": 9 }
 }

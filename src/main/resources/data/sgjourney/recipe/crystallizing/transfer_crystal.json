@@ -5,7 +5,7 @@
 		"item": "sgjourney:crystal_base"
 	},
 	"base": {
-		"item": "minecraft_quartz"
+		"item": "minecraft:quartz"
 	},
 	"addition": {
 		"item": "minecraft:glowstone_dust"

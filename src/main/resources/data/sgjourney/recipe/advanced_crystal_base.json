@@ -16,5 +16,5 @@
 		"B": { "item": "sgjourney:naquadah_block" }
 	},
 	
-	"result": { "item": "sgjourney:advanced_crystal_base", "count": 1 }
+	"result": { "id": "sgjourney:advanced_crystal_base", "count": 1 }
 }

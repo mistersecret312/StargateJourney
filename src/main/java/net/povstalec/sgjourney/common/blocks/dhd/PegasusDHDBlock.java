@@ -8,6 +8,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -40,6 +41,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -149,32 +151,23 @@ public class PegasusDHDBlock extends AbstractDHDBlock implements SimpleWaterlogg
 	{
 		ItemStack stack = new ItemStack(BlockInit.PEGASUS_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
-        CompoundTag inventory = new CompoundTag();
-        
+
+		ItemStackHandler handler = new ItemStackHandler(9);
+		setupPegasusInventory(handler);
         blockEntityTag.putString("id", "sgjourney:pegasus_dhd");
-        blockEntityTag.putLong("Energy", 0);
-        
-        inventory.putInt("Size", 9);
-        inventory.put("Items", setupPegasusInventory());
-        
-        blockEntityTag.put("Inventory", inventory);
+        blockEntityTag.put("Inventory", handler.serializeNBT(VanillaRegistries.createLookup()));
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		
 		return stack;
 	}
 	
-	private static ListTag setupPegasusInventory()
+	private static void setupPegasusInventory(ItemStackHandler handler)
 	{
-		ListTag nbtTagList = new ListTag();
-		
-		nbtTagList.add(InventoryHelper.addItem(0, ItemInit.ADVANCED_CONTROL_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(1, ItemInit.ADVANCED_ENERGY_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(2, ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(3, ItemInit.ADVANCED_ENERGY_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(6, ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(7, ItemInit.ADVANCED_TRANSFER_CRYSTAL.get().asItem().toString(), 1, null));
-		
-		return nbtTagList;
+		handler.setStackInSlot(0, new ItemStack(ItemInit.ADVANCED_CONTROL_CRYSTAL.get()));
+		handler.setStackInSlot(0, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
+		handler.setStackInSlot(0, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
+		handler.setStackInSlot(0, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
+		handler.setStackInSlot(0, new ItemStack(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()));
 	}
 
 	@Override

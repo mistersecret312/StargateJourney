@@ -1,0 +1,14 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "sgjourney:item/stargate_upgrade_crystal"
+	},
+	"overrides": [
+		{
+			"predicate": {
+				"sgjourney:upgrade": 1
+			},
+			"model": "sgjourney:item/stargate_variant_crystal"
+		}
+	]
+}

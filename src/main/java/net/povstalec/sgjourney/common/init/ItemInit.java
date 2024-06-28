@@ -1,11 +1,17 @@
 package net.povstalec.sgjourney.common.init;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
+import net.povstalec.sgjourney.common.items.NaquadahArmorItem;
 import net.povstalec.sgjourney.common.items.PDAItem;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
@@ -103,6 +109,16 @@ public class ItemInit
 			() -> new SGJourneyShovelItem(ToolMaterialInit.naquadah, 2.5f, -3.0f, new Item.Properties().fireResistant()));
 	public static final Supplier<SGJourneyHoeItem> NAQUADAH_HOE = ITEMS.register("naquadah_hoe", 
 			() -> new SGJourneyHoeItem(ToolMaterialInit.naquadah, -2, 0.0f, new Item.Properties().fireResistant()));
+
+	public static final Supplier<NaquadahArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet",
+			() -> new NaquadahArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.HELMET, new Item.Properties().fireResistant().durability(9200).stacksTo(1)));
+	public static final Supplier<NaquadahArmorItem> NAQUADAH_CHESTPLATE = ITEMS.register("naquadah_chestplate",
+			() -> new NaquadahArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.CHESTPLATE, new Item.Properties().fireResistant().durability(12600).stacksTo(1)));
+	public static final Supplier<NaquadahArmorItem> NAQUADAH_LEGGINGS = ITEMS.register("naquadah_leggings",
+			() -> new NaquadahArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.LEGGINGS, new Item.Properties().fireResistant().durability(9600).stacksTo(1)));
+	public static final Supplier<NaquadahArmorItem> NAQUADAH_BOOTS = ITEMS.register("naquadah_boots",
+			() -> new NaquadahArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.BOOTS, new Item.Properties().fireResistant().durability(8600).stacksTo(1)));
+
 
 	public static final Supplier<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device", 
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));

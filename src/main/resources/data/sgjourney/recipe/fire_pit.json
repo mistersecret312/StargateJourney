@@ -14,5 +14,5 @@
 		
 	},
 	
-	"result": { "item": "sgjourney:fire_pit", "count": 4 }
+	"result": { "id": "sgjourney:fire_pit", "count": 4 }
 }

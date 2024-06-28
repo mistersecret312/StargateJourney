@@ -10,7 +10,7 @@ public class InventoryHelper
 	{
 		CompoundTag itemTag = new CompoundTag();
 
-		itemTag.putInt("Slot", slot);
+		itemTag.putByte("Slot", (byte) slot);
 		itemTag.putString("id", id);
 		itemTag.putByte("Count", (byte) count);
 		

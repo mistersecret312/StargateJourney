@@ -10,13 +10,13 @@
 	
 	"key": 
 	{
-		"N": { "tag": "forge:ingots/naquadah" },
-		"A": { "tag": "forge:ingots/naquadah_alloy" },
+		"N": { "tag": "c:ingots/naquadah" },
+		"A": { "tag": "c:ingots/naquadah_alloy" },
 		"T": { "item": "sgjourney:transfer_crystal" },
 		"G": { "item": "sgjourney:communication_crystal" },
 		"D": { "item": "sgjourney:control_crystal" }
 		
 	},
 	
-	"result": { "item": "sgjourney:classic_stargate_base_block" }
+	"result": { "id": "sgjourney:classic_stargate_base_block" }
 }

@@ -10,9 +10,9 @@
 	"I": {"item": "minecraft:gold_ingot"},
 	"R": {"item": "minecraft:redstone"},
 	"B": {"item": "minecraft:blaze_rod"},
-    "N": {"tag": "forge:ingots/naquadah"}
+    "N": {"tag": "c:ingots/naquadah"}
   },
   "result": {
-    "item": "sgjourney:kara_kesh"
+    "id": "sgjourney:kara_kesh"
   }
 }

@@ -11,6 +11,7 @@ import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -35,6 +36,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
@@ -226,6 +228,12 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		}
 
 		return false;
+	}
+
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+		setVariant(pLevel, pPos, pPlayer, pHand);
+		return super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
 	}
 
 	public abstract AbstractStargateEntity getStargate(Level level, BlockPos pos, BlockState state);

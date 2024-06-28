@@ -10,10 +10,10 @@
 	
 	"key": 
 	{
-		"N": { "tag": "forge:ingots/naquadah" },
-		"A": { "tag": "forge:ingots/naquadah_alloy" }
+		"N": { "tag": "c:ingots/naquadah" },
+		"A": { "tag": "c:ingots/naquadah_alloy" }
 		
 	},
 	
-	"result": { "item": "sgjourney:classic_stargate_ring_block" }
+	"result": { "id": "sgjourney:classic_stargate_ring_block" }
 }

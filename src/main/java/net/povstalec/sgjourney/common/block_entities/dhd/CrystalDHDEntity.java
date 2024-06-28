@@ -3,7 +3,10 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 import javax.annotation.Nonnull;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.ContainerHelper;
 import net.neoforged.neoforge.capabilities.BaseCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -32,10 +35,9 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	protected AbstractCrystalItem.Storage energyCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage transferCrystals = new AbstractCrystalItem.Storage();
 	protected AbstractCrystalItem.Storage communicationCrystals = new AbstractCrystalItem.Storage();
-	
-	protected final ItemStackHandler itemHandler = createHandler();
-	protected final Lazy<IItemHandler> handler = Lazy.of(() -> itemHandler);
-	
+
+	private ItemStackHandler items = createHandler();
+
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
 		super(blockEntity, pos, state);
@@ -44,13 +46,14 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	public void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
 		super.loadAdditional(tag, pRegistries);
-		itemHandler.deserializeNBT(pRegistries, tag.getCompound("Inventory"));
+		this.items.deserializeNBT(pRegistries, tag);
+
 	}
 
 	@Override
 	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
-		tag.put("Inventory", itemHandler.serializeNBT(pRegistries));
 		super.saveAdditional(tag, pRegistries);
+		this.items.serializeNBT(pRegistries);
 	}
 	
 	@Override
@@ -62,12 +65,10 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		super.onLoad();
 	}
 
-	@Override
-	public void invalidateCapabilities() {
-		handler.invalidate();
-		super.invalidateCapabilities();
+	public ItemStackHandler getItems() {
+		return items;
 	}
-	
+
 	public ItemStackHandler createHandler()
 	{
 		return new ItemStackHandler(9)
@@ -105,7 +106,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 				}
 			};
 	}
-	
+
 	protected boolean isValidCrystal(ItemStack stack)
 	{
 		return stack.getItem() instanceof AbstractCrystalItem;
@@ -115,7 +116,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	{
 		// Check if the DHD has a Control Crystal
 		this.enableCallForwarding = false;
-		this.enableAdvancedProtocols = !itemHandler.getStackInSlot(0).isEmpty();
+		this.enableAdvancedProtocols = !items.getStackInSlot(0).isEmpty();
 		this.memoryCrystals.reset();
 		this.controlCrystals.reset();
 		this.energyCrystals.reset();
@@ -127,7 +128,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		// Check where the Crystals are and save their positions
 		for(int i = 1; i < 9; i++)
 		{
-			ItemStack stack = itemHandler.getStackInSlot(i);
+			ItemStack stack = items.getStackInSlot(i);
 			Item item = stack.getItem();
 			
 			if(item instanceof ControlCrystalItem controlCrystal)
@@ -163,7 +164,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		// Set up Transfer Crystals
 		for(int i = 0; i < this.transferCrystals.getCrystals().length; i++)
 		{
-			ItemStack stack = itemHandler.getStackInSlot(transferCrystals.getCrystals()[i]);
+			ItemStack stack = items.getStackInSlot(transferCrystals.getCrystals()[i]);
 			
 			if(!stack.isEmpty())
 				this.maxEnergyTransfer += TransferCrystalItem.getMaxTransfer(stack);
@@ -171,7 +172,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		// Set up Advanced Transfer Crystals
 		for(int i = 0; i < this.transferCrystals.getAdvancedCrystals().length; i++)
 		{
-			ItemStack stack = itemHandler.getStackInSlot(transferCrystals.getAdvancedCrystals()[i]);
+			ItemStack stack = items.getStackInSlot(transferCrystals.getAdvancedCrystals()[i]);
 			
 			if(!stack.isEmpty())
 				this.maxEnergyTransfer += TransferCrystalItem.getMaxTransfer(stack);
@@ -179,7 +180,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		
 		setStargate();
 	}
-	
+
 	@Override
 	public int getMaxDistance()
 	{

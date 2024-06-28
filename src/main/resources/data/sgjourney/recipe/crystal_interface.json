@@ -11,12 +11,12 @@
 	"key": 
 	{
 		"C": { "item": "sgjourney:communication_crystal" },
-		"N": { "tag": "forge:ingots/naquadah_alloy" },
+		"N": { "tag": "c:ingots/naquadah_alloy" },
 		"I": { "item": "sgjourney:basic_interface" },
 		"E": { "item": "sgjourney:energy_crystal" },
 		"R": { "item": "sgjourney:control_crystal" }
 		
 	},
 	
-	"result": { "item": "sgjourney:crystal_interface" }
+	"result": { "id": "sgjourney:crystal_interface" }
 }

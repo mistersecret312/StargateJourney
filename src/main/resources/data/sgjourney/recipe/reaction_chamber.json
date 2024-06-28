@@ -10,10 +10,10 @@
 	
 	"key": 
 	{
-		"A": {"tag": "forge:ingots/naquadah_alloy"},
+		"A": {"item": "sgjourney:naquadah_alloy"},
 		"R": { "item": "minecraft:redstone" },
-		"H": { "tag": "sgjourney:reaction_heater" }
+		"H": { "item": "minecraft:blaze_powder" }
 	},
 	
-	"result": { "item": "sgjourney:reaction_chamber", "count": 1 }
+	"result": { "id": "sgjourney:reaction_chamber", "count": 1 }
 }

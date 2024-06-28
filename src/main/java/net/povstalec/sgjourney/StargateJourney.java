@@ -4,7 +4,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import dan200.computercraft.api.peripheral.PeripheralCapability;
 import dan200.computercraft.shared.network.codec.MoreStreamCodecs;
+import dan200.computercraft.shared.util.CapabilityUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,6 +39,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.BloodstreamNaquadah;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.packets.NetworkMessage;
 import net.povstalec.sgjourney.common.packets.ServerNetworkMessage;
@@ -151,8 +154,9 @@ public class StargateJourney {
             event.registerEntity(AncientGene.ANCIENT_GENE, EntityType.PLAYER, (player, voi) -> new AncientGene());
             event.registerEntity(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH, EntityType.PLAYER, (player, voi) -> new BloodstreamNaquadah());
 
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (cap, dir) -> cap.createHandler());
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), (cap, dir) -> cap.createHandler());
+            event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), (be, context) -> InterfacePeripheralWrapper.createPeripheral(be));
+            event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.CRYSTAL_INTERFACE.get(), (be, context) -> InterfacePeripheralWrapper.createPeripheral(be));
+            event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.BASIC_INTERFACE.get(), (be, context) -> InterfacePeripheralWrapper.createPeripheral(be));
 
             event.registerEntity(AncientGene.ANCIENT_GENE, EntityType.VILLAGER, (player, voi) -> new AncientGene());
             event.registerEntity(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH, EntityType.VILLAGER, (player, voi) -> new BloodstreamNaquadah());
@@ -191,7 +195,11 @@ public class StargateJourney {
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            ItemProperties.register(ItemInit.MATOK.get(), ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "open"), new WeaponStatePropertyFunction());
+
+            event.enqueueWork(() -> {
+                ItemProperties.register(ItemInit.CHANGE_CRYSTAL.get(), ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, "upgrade"),
+                        (stack, level, player, seed) -> stack.has(DataComponents.VARIANT.get()) ? 1 : 0);
+            });
 
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());

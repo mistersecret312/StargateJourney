@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -41,6 +43,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -149,32 +152,24 @@ public class MilkyWayDHDBlock extends AbstractDHDBlock implements SimpleWaterlog
 	{
 		ItemStack stack = new ItemStack(BlockInit.MILKY_WAY_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
-        CompoundTag inventory = new CompoundTag();
-        
         blockEntityTag.putString("id", "sgjourney:milky_way_dhd");
-        blockEntityTag.putLong("Energy", 0);
-        
-        inventory.putInt("Size", 9);
-        inventory.put("Items", setupMilkyWayInventory());
-        
-        blockEntityTag.put("Inventory", inventory);
+
+		ItemStackHandler handler = new ItemStackHandler(9);
+		setupMilkyWayInventory(handler);
+        blockEntityTag.put("Inventory", handler.serializeNBT(VanillaRegistries.createLookup()));
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		
 		return stack;
 	}
 	
-	private static ListTag setupMilkyWayInventory()
+	private static void setupMilkyWayInventory(ItemStackHandler handler)
 	{
-		ListTag nbtTagList = new ListTag();
-		
-		nbtTagList.add(InventoryHelper.addItem(0, ItemInit.LARGE_CONTROL_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(1, ItemInit.ENERGY_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(2, ItemInit.COMMUNICATION_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(3, ItemInit.ENERGY_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(5, ItemInit.ENERGY_CRYSTAL.get().asItem().toString(), 1, null));
-		nbtTagList.add(InventoryHelper.addItem(7, ItemInit.TRANSFER_CRYSTAL.get().asItem().toString(), 1, null));
-		
-		return nbtTagList;
+
+		handler.setStackInSlot(0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get()));
+		handler.setStackInSlot(1, new ItemStack(ItemInit.COMMUNICATION_CRYSTAL.get()));
+		handler.setStackInSlot(3, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
+		handler.setStackInSlot(5, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
+		handler.setStackInSlot(7, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
 	}
 
 	@Override

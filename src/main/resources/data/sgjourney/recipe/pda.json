@@ -11,11 +11,11 @@
 	"key": 
 	{
 		"A": { "item": "sgjourney:advanced_control_crystal" },
-		"N": {"tag": "forge:ingots/naquadah_alloy"},
+		"N": {"tag": "c:ingots/naquadah_alloy"},
 		"C": { "item": "sgjourney:advanced_communication_crystal" },
 		"G": { "item": "minecraft:glass_pane" }
 		
 	},
 	
-	"result": { "item": "sgjourney:pda" }
+	"result": { "id": "sgjourney:pda" }
 }

@@ -6,5 +6,5 @@
 		{"item": "sgjourney:sandstone_hieroglyphs"},
     	{"item": "minecraft:redstone"}
 	],
-	"result": { "item": "sgjourney:sandstone_switch", "count": 1 }
+	"result": { "id": "sgjourney:sandstone_switch", "count": 1 }
 }

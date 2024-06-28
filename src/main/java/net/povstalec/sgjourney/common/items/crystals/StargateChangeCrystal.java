@@ -1,12 +1,15 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
@@ -14,11 +17,31 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.stargate.StargateVariant;
 
+import java.util.List;
 import java.util.Optional;
 
 public class StargateChangeCrystal extends Item {
     public StargateChangeCrystal(Properties pProperties) {
         super(pProperties);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> tooltipComponents, TooltipFlag pTooltipFlag) {
+        if(pStack.getComponents().has(StargateJourney.DataComponents.VARIANT.get()))
+        {
+            String variant = pStack.get(StargateJourney.DataComponents.VARIANT.get());
+            tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+        }
+        if(pStack.getComponents().has(StargateJourney.DataComponents.UPGRADE.get()))
+        {
+            String variant = pStack.get(StargateJourney.DataComponents.UPGRADE.get()).toString();
+
+            tooltipComponents.add(Component.translatable("tooltip.sgjourney.stargate_type").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+
+            tooltipComponents.add(Component.translatable("tooltip.sgjourney.stargate_upgrade.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+        }
+
+        super.appendHoverText(pStack, pContext, tooltipComponents, pTooltipFlag);
     }
 
     public static Optional<String> getVariantString(ItemStack stack)

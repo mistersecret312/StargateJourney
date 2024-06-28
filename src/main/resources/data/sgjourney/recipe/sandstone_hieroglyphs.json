@@ -6,5 +6,8 @@
 	{
 		"item": "minecraft:smooth_sandstone"
 	},
-	"result": "sgjourney:sandstone_hieroglyphs"
+	"result":
+	{
+		"id": "sgjourney:sandstone_hieroglyphs"
+	}
 }

@@ -9,13 +9,13 @@
 	],
 	"key":
 	{
-		"I": {"tag": "forge:ingots/naquadah_alloy"},
+		"I": {"tag": "c:ingots/naquadah_alloy"},
 		"B": {"item": "minecraft:stone_button"},
 		"R": {"item": "minecraft:redstone"},
 		"E": {"item": "sgjourney:communication_crystal"}
 	},
 	"result":
 	{
-		"item": "sgjourney:classic_dhd"
+		"id": "sgjourney:classic_dhd"
 	}
 }

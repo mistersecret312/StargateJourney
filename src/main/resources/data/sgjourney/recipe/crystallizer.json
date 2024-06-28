@@ -10,11 +10,11 @@
 	
 	"key": 
 	{
-		"A": { "tag": "forge:ingots/naquadah_alloy" },
-		"N": { "tag": "forge:ingots/naquadah" },
+		"A": { "tag": "c:ingots/naquadah_alloy" },
+		"N": { "tag": "c:ingots/naquadah" },
 		"B": { "item": "sgjourney:liquid_naquadah_bucket" },
 		"R": { "item": "sgjourney:reaction_chamber" }
 	},
 	
-	"result": { "item": "sgjourney:crystallizer" }
+	"result": { "id": "sgjourney:crystallizer" }
 }

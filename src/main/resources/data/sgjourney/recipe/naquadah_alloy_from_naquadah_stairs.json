@@ -4,5 +4,5 @@
 	[
 		{ "item": "sgjourney:naquadah_stairs" }
 	],
-	"result": { "item": "sgjourney:naquadah_alloy", "count": 3 }
+	"result": { "id": "sgjourney:naquadah_alloy", "count": 3 }
 }

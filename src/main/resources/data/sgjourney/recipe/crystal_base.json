@@ -14,5 +14,5 @@
 		"N": { "item": "sgjourney:pure_naquadah" }
 	},
 	
-	"result": { "item": "sgjourney:crystal_base", "count": 1 }
+	"result": { "id": "sgjourney:crystal_base", "count": 1 }
 }
