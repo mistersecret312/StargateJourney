@@ -47,6 +47,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateRingBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.ShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateRingBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
@@ -83,6 +84,9 @@ public class BlockInit
 	public static final RegistryObject<MilkyWayStargateRingBlock> MILKY_WAY_RING = BLOCKS.register("milky_way_ring", 
 			() -> new MilkyWayStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
+	public static final RegistryObject<ShieldingBlock> MILKY_WAY_IRIS =  BLOCKS.register("milky_way_iris", 
+			() -> new ShieldingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
+					.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	
 	public static final RegistryObject<PegasusStargateBlock> PEGASUS_STARGATE = registerStargateBlock("pegasus_stargate", 
 			() -> new PegasusStargateBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
