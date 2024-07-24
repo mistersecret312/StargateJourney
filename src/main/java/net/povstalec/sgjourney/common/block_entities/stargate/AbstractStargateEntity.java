@@ -6,6 +6,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.world.ForgeChunkManager;
@@ -1487,8 +1487,8 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity
 			{
 				BlockPos pos = centerPos.relative(direction, width).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), height);
 				BlockState state = level.getBlockState(pos);
-				
-				if((!state.getMaterial().isReplaceable() && !(state.getBlock() instanceof AbstractStargateBlock) && !(state.getBlock() instanceof ShieldingBlock)) || state.getMaterial() == Material.LAVA)
+
+				if((!state.canBeReplaced() && !(state.getBlock() instanceof AbstractStargateBlock) && !(state.getBlock() instanceof ShieldingBlock)) || state.getFluidState().is(Fluids.LAVA.getSource()))
 					obstructingBlocks++;
 			}
 		}

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
@@ -23,13 +24,13 @@ public class ClientboundStargateParticleSpawnPacket
 
     public ClientboundStargateParticleSpawnPacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos(), new HashMap<StargatePart, BlockState>(buffer.readMap((buf) -> buf.readEnum(StargatePart.class), buf -> buf.readWithCodec(BlockState.CODEC))));
+        this(buffer.readBlockPos(), new HashMap<StargatePart, BlockState>(buffer.readMap((buf) -> buf.readEnum(StargatePart.class), buf -> buf.readWithCodec(NbtOps.INSTANCE, BlockState.CODEC))));
     }
 
     public void encode(FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(this.pos);
-        buffer.writeMap(this.blockStates, FriendlyByteBuf::writeEnum, (buf, state) -> buf.writeWithCodec(BlockState.CODEC, state));
+        buffer.writeMap(this.blockStates, FriendlyByteBuf::writeEnum, (buf, state) -> buf.writeWithCodec(NbtOps.INSTANCE, BlockState.CODEC, state));
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
