@@ -37,7 +37,7 @@ public class SGJourneyRenderTypes extends RenderType
 				.setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
 				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 				.setTexturingState(new RenderStateShard.OffsetTexturingStateShard(xOffset, zOffset))
-				.setTransparencyState(NO_TRANSPARENCY)
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setCullState(CULL)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
@@ -70,6 +70,18 @@ public class SGJourneyRenderTypes extends RenderType
 				.setWriteMaskState(COLOR_WRITE)
 				.setLightmapState(LIGHTMAP)
 				.setOverlayState(NO_OVERLAY)
+				.createCompositeState(true));
+	}
+
+	public static RenderType iris(ResourceLocation resourceLocation)
+	{
+		return create("iris", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.TRIANGLES, 256, false, true, 
+				RenderType.CompositeState.builder()
+				.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
+				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+				.setTransparencyState(NO_TRANSPARENCY)
+				.setLightmapState(LIGHTMAP)
+				.setOverlayState(OVERLAY)
 				.createCompositeState(true));
 	}
 
